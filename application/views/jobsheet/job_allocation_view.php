@@ -1,19 +1,4 @@
 <style>
-	.allocation-table{
-		width: 95%;
-		margin: 10px auto;
-	}
-	.allocation-table > thead > tr > th{
-		font-weight: normal;
-		background: #484b4a;
-		color: #ffffff;
-		border: 1px solid #d2d2d2;
-	}
-	.allocation-table > tbody > tr > td{
-		padding: 5px;
-		border: 1px solid #d2d2d2;
-		text-align: center;
-	}
 	.pending-msg{
 		position: absolute;
 		margin: -3px -80px 0;
@@ -26,7 +11,8 @@
         width: 100%;
     }
     .job-details{
-        margin: 10px 40px;
+        margin: 0 0 5px 2px;
+        font-size: 12px;
     }
     .job-details > tbody > tr > td{
         padding: 5px;
@@ -36,6 +22,9 @@
         background: #484848;
         color: #ffffff;
         padding: 5px 10px;
+    }
+    .table-colored-header > thead > tr > th{
+        padding: 5px!important;
     }
 </style>
 <div class="allocation-div">
@@ -51,11 +40,13 @@
             </td>
         </tr>
     </table>
-    <table class="allocation-table">
+    <table class="table table-colored-header">
         <thead>
         <tr>
             <th rowspan="2" style="width: 15%;">Inspection Date</th>
             <th rowspan="2">Client Name</th>
+            <th rowspan="2">Job Name</th>
+            <th rowspan="2">Job Type</th>
             <th rowspan="2" style="width: 15%;">Inspector</th>
             <th colspan="2" style="width: 25%;">Time</th>
         </tr>
@@ -89,10 +80,20 @@
                     </td>
                     <td style="text-align: left;">
                         <?php
-                        echo $v->CompanyName;
+                        echo $v->insured_name;
                         ?>
                     </td>
                     <td style="text-align: left;">
+                        <?php
+                        echo $v->project_name;
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        echo $v->job_type_specs;
+                        ?>
+                    </td>
+                    <td>
                         <?php
                         echo $v->Name;
                         ?>
@@ -113,7 +114,7 @@
         }else{
             ?>
             <tr>
-                <td colspan="6">No data has been found.</td>
+                <td colspan="7">No data was found.</td>
             </tr>
         <?php
         }

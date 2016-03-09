@@ -1,11 +1,12 @@
 jQuery.fn.checkingMail = function (option) {
     var el = $(this);
     el
-        .unbind('focusout, change')
-        .live('focusout, change', function(e) {
-            var options = $(this).getOptions(option);
-            $(this).validateMail(options);
-        });
+        .unbind('focusout, change');
+
+    $('body').on('focusout, change', el,function(e) {
+        var options = $(this).getOptions(option);
+        $(this).validateMail(options);
+    });
 };
 
 jQuery.fn.getOptions = function (option) {

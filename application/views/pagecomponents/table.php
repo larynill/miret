@@ -12,7 +12,7 @@
         } );
     });
 </script>
-<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" >
+<table cellpadding="0" cellspacing="0" border="0" class="display table-colored-header" id="example" >
     <thead>
     <tr>
         <th>No.</th>

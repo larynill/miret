@@ -43,7 +43,7 @@
         endforeach;
     else:?>
         <tr>
-            <td colspan="5">No data has been found.</td>
+            <td colspan="5">No data was found.</td>
         </tr>
     <?php
     endif;

@@ -32,6 +32,39 @@ class Admin_Controller extends Merit{
                 );
             }
         }
+        $job_data = $this->merit_model->getInfo('tbl_job_registration');
+        $is_date = array(
+            'New Job:' => 'date_entered',
+            'Completed Job:' => 'date_completed',
+            'Report Printed for' => 'date_report_printed',
+            'Report Sent for' => 'date_report_sent',
+            'Inspection for' => 'inspection_time',
+            'Due Date for' => 'date_due'
+        );
+
+        $date_color = array(
+            'date_entered' => '#bce8f1',
+            'date_completed' => '#d6e9c6',
+            'date_report_printed' => '#bce8f1',
+            'date_report_sent' => '#faebcc',
+            'inspection_time' => 'rgba(56, 189, 128, 0.78)',
+            'date_due' => '#ebccd1'
+        );
+        if(count($job_data) > 0){ //get all the equipment dates for the calendar
+            foreach($job_data as $key=>$val){
+                foreach($is_date as $k=>$v){
+                    if($val->$v != '0000-00-00 00:00:00'){
+                        $job_num = str_pad($val->id,5,'0',STR_PAD_LEFT);
+                        $schedules[] = array(
+                            'id' => $val->id,
+                            'title' => $k . ' ' . $job_num . ' (' . $val->project_name.')',
+                            'bg_color' => $date_color[$v],
+                            'start' => date('Y m d H:i:s', strtotime($val->$v))
+                        );
+                    }
+                }
+            }
+        }
         if(isset($_POST['dropToDate'])){ //get post for date change in the calendar
             $equipID = $_POST['ID'];
             $postData = array(
@@ -40,27 +73,27 @@ class Admin_Controller extends Merit{
             $this->main_model->update('tbl_client_equipment', $postData, $equipID);
         }
 		$this->main_model->setJoin(array(
-			'table' => array('tbl_tracker','tbl_client'),
-			'join_field' => array('ID','ID'),
-			'source_field' => array('tbl_user_assignment.TrackID','tbl_tracker.ClientID'),
+			'table' => array('tbl_job_registration'),
+			'join_field' => array('ID'),
+			'source_field' => array('tbl_user_assignment.TrackID'),
 			'type' => 'left'
 		));
+        $fld = ArrayWalk($this->my_model->getFields('tbl_job_registration'),'tbl_job_registration.');
+        $fld[] = 'tbl_user_assignment.ID as id';
+        $fld[] = 'tbl_user_assignment.TrackID';
+        $fld[] = 'tbl_user_assignment.InspectionIsSet';
+        $fld[] = 'tbl_user_assignment.DateAccept';
 
-		$this->main_model->setSelectFields(array(
-			'tbl_user_assignment.ID as id', 'tbl_client.ID as MyClientID', 'tbl_client.MobilePhone',
-			'concat(tbl_client.FirstName," ",tbl_client.LastName) as name',
-			'tbl_client.CompanyName','tbl_user_assignment.TrackID','tbl_tracker.ClientID','tbl_user_assignment.InspectionIsSet',
-			'tbl_user_assignment.DateAccept'
-		));
+		$this->main_model->setSelectFields($fld);
 		$userType = $this->session->userdata('userAccountType');
         $userTypeArr = array(1,2,6);
 		$field = in_array($userType,$userTypeArr) ? '' : array('DateAssigned =');
 		$value = in_array($userType,$userTypeArr) ? '' : array('0000-00-00');
-
+        $this->main_model->setGroupBy('TrackID');
 		$this->data['assignment'] = $this->main_model->getinfo('tbl_user_assignment', $value, $field);
 		if(count($this->data['assignment'])>0){
 			foreach($this->data['assignment'] as $ak=>$av){
-				$av->equipment = $this->main_model->getinfo('tbl_client_equipment',$av->ClientID,'ClientID');
+				//$av->equipment = $this->main_model->getinfo('tbl_client_equipment',$av->ClientID,'ClientID');
 				$av->inspector = $this->main_model->getinfo('tbl_user',4,'AccountType');
 				$av->jobs = 0;
 				if(count($av->inspector)>0){
@@ -92,6 +125,7 @@ class Admin_Controller extends Merit{
 			'tbl_client_quotes.IsQueue','tbl_client_quotes.UserID'
 		));
 		$this->main_model->setNoReset(true);
+        $this->main_model->setGroupBy('TrackID');
 		$this->data['qoutes'] = $this->main_model->getinfo('tbl_client_quotes',1,'tbl_client_quotes.IsQueue !=');
 		$this->data['qoutelist'] = $this->main_model->getinfo('tbl_client_quotes');
 
@@ -103,7 +137,6 @@ class Admin_Controller extends Merit{
 					$qv->color = '#FFA500';
 				}else if($qv->IsQueue == false && $days >= 6){
 					$qv->color = '#ff0000';
-					$qv->CompanyName = $qv->CompanyName;
 					$qv->notification = '<span class="notify">Pending '. $days .' days</span>';
 				}else{
 					$qv->color = '#228B22';
@@ -131,14 +164,14 @@ class Admin_Controller extends Merit{
         $this->data['_equipData'] = $equipData;
 
 		//get the Scheduled Inspections
-		$this->main_model->setJoin(array(
+		$this->merit_model->setJoin(array(
 			'table' => array('tbl_tracker', 'tbl_user','tbl_client'),
 			'join_field' => array('ID', 'ID','ID'),
 			'source_field' => array('tbl_user_assignment.TrackID', 'tbl_user_assignment.UserID','tbl_tracker.ClientID'),
 			'type' => 'left'
 		));
 
-		$this->main_model->setSelectFields(array(
+		$this->merit_model->setSelectFields(array(
 			'tbl_user_assignment.ID','tbl_client.CompanyName','tbl_user_assignment.TrackID',
 			'tbl_user_assignment.InspectionIsSet', 'tbl_user_assignment.InspectionDate','tbl_tracker.EquipID',
 			'CONCAT(tbl_user.FName, " ", tbl_user.LName) as InspectorName', 'tbl_user_assignment.IsDone'
@@ -146,7 +179,8 @@ class Admin_Controller extends Merit{
 
 		$whatField = array('tbl_user_assignment.InspectionIsSet');
 		$whatVal = array(1);
-		$assign = $this->main_model->getinfo('tbl_user_assignment', $whatVal, $whatField);
+        $this->merit_model->setGroupBy('TrackID');
+		$assign = $this->merit_model->getinfo('tbl_user_assignment', $whatVal, $whatField);
 		$_assign_json = array();
 		if(count($assign) > 0){ //get all the equipment dates for the calendar
             foreach($assign as $v){
@@ -2010,17 +2044,21 @@ class Admin_Controller extends Merit{
 		}
 
 		$this->data['_pageLoad'] = 'staff/staff_list_view';
-		$staffList = $this->arrayWalk(array('ID','FName','LName','EmailAddress','AccountType'),'tbl_user.');
-		$staffList[] = "tbl_wage_type.description";
-		$staffList[] = "tbl_user_type.AccountType as AccountName";
+		$staffList = $this->arrayWalk($this->main_model->getFields('tbl_user'),'tbl_user.');
+        $staffInfo = $this->arrayWalk($this->main_model->getFields('tbl_user_account_info',array('ID')),'tbl_user_account_info.');
+
+        $fld = array_merge($staffList,$staffInfo);
+        $fld[] = "tbl_wage_type.description";
+        $fld[] = "tbl_user_type.AccountType as AccountName";
+
 		$this->main_model->setJoin(array(
-			'table' => array('tbl_wage_type','tbl_user_type'),
-			'join_field' => array('id','ID'),
-			'source_field' => array('tbl_user.WageType','tbl_user.AccountType'),
+			'table' => array('tbl_wage_type','tbl_user_type','tbl_user_account_info'),
+			'join_field' => array('id','ID','UserID'),
+			'source_field' => array('tbl_user.WageType','tbl_user.AccountType','tbl_user.ID'),
 			'type' => 'left'
 		));
-		$this->main_model->setSelectFields($staffList);
-		$this->data['staffList'] = $this->main_model->getinfo('tbl_user',array(3,4,5,6),'tbl_user.AccountType');
+		$this->main_model->setSelectFields($fld);
+		$this->data['staffList'] = $this->main_model->getinfo('tbl_user');
 		//DisplayArray($this->data['staffList']);
 		$this->load->view('main_view',$this->data);
 	}
@@ -2033,6 +2071,7 @@ class Admin_Controller extends Merit{
 		$this->data['area'] = array();
 		if(count($area)>0){
 			foreach($area as $k=>$v){
+                $this->data['area'][''] = '-';
 				$this->data['area'][$v->ID] = $v->Area;
 			}
 		}
@@ -2041,6 +2080,7 @@ class Admin_Controller extends Merit{
 		$this->data['account_type'] = array();
 		if(count($account_type)>0){
 			foreach($account_type as $k=>$v){
+                $this->data['account_type'][''] = '-';
 				$this->data['account_type'][$v->ID] = $v->AccountType;
 			}
 		}
@@ -2067,22 +2107,23 @@ class Admin_Controller extends Merit{
 			if(count($data)>0){
 				foreach($data as $dk=>$dv){
 					$this->data[$k][$dv->id] = $dv->$k;
+                    $this->data[$k][''] = '-';
 				}
 			}
 		}
-
 		if(isset($_POST['submit'])){
 			unset($_POST['submit']);
 
 			$data = array(
 				'Username' => $_POST['username'],
-				'Password' => $this->encrypt->encode($_POST['password']),
+				//'Password' => $this->encrypt->encode($_POST['password']),
 				'FName' => $_POST['fname'],
 				'LName' => $_POST['lname'],
 				'EmailAddress' => $_POST['email'],
 				'Address' => $_POST['address'],
 				'AccountType' => $_POST['account_type'],
 				'WageType' => $_POST['wage_type'],
+				'isCanAddJob' => $_POST['isCanAddJob'],
 				'DateRegistered' => date('Y-m-d')
 			);
 
@@ -2126,7 +2167,7 @@ class Admin_Controller extends Merit{
 			}
 		}
 
-		$account_type = $this->main_model->getinfo('tbl_user_type',array(4,5,6));
+		$account_type = $this->main_model->getinfo('tbl_user_type');
 		$this->data['account_type'] = array();
 		if(count($account_type)>0){
 			foreach($account_type as $k=>$v){
@@ -2156,8 +2197,10 @@ class Admin_Controller extends Merit{
 			if(count($data)>0){
 				foreach($data as $dk=>$dv){
 					$this->data[$k][$dv->id] = $dv->$k;
+					$this->data[$k][''] = '-';
 				}
 			}
+            ksort($this->data[$k]);
 		}
 
 		$this->main_model->setJoin(array(
@@ -2173,7 +2216,10 @@ class Admin_Controller extends Merit{
 			'tbl_user_account_info.AreaDesignated','tbl_user_account_info.Frequency', 'tbl_user.WageType',
 			'tbl_user_account_info.FixedValue','tbl_user_account_info.Tax','tbl_user_account_info.STLoan',
 			'tbl_user_account_info.KiwiSave','tbl_user.Username','tbl_user.Password','tbl_user.FName',
-			'tbl_user.LName','tbl_user.EmailAddress','tbl_user.AccountType','tbl_user.AccountType','tbl_user.Address'
+			'tbl_user.LName','tbl_user.EmailAddress','tbl_user.AccountType','tbl_user.AccountType','tbl_user.Address',
+            'tbl_user.isCanAddJob',
+            'tbl_user.isAllowWages',
+            'tbl_user.isQualifiedInspector'
 		));
 		$this->data['staffInfo'] = $this->main_model->getinfo('tbl_user',$whatId,'tbl_user.ID');
 		//DisplayArray($this->data['staffInfo']);
@@ -2182,12 +2228,15 @@ class Admin_Controller extends Merit{
 
 			$data = array(
 				'Username' => $_POST['username'],
-				'Password' => $this->encrypt->encode($_POST['password']),
+				//'Password' => $this->encrypt->encode($_POST['password']),
 				'FName' => $_POST['fname'],
 				'LName' => $_POST['lname'],
 				'EmailAddress' => $_POST['email'],
 				'Address' => $_POST['address'],
 				'AccountType' => $_POST['account_type'],
+                'isCanAddJob' => $_POST['isCanAddJob'],
+                'isQualifiedInspector' => $_POST['isQualifiedInspector'],
+                'isAllowWages' => $_POST['isAllowWages'],
 				'WageType' => $_POST['wage_type']
 			);
 
@@ -2235,33 +2284,34 @@ class Admin_Controller extends Merit{
 			redirect('');
 		}
 
-		$selectedFields = $this->arrayWalk(array('ID','ClientID','AssignedToID','EquipID'),'tbl_tracker.');
-		$selectedFields[] = 'tbl_client.CompanyName';
+		$selectedFields = ArrayWalk($this->my_model->getFields('tbl_job_registration'),'tbl_job_registration.');
+		$selectedFields[] = 'tbl_job_registration.insured_name';
 		$selectedFields[] = 'concat(tbl_user.FName," ",tbl_user.LName) as Name';
 		$selectedFields[] = 'tbl_user_assignment.UserID';
 		$selectedFields[] = 'tbl_user_assignment.InspectionDate';
 		$selectedFields[] = 'tbl_user_assignment.InspectionTime';
 		$selectedFields[] = 'tbl_user_assignment.InspectionTimeEnd';
 		$selectedFields[] = 'tbl_user_assignment.IsDone';
+		$selectedFields[] = 'tbl_job_type_specs.job_type_specs';
 
 		$this->main_model->setJoin(array(
-			'table' => array('tbl_user_assignment','tbl_client','tbl_user'),
-			'join_field' => array('TrackID','ID','ID','ID'),
-			'source_field' => array('tbl_tracker.ID','tbl_tracker.ClientID','tbl_user_assignment.UserID')
+			'table' => array('tbl_user_assignment','tbl_user','tbl_job_type_specs'),
+			'join_field' => array('TrackID','ID','id'),
+			'source_field' => array('tbl_job_registration.ID','tbl_user_assignment.UserID','tbl_job_registration.job_type_id')
 		));
 
 		$this->main_model->setSelectFields($selectedFields);
 		$this->main_model->setOrder('InspectionDate','DESC');
         if($this->session->userdata('userAccountType') == 4){
             $userID = $this->session->userdata('userID');
-            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_tracker',$userID,'AssignedToID');
+            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_job_registration',$userID,'inspector_id');
             $this->data['jobDone'] = count($this->main_model->getinfo('tbl_user_assignment',array($userID,true),array('UserID','IsDone')));
 
             $whatFld = '';
             $whatVal = 'InspectionDate > "'.date('Y-m-d').'" AND IsDone = false AND UserID = "'.$userID.'"';
             $this->data['pendingJobs'] = count($this->main_model->getinfo('tbl_user_assignment',$whatVal,$whatFld));
         }else{
-            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_tracker');
+            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_job_registration');
             $this->data['jobDone'] = count($this->main_model->getinfo('tbl_user_assignment',true,'IsDone'));
 
             $whatFld = '';
@@ -2357,8 +2407,7 @@ class Admin_Controller extends Merit{
                             'client' => $v->client,
                             'reference' => $v->reference,
                             'credits' => $v->credits,
-                            'date' => $v->date,
-                            'credits' => $v->credits
+                            'date' => $v->date
                         );
                     }
                 }

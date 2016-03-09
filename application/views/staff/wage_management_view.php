@@ -307,16 +307,16 @@ $(function(e){
 	<tr>
 		<td>
 			<strong>WAGE TYPE TABLE</strong>
-			<a href="#" class="addWageType pure_white" title="Add Wage Type">Add Wage Type</a>
+			<a href="#" class="addWageType btn-sm btn btn-primary pull-right" title="Add Wage Type">Add Wage Type</a>
 		</td>
 		<td>
 			<strong>TAX CODE</strong>
-			<a href="#" class="addTaxCode pure_white" title="Add Tax Code" >Add Tax Code</a>
+			<a href="#" class="addTaxCode btn-sm btn btn-primary pull-right" title="Add Tax Code" >Add Tax Code</a>
 			<br style="clear: both;" />
 		</td>
 		<td>
 			<strong>Kiwi Save</strong>
-			<a href="#" class="addKiwi pure_white" title="Add Kiwi Save" >Add Kiwi Save</a>
+			<a href="#" class="addKiwi btn-sm btn btn-primary pull-right" title="Add Kiwi Save" >Add Kiwi Save</a>
 			<br style="clear: both;" />
 		</td>
 		<td>
@@ -325,14 +325,16 @@ $(function(e){
 	</tr>
 	<tr style="vertical-align: top;">
 		<td>
-			<table class="wageTable">
-
-				<tr class="headerTr">
-					<td>Description</td>
-					<td>Frequency</td>
-					<td>Type</td>
-					<td></td>
-				</tr>
+			<table class="table table-colored-header">
+                <thead>
+                <tr class="headerTr">
+                    <th>Description</th>
+                    <th>Frequency</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
 				<?php
 				if(count($category)>0){
 					foreach($category as $ck=>$cv){
@@ -358,22 +360,26 @@ $(function(e){
 				}else{
 					?>
 					<tr>
-						<td colspan="4" style="text-align: center;">No Data</td>
+						<td colspan="4" style="text-align: center;">No data was found.</td>
 					</tr>
 				<?php
 				}
 				?>
+                </tbody>
 			</table>
 		</td>
 		<td>
 			<table style="width: 100%;">
 				<tr>
 					<td>
-						<table class="wageTable" style="width: 100%;">
-							<tr class="headerTr">
-								<td>Code</td>
-								<td></td>
-							</tr>
+						<table class="table table-colored-header" style="width: 100%;">
+                            <thead>
+                            <tr class="headerTr">
+                                <th>Code</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							if(count($tax_codes)>0){
 								foreach($tax_codes as $tcv){
@@ -395,6 +401,7 @@ $(function(e){
 							<?php
 							}
 							?>
+                            </tbody>
 						</table>
 					</td>
 				</tr>
@@ -404,11 +411,14 @@ $(function(e){
 			<table>
 				<tr>
 					<td>
-						<table class="wageTable" style="width: 100%;">
-							<tr class="headerTr">
-								<td>Percentage</td>
-								<td></td>
-							</tr>
+						<table class="table table-colored-header" style="width: 100%;">
+                            <thead>
+                            <tr class="headerTr">
+                                <th>Percentage</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							if(count($kiwi)>0){
 								foreach($kiwi as $kv){
@@ -430,6 +440,7 @@ $(function(e){
 							<?php
 							}
 							?>
+                            </tbody>
 						</table>
 					</td>
 				</tr>
@@ -439,12 +450,15 @@ $(function(e){
 			<table>
 				<tr>
 					<td>
-						<table class="wageTable" style="width: 100%;">
-							<tr class="headerTr">
-								<td>Type</td>
-								<td>Percentage</td>
-								<td></td>
-							</tr>
+						<table class="table table-colored-header" style="width: 100%;">
+                            <thead>
+                            <tr class="headerTr">
+                                <th>Type</th>
+                                <th>Percentage</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							if(count($default_percentage)>0){
 								foreach($default_percentage as $dpv){
@@ -466,6 +480,7 @@ $(function(e){
 							<?php
 							}
 							?>
+                            </tbody>
 						</table>
 					</td>
 				</tr>
@@ -482,17 +497,20 @@ $(function(e){
 				<tr>
 					<td>
 						<strong>FREQUENCY TABLE</strong>
-						<a href="#" class="addFrequency pure_white" title="Add Frequency" >Add Frequency</a>
+						<a href="#" class="addFrequency btn btn-sm btn-primary pull-right" title="Add Frequency" >Add Frequency</a>
 						<br style="clear: both;" />
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<table class="wageTable table-class" style="width: 100%;">
-							<tr class="headerTr">
-								<td>Frequency</td>
-								<td></td>
-							</tr>
+						<table class="table table-colored-header" style="width: 100%;margin-top: 5px;">
+                            <thead>
+                            <tr class="headerTr">
+                                <th>Frequency</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							if(count($salary_frequency)>0){
 								foreach($salary_frequency as $sfv){
@@ -514,6 +532,7 @@ $(function(e){
 							<?php
 							}
 							?>
+                            </tbody>
 						</table>
 					</td>
 				</tr>
@@ -524,17 +543,20 @@ $(function(e){
 				<tr>
 					<td>
 						<strong>TYPE TABLE</strong>
-						<a href="#" class="addType pure_white" title="Add Type" >Add Type</a>
+						<a href="#" class="addType btn btn-sm btn-primary pull-right" title="Add Type" >Add Type</a>
 						<br style="clear: both;" />
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<table class="wageTable" style="width: 100%;">
-							<tr class="headerTr">
-								<td>Frequency</td>
-								<td></td>
-							</tr>
+						<table class="table table-colored-header" style="width: 100%;margin-top: 5px;">
+                            <thead>
+                            <tr class="headerTr">
+                                <th>Frequency</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							if(count($salary_type)>0){
 								foreach($salary_type as $stv){
@@ -556,6 +578,7 @@ $(function(e){
 							<?php
 							}
 							?>
+                            </tbody>
 						</table>
 					</td>
 				</tr>

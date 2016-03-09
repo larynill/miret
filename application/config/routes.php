@@ -38,8 +38,8 @@
 |
 */
 
-$route['default_controller'] = "main_controller";
-$route['404_override'] = 'main_controller/pageConstruction';
+$route['default_controller'] = "merit";
+$route['404_override'] = 'merit/pageConstruction';
 require_once( BASEPATH . 'database/DB'. EXT );
 $db = & DB();
 $query = $db->get('tbl_routing');

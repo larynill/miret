@@ -1,5 +1,5 @@
 <?php
-class main_model extends CI_Model{
+class Main_Model extends CI_Model{
     var $model_config;
     var $model_setting;
 
@@ -196,7 +196,7 @@ class main_model extends CI_Model{
         return $para->insert_id();
     }
 
-    function insert_batch($db, $data, $toClearData = true, $para = ''){
+    function insertBatch($db, $data, $toClearData = true, $para = ''){
         $data = $this->dataCleaner($data, $toClearData);
 
         if(!$para){
@@ -217,7 +217,7 @@ class main_model extends CI_Model{
         return $para->insert_id();
     }
 
-    function update_batch($db, $data, $id, $what = 'id', $toClearData = true, $para = ''){
+    function updateBatch($db, $data, $id, $what = 'id', $toClearData = true, $para = ''){
         if(!$para){
             $para = $this->db;
         }
@@ -236,7 +236,7 @@ class main_model extends CI_Model{
         $para->delete($db);
     }
 
-    function getinfo($db,$id = '',$what = 'id', $para = ''){
+    function getInfo($db,$id = '',$what = 'id', $para = ''){
         if(!$para){
             $para = $this->db;
         }

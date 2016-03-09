@@ -1,21 +1,4 @@
-<style>
-    .table-class{
-        margin-top: 10px;
-        width: 98%;
-    }
-    .table-class > thead > tr > th{
-        background: #484848;
-        color: #ffffff;
-        padding: 5px;
-        border: 1px solid #ffffff;
-    }
-    .table-class > tbody > tr > td{
-        border: 1px solid #d2d2d2;
-        padding: 5px;
-        text-align: center;
-    }
-</style>
-<table class="table-class">
+<table class="table table-colored-header">
     <thead>
     <tr>
         <th>Client</th>
@@ -80,7 +63,7 @@
     </tr>
     <tr>
         <td colspan="6" style="text-align: left;border: none;">
-            <a href="#" class="print-btn m-btn green">Print PDF</a>
+            <a href="#" class="btn btn-sm btn-primary">Print PDF</a>
         </td>
     </tr>
     </tbody>

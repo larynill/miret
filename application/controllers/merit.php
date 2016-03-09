@@ -1,4 +1,7 @@
 <?php
+include('notification_helper.php');
+include('job_helper.php');
+include('controller_logger.php');
 
 class Merit extends CI_Controller{
     var $data;
@@ -28,14 +31,13 @@ class Merit extends CI_Controller{
 
 		$this->data['IsView'] = true;
 		//echo $this->uri->segment(1);
-		//echo $this->encrypt->encode('prototype5');
 
     }
 
     function index(){
 
         if($this->session->userdata('isLogged') == true){
-            redirect('diary');
+            redirect('trackingLog');
         }
         else{
             redirect('login');
@@ -104,7 +106,7 @@ class Merit extends CI_Controller{
                 );
 
                 if(in_array($this->uri->segment(1), $exceptions)){
-                    redirect('diary');
+                    redirect('trackingLog');
                 }
                 break;
         }
@@ -115,26 +117,34 @@ class Merit extends CI_Controller{
         $this->data['_userData'] = array();
 
         if($this->session->userdata('isLogged')){
-            $this->data['_userID'] = $this->session->userdata['userID'];
+            $this->data['_userID'] = $this->session->userdata('userID');
 			$this->main_model->setJoin(array(
 				'table' => array('tbl_user_type'),
 				'join_field' => array('ID'),
 				'source_field' => array('tbl_user.AccountType'),
 				'type' => 'left'
 			));
-			$this->main_model->setSelectFields(array(
-				'tbl_user.ID','tbl_user.Username','tbl_user.FName',
-				'tbl_user.LName','tbl_user.EmailAddress','tbl_user.AccountType',
-				'tbl_user.DateRegistered','tbl_user_type.AccountType as accountName'
-			));
+            $fld = ArrayWalk($this->main_model->getFields('tbl_user'),'tbl_user.');
+            $fld[] = 'tbl_user_type.AccountType as accountName';
+			$this->main_model->setSelectFields($fld);
 
             $this->data['_userData'] = $this->main_model->getinfo('tbl_user', $this->data['_userID'],'tbl_user.ID');
 
 			if(count($this->data['_userData'])>0){
 				foreach($this->data['_userData'] as $k=>$v){
 					$this->data['accountName'] = $v->FName.' '.$v->LName;
+                    $this->data['accountType'] = $v->AccountType;
 				}
 			}
+
+            $this->data['notification_dp'] = array(
+                '1' => 'New',
+                '2' => 'Active',
+                '3' => 'Archived'
+            );
+
+            $this->data['notification'] = array();//$notification->getInvoiceNotification(1);
+            $this->data['count_msg'] = count($this->data['notification']);
 
         }
 		$this->data['time'] = array();

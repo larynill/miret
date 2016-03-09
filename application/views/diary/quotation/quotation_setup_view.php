@@ -75,7 +75,7 @@
 	<?php
 	echo form_open('');
 	?>
-	<table class="quatationTable">
+	<table class="table table-colored-header quatationTable">
 		<tr style="border-bottom: 1px solid #d2d2d2;">
 			<td>
 				<strong>Date: </strong>

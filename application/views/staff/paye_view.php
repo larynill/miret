@@ -1,34 +1,9 @@
 <script src="<?php echo base_url();?>plugins/js/select.country.js"></script>
-<script src="<?php echo base_url();?>plugins/js/firebugx.js"></script>
-<script src="<?php echo base_url();?>plugins/js/jquery.event.drag-2.0.min.js"></script>
-<script src="<?php echo base_url();?>plugins/js/slick.core.js"></script>
-<script src="<?php echo base_url();?>plugins/js/slickgrid.formatters.js"></script>
-<script src="<?php echo base_url();?>plugins/js/slick.grid.js"></script>
-<script src="<?php echo base_url();?>plugins/js/slick.dataview.js"></script>
 
-<link rel="stylesheet" href="<?php echo base_url();?>plugins/css/slick.grid.css" type="text/css"/>
-<link rel="stylesheet" href="<?php echo base_url();?>plugins/css/custom-theme/jquery-ui-1.8.13.custom.css" type="text/css"/>
 <style>
 	.payeTableGrid{
 		height: 350px;
 		border: 1px solid #000000;
-		font-size: 11px!important;
-	}
-
-	.slick-row, .slick-column, .alt_drop_div{
-		font-size: 11px!important;
-	}
-
-	.slick-cell{
-		font-size: 11px!important;
-		cursor: pointer;
-		text-align: center;
-	}
-	.slick-header-column{
-		background: #000000!important;
-		padding:3px 5px!important;
-		color:#FFF!important;
-		text-align: center!important;
 		font-size: 11px!important;
 	}
 	.slick-row:hover {
@@ -48,7 +23,7 @@
 	echo '<strong>Tax Code:</strong> ' . form_dropdown('tax_codes', $tax_codes, '', 'class="tax_codes drop-down"');
 	?>
 </div>
-<div class="payeTableGrid"></div>
+<div class="payeTableGrid grid"></div>
 
 <script language="JavaScript">
 	var payeTableGrid, payeTableData = [], payeTableDataView,

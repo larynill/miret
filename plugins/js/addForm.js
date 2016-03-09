@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
             // merge
             var options = $.extend({}, defaults, option);
 
-            $('#closedCustomForm').live('click',function(e){
+            $('body').on('click','#closedCustomForm',function(e){
                 $('#customForm').remove();
                 $("body").css("overflow", "auto");
                 $('#overlay').fadeOut(200,function(e){
@@ -253,7 +253,7 @@ jQuery(document).ready(function ($) {
                             .centerForm();
                         var cdb = $('#closeDynaAddedButton');
                         cdb.topLeftie(parentEl);
-                        cdb.live('click',function(e){
+                        $('body').on('click',cdb,function(e){
                             cdb.remove();
                             parentEl.fadeOut(300,function(e){
                                 parentEl.remove();
@@ -391,7 +391,7 @@ jQuery(document).ready(function ($) {
                 buttonType: 'button',
                 buttonName: 'query',
                 buttonAlign: 'center',
-                buttonStyle: 'padding: 5px;min-width: 20px;white-space: nowrap;margin: 0 3px;',
+                buttonStyle: '',
                 button: {
                     yesBtn: 'Yes',
                     noBtn: 'No'
@@ -411,13 +411,17 @@ jQuery(document).ready(function ($) {
                     '<td style="white-space: nowrap;">' + options.msg + '</td>' +
                 '</tr>' +
                 '<tr>' +
+                    '<td>&nbsp;</td>' +
+                '</tr>' +
+                '<tr>' +
                     '<td style="white-space: nowrap;text-align: ' + options.buttonAlign + ';">';
-
+                    var ref = 1;
                     $.each(options.button, function(key, args){
-                        elemento += '<input type="' + options.buttonType + '" name="' + options.buttonName + '" value="' + args + '" ' +
-                            'class="' + options.superClass + ' ' + key + ' pure_black" ' +
+                        elemento += '<button type="' + options.buttonType + '" name="' + options.buttonName + '" ' +
+                            'class="' + options.superClass + ' ' + key + ' btn btn-sm ' + (ref == 1 ? 'btn-primary' : 'btn-default') + '" ' +
                             'id="' + key + '"' +
-                            ' style="' + options.buttonStyle + '" />';
+                            ' style="' + options.buttonStyle + '" >' + args + '</button> &nbsp;';
+                        ref++;
                     });
 
                 elemento += '</td>' +

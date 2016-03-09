@@ -23,11 +23,7 @@
 	});
 </script>
 <style>
-	.dropdown{
-		padding: 3px;
-		width: 10%;
-		margin: 20px 0;
-	}
+
 	.invoice-history-table{
 		width: 98%;
 	}
@@ -45,12 +41,32 @@
 </style>
 <?php
 echo form_open('');
-echo form_dropdown('declaration',$declaration,1,'class="dropdown type-class"').'&nbsp;';
-echo form_dropdown('month',$month,date('m'),'class="dropdown month-class"').'&nbsp;';
-echo form_dropdown('year',$year,date('Y'),'class="dropdown year-class"').'&nbsp;';
 ?>
-<input type="submit" name="submit" value="Go" class="m-btn green goBtn" style="width: 5%;">
-<table class="invoice-history-table">
+<div class="row">
+    <div class="form-group">
+        <div class="col-sm-8">
+            <div class="col-sm-3">
+                <?php
+                echo form_dropdown('declaration',$declaration,1,'class="form-control input-sm dropdown type-class"');
+                ?>
+            </div>
+            <div class="col-sm-3">
+                <?php
+                echo form_dropdown('month',$month,date('m'),'class="form-control input-sm dropdown month-class"');
+                ?>
+            </div>
+            <div class="col-sm-3">
+                <?php
+                echo form_dropdown('year',$year,date('Y'),'class="form-control input-sm dropdown year-class"');
+                ?>
+            </div>
+            <div class="col-sm-2">
+                <button type="submit" name="submit" class="btn-sm btn btn-primary">Go</button>
+            </div>
+        </div>
+    </div>
+</div><br/>
+<table class="table table-colored-header">
     <thead>
 	<tr>
 		<th>Date</th>
@@ -133,7 +149,7 @@ echo form_dropdown('year',$year,date('Y'),'class="dropdown year-class"').'&nbsp;
     else:
     ?>
         <tr>
-            <td colspan="6">No data has been found.</td>
+            <td colspan="6">No data was found.</td>
         </tr>
     <?php
     endif;

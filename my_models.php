@@ -11,7 +11,9 @@
  * ---------------------- Models to Load ----------------------
  * <examples>
  *
- * @property main_model                     $main_model
+ * @property main_model                   $main_model
+ * @property merit_model                   $merit_model
+ * @property my_model                     $my_model
  */
 
 class my_models

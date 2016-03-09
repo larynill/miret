@@ -78,7 +78,7 @@ button {  width: auto; overflow: visible; }
 
 body, select, input, textarea {  color: #444; }
 h1, h2, h3, h4, h5, h6 { font-weight: bold; }
-a, a:active, a:visited { color: #7BA0AF; text-decoration:none;}
+a, a:active, a:visited { text-decoration:none;}
 a:hover { color: #FF5E99; text-decoration:none;}
 
 /*
@@ -143,4 +143,53 @@ a:hover { color: #FF5E99; text-decoration:none;}
   @page { margin: 0.5cm; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3{ page-break-after: avoid; }
+}
+
+.table-colored-header{
+    font-size: 12px!important;
+}
+.table-colored-header > thead > tr > th{
+    font-size: 11px!important;
+    background: #484848;
+    border: 1px solid #d2d2d2;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 5px!important;
+    vertical-align: middle!important;;
+}
+.table-colored-header > tbody > tr > td{
+    border: 1px solid #d2d2d2;
+    text-align: center;
+    padding: 4px!important;
+    vertical-align: middle!important;
+}
+.table-colored-header > tbody > tr > td.white-space{
+    white-space: nowrap!important;
+}
+
+a:hover{
+    text-decoration: none!important;
+}
+.form-horizontal,form{
+    font-size: 12px!important;
+}
+.logout:hover{
+    text-decoration: underline!important;
+}
+.logout{
+    padding-left: 2px;
+}
+.badge{
+    background: red!important;
+    font-size: 11px!important;
+}
+@media (min-width: 768px){
+    .navbar-right > li{
+        padding: 0 7px!important;
+        margin-left: -7px!important;
+    }
+    .navbar-right > li > a{
+        padding-left: 6px!important;
+        padding-right: 6px!important;
+    }
 }

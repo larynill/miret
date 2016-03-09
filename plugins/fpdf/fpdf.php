@@ -11,7 +11,7 @@ define('FPDF_VERSION','1.7');
 
 class FPDF
 {
-var $page;               // current pdf number
+var $page;               // current page number
 var $n;                  // current object number
 var $offsets;            // array of object offsets
 var $buffer;             // buffer holding in-memory PDF
@@ -21,16 +21,16 @@ var $compress;           // compression flag
 var $k;                  // scale factor (number of points in user unit)
 var $DefOrientation;     // default orientation
 var $CurOrientation;     // current orientation
-var $StdPageSizes;       // standard pdf sizes
-var $DefPageSize;        // default pdf size
-var $CurPageSize;        // current pdf size
+var $StdPageSizes;       // standard page sizes
+var $DefPageSize;        // default page size
+var $CurPageSize;        // current page size
 var $PageSizes;          // used for pages with non default sizes or orientations
-var $wPt, $hPt;          // dimensions of current pdf in points
-var $w, $h;              // dimensions of current pdf in user unit
+var $wPt, $hPt;          // dimensions of current page in points
+var $w, $h;              // dimensions of current page in user unit
 var $lMargin;            // left margin
 var $tMargin;            // top margin
 var $rMargin;            // right margin
-var $bMargin;            // pdf break margin
+var $bMargin;            // page break margin
 var $cMargin;            // cell margin
 var $x, $y;              // current position in user unit
 var $lasth;              // height of last printed cell
@@ -54,8 +54,8 @@ var $ws;                 // word spacing
 var $images;             // array of used images
 var $PageLinks;          // array of links in pages
 var $links;              // array of internal links
-var $AutoPageBreak;      // automatic pdf breaking
-var $PageBreakTrigger;   // threshold used to trigger pdf breaks
+var $AutoPageBreak;      // automatic page breaking
+var $PageBreakTrigger;   // threshold used to trigger page breaks
 var $InHeader;           // flag set when processing header
 var $InFooter;           // flag set when processing footer
 var $ZoomMode;           // zoom display mode
@@ -67,7 +67,6 @@ var $keywords;           // keywords
 var $creator;            // creator
 var $AliasNbPages;       // alias for total number of pages
 var $PDFVersion;         // PDF version number
-var $customValue;
 
 /*******************************************************************************
 *                                                                              *
@@ -158,7 +157,7 @@ function FPDF($orientation='P', $unit='mm', $size='A4')
 	$this->cMargin = $margin/10;
 	// Line width (0.2 mm)
 	$this->LineWidth = .567/$this->k;
-	// Automatic pdf break
+	// Automatic page break
 	$this->SetAutoPageBreak(true,2*$margin);
 	// Default display mode
 	$this->SetDisplayMode('default');
@@ -200,7 +199,7 @@ function SetRightMargin($margin)
 
 function SetAutoPageBreak($auto, $margin=0)
 {
-	// Set auto pdf break mode and triggering margin
+	// Set auto page break mode and triggering margin
 	$this->AutoPageBreak = $auto;
 	$this->bMargin = $margin;
 	$this->PageBreakTrigger = $this->h-$margin;
@@ -221,7 +220,7 @@ function SetDisplayMode($zoom, $layout='default')
 
 function SetCompression($compress)
 {
-	// Set pdf compression
+	// Set page compression
 	if(function_exists('gzcompress'))
 		$this->compress = $compress;
 	else
@@ -297,7 +296,7 @@ function Close()
 	$this->InFooter = true;
 	$this->Footer();
 	$this->InFooter = false;
-	// Close pdf
+	// Close page
 	$this->_endpage();
 	// Close document
 	$this->_enddoc();
@@ -305,7 +304,7 @@ function Close()
 
 function AddPage($orientation='', $size='')
 {
-	// Start a new pdf
+	// Start a new page
 	if($this->state==0)
 		$this->Open();
 	$family = $this->FontFamily;
@@ -322,10 +321,10 @@ function AddPage($orientation='', $size='')
 		$this->InFooter = true;
 		$this->Footer();
 		$this->InFooter = false;
-		// Close pdf
+		// Close page
 		$this->_endpage();
 	}
-	// Start new pdf
+	// Start new page
 	$this->_beginpage($orientation,$size);
 	// Set line cap style to square
 	$this->_out('2 J');
@@ -384,7 +383,7 @@ function Footer()
 
 function PageNo()
 {
-	// Get current pdf number
+	// Get current page number
 	return $this->page;
 }
 
@@ -576,7 +575,7 @@ function SetLink($link, $y=0, $page=-1)
 
 function Link($x, $y, $w, $h, $link)
 {
-	// Put a link on the pdf
+	// Put a link on the page
 	$this->PageLinks[$this->page][] = array($x*$this->k, $this->hPt-$y*$this->k, $w*$this->k, $h*$this->k, $link);
 }
 
@@ -593,7 +592,7 @@ function Text($x, $y, $txt)
 
 function AcceptPageBreak()
 {
-	// Accept automatic pdf break or not
+	// Accept automatic page break or not
 	return $this->AutoPageBreak;
 }
 
@@ -603,7 +602,7 @@ function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link
 	$k = $this->k;
 	if($this->y+$h>$this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak())
 	{
-		// Automatic pdf break
+		// Automatic page break
 		$x = $this->x;
 		$ws = $this->ws;
 		if($ws>0)
@@ -882,7 +881,7 @@ function Ln($h=null)
 
 function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 {
-	// Put an image on the pdf
+	// Put an image on the page
 	if(!isset($this->images[$file]))
 	{
 		// First use of this image, get info
@@ -927,7 +926,7 @@ function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 	{
 		if($this->y+$h>$this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak())
 		{
-			// Automatic pdf break
+			// Automatic page break
 			$x2 = $this->x;
 			$this->AddPage($this->CurOrientation,$this->CurPageSize);
 			$this->x = $x2;
@@ -1082,7 +1081,7 @@ function _getpagesize($size)
 	{
 		$size = strtolower($size);
 		if(!isset($this->StdPageSizes[$size]))
-			$this->Error('Unknown pdf size: '.$size);
+			$this->Error('Unknown page size: '.$size);
 		$a = $this->StdPageSizes[$size];
 		return array($a[0]/$this->k, $a[1]/$this->k);
 	}
@@ -1103,7 +1102,7 @@ function _beginpage($orientation, $size)
 	$this->x = $this->lMargin;
 	$this->y = $this->tMargin;
 	$this->FontFamily = '';
-	// Check pdf size and orientation
+	// Check page size and orientation
 	if($orientation=='')
 		$orientation = $this->DefOrientation;
 	else

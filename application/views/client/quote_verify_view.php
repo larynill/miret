@@ -74,7 +74,7 @@
             </p>
         </div>
         <div class="sep-bold"></div>
-        <table>
+        <table class="table table-colored-header">
             <thead>
             <tr>
                 <th>Plant Description</th>

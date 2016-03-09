@@ -62,6 +62,7 @@
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
+            firstDay: 1,
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar !!!
             renderView : function(view){

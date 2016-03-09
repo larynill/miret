@@ -33,122 +33,154 @@
 		});
 	});
 </script>
-<style>
-	.holiday-table{
-		width: 60%;
-	}
-	.holiday-table>tbody>tr>th{
-		background: #484b4a;
-		color: #ffffff;
-		font-weight: normal;
-		padding: 5px;
-	}
-	.holiday-table>tbody>tr>td{
-		padding: 5px;
-		border: 1px solid #d2d2d2;
-	}
-	.holiday-type-table{
-		width: 100%;
-	}
-	.holiday-table>tbody>tr>td:nth-child(5),
-	.holiday-table>tbody>tr>td:nth-child(4){
-		width: 10%!important;
-		white-space: nowrap;
-	}
-</style>
-<div class="holiday-div">
-	<a href="#" class="m-btn green add-btn">Add</a><br/><br/>
-	<table class="holiday-type-table">
-        <tr>
-            <th style="text-transform: uppercase;text-align: left;font-size: 16px">Fixed Holidays</th>
-        </tr>
-        <tr>
-            <td>
-                <table class="holiday-table">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th colspan="2"></th>
-                    </tr>
-                    <?php
-                    if(count($holidays)>0){
-                        foreach($holidays as $v){
-                            if($v->TypeID == 1){
-                            ?>
+<a href="#" class="btn btn-sm btn-primary add-btn">Add</a><br/><br/>
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table">
+            <tr>
+                <th style="text-transform: uppercase;text-align: left;font-size: 16px">Fixed Holidays</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <table class="table table-colored-header">
+                                <thead>
                                 <tr>
-                                    <td><?php echo $v->HolidayName;?></td>
-                                    <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->ActualDate))?></td>
-                                    <td style="text-align: center;"><a href="#" class="edit-btn" id="<?php echo $v->ID?>">Edit</a></td>
-                                    <td style="text-align: center;"><a href="#" class="delete-btn" id="<?php echo $v->ID?>">Delete</a></td>
+                                    <th>&nbsp;</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th colspan="2"></th>
                                 </tr>
-                           <?php
-                            }
-                        }
-                    }?>
-                </table>
-			</td>
-		</tr>
-        <tr>
-            <th style="text-transform: uppercase;text-align: left;font-size: 16px">Variable Holidays</th>
-        </tr>
-        <tr>
-            <td>
-                <table class="holiday-table">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th>Start Date</th>
-                        <th colspan="2"></th>
-                    </tr>
-                    <?php
-                    if(count($holidays)>0):
-                        foreach($holidays as $v):
-                            if($v->TypeID == 2):
+                                </thead>
+                                <tbody>
+                                <?php
+                                if(count($holidays)>0) {
+                                    foreach ($holidays as $v) {
+                                        if ($v->TypeID == 1) {
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $v->HolidayName;?></td>
+                                                <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y', strtotime($v->ActualDate))?></td>
+                                                <td style="text-align: center;">
+                                                    <a href="#" class="edit-btn" id="<?php echo $v->ID?>">Edit</a>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <a href="#" class="delete-btn" id="<?php echo $v->ID?>">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    }
+                                }
+                                else{
+                                    ?>
+                                    <tr>
+                                        <td colspan="4">No data was found.</td>
+                                    </tr>
+                                <?php
+                                }
                                 ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th style="text-transform: uppercase;text-align: left;font-size: 16px">Variable Holidays</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <table class="table table-colored-header">
+                                <thead>
                                 <tr>
-                                    <td><?php echo $v->HolidayName;?></td>
-                                    <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->ActualDate))?></td>
-                                    <td style="text-align: center;"><a href="#" class="edit-btn" id="<?php echo $v->ID?>">Edit</a></td>
-                                    <td style="text-align: center;"><a href="#" class="delete-btn" id="<?php echo $v->ID?>">Delete</a></td>
+                                    <th>&nbsp;</th>
+                                    <th>Start Date</th>
+                                    <th colspan="2"></th>
                                 </tr>
-                            <?php
-                            endif;
-                        endforeach;
-                    endif;
-                    ?>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <th style="text-transform: uppercase;text-align: left;font-size: 16px">Long Holidays</th>
-        </tr>
-        <tr>
-            <td>
-                <table class="holiday-table">
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th colspan="2"></th>
-                    </tr>
-                    <?php
-                    if(count($holidays)>0){
-                        foreach($holidays as $v){
-                            if($v->TypeID == 3){
-                                ?>
+                                </thead>
+                                <tbody>
+                                <?php
+                                if(count($holidays)>0) {
+                                    foreach ($holidays as $v) {
+                                        if ($v->TypeID == 2) {
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $v->HolidayName; ?></td>
+                                                <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y', strtotime($v->ActualDate)) ?></td>
+                                                <td style="text-align: center;">
+                                                    <a href="#" class="edit-btn" id="<?php echo $v->ID ?>">Edit</a>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <a href="#" class="delete-btn" id="<?php echo $v->ID ?>">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    }
+                                }
+                                else{
+                                    ?>
+                                    <tr>
+                                        <td colspan="4">No data was found.</td>
+                                    </tr>
+                                <?php
+                                }?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th style="text-transform: uppercase;text-align: left;font-size: 16px">Long Holidays</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <table class="table table-colored-header">
+                                <thead>
                                 <tr>
-                                    <td><?php echo $v->HolidayName;?></td>
-                                    <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->ActualDate))?></td>
-                                    <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->EndDate))?></td>
-                                    <td style="text-align: center;"><a href="#" class="edit-btn" id="<?php echo $v->ID?>">Edit</a></td>
-                                    <td style="text-align: center;"><a href="#" class="delete-btn" id="<?php echo $v->ID?>">Delete</a></td>
+                                    <th>&nbsp;</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th colspan="2"></th>
                                 </tr>
-                            <?php
-                            }
-                        }
-                    }?>
-                </table>
-            </td>
-        </tr>
-	</table>
+                                </thead>
+                                <tbody>
+                                <?php
+                                if(count($holidays)>0){
+                                    foreach($holidays as $v){
+                                        if($v->TypeID == 3){
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $v->HolidayName;?></td>
+                                                <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->ActualDate))?></td>
+                                                <td style="width: 20%;white-space: nowrap;"><?php echo date('j F Y',strtotime($v->EndDate))?></td>
+                                                <td style="text-align: center;"><a href="#" class="edit-btn" id="<?php echo $v->ID?>">Edit</a></td>
+                                                <td style="text-align: center;"><a href="#" class="delete-btn" id="<?php echo $v->ID?>">Delete</a></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    }
+                                }
+                                else{
+                                    ?>
+                                    <tr>
+                                        <td colspan="5">No data was found.</td>
+                                    </tr>
+                                <?php
+                                }?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

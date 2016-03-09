@@ -3,31 +3,27 @@
 if(count($_userData) > 0){
     foreach($_userData as $user){
         switch($user->AccountType){
-            case 9:
+            case 2:
                 $navTitles = array(
-                    'Admin' => array(
+                    /*'Admin' => array(
                         'sendRegistration' => 'Mail Registration',
                         'registerClient' => 'Client Registration Form',
                         'equipmentExcelFileList' => 'Client Equipment Excel',
                         'equipment' => 'Equipment Register',
                         'monthlyReport/potential' => 'Monthly Report',
-                        /*'joblist' => 'Job Sheet List',*/
-                        'track/client/current' => 'Client Tracker',
-                        /*'request/view' => 'View Quote Requests'*/
-                    ),
+                        //'joblist' => 'Job Sheet List',
+                        'track/client/current' => 'Client Tracker'
+                        //'request/view' => 'View Quote Requests'
+                    ),*/
                     'myDiary' => 'Diary',
+                    'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
-                        'jobsAllocation' => 'Jobs Allocation',
-
+                        'jobsAllocation' => 'Allocation',
+                        'jobRegistration' => 'Registration'
                     ),
                     'Management' => array(
-                        'historyReports' => 'History Reports'
-                    ),
-                    'notices' => 'Notices',
-                    'Personal Stuff' => array(
-                        'staffProfile' => 'My Profile',
-                        'staff_leave' => 'Leave',
-                        'payment_detail' => 'Payment Detail'
+                        'historyReports' => 'History Reports',
+                        'userList' => 'User'
                     ),
                     'Staff' => array(
                         'staff_list' => 'Lists',
@@ -36,21 +32,24 @@ if(count($_userData) > 0){
                         'wage_management' => 'Wage Management',
                         'wage_summary' => 'Wage Summary',
                         'paye' => 'PAYE'
+                    ), 'Personal Stuff' => array(
+                        'staffProfile' => 'My Profile',
+                        'staff_leave' => 'Leave',
+                        'payment_detail' => 'Payment Detail'
                     ),
+                    /*'notices' => 'Notices',*/
                 );
                 break;
             case 8:
                 $navTitles = array(
-                    'Accounting' => array(
-                        'jobsDone' => 'Jobs Done',
-                        'invoices' => 'Invoices For Month',
-                        'outstandingBalance' => 'Outstanding Balance'
-                    ),
+                    'trackingLog' => 'Tracking Log',
                     'myDiary' => 'Diary',
-                    'Personal Stuff' => array(
-                        'staffProfile' => 'My Profile',
-                        'staff_leave' => 'Leave',
-                        'payment_detail' => 'Payment Detail'
+                    'Jobs' => array(
+                        'jobsAllocation' => 'Allocation',
+                        'jobRegistration' => 'Registration'
+                    ),
+                    'Management' => array(
+                        'historyReports' => 'History Reports'
                     ),
                     'Staff' => array(
                         'staff_list' => 'Lists',
@@ -58,23 +57,26 @@ if(count($_userData) > 0){
                         'wage_summary' => 'Wage Summary',
                         'paye' => 'PAYE'
                     ),
-                    'Jobs' => array(
-                        'jobsAllocation' => 'Jobs Allocation',
-
-                    ),
-                    'Management' => array(
-                        'historyReports' => 'History Reports'
-                    )
-                );
-                break;
-			case 7:
-				$navTitles = array(
                     'Accounting' => array(
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',
                         'outstandingBalance' => 'Outstanding Balance'
                     ),
+                    'Personal Stuff' => array(
+                        'staffProfile' => 'My Profile',
+                        'staff_leave' => 'Leave',
+                        'payment_detail' => 'Payment Detail'
+                    ),
+                );
+                break;
+			case 7:
+				$navTitles = array(
                     'myDiary' => 'Diary',
+                    'Accounting' => array(
+                        'jobsDone' => 'Jobs Done',
+                        'invoices' => 'Invoices For Month',
+                        'outstandingBalance' => 'Outstanding Balance'
+                    ),
                     'Personal Stuff' => array(
                         'staffProfile' => 'My Profile',
                         'staff_leave' => 'Leave',
@@ -84,6 +86,22 @@ if(count($_userData) > 0){
 				break;
             case 6:
                 $navTitles = array(
+                    'diary' => 'Diary',
+                    'Jobs' => array(
+                        'jobsAllocation' => 'Jobs Allocation',
+
+                    ),
+                    'Management' => array(
+                        'historyReports' => 'History Reports'
+                    ),
+                    'Staff' => array(
+                        'staff_list' => 'Lists',
+                        'holidays' => 'Holidays',
+                        /*'leave_application' => 'Leave Application Form',*/
+                        'wage_management' => 'Wage Management',
+                        'wage_summary' => 'Wage Summary',
+                        'paye' => 'PAYE'
+                    ),
                     'Admin' => array(
                         'sendRegistration' => 'Mail Registration',
                         'registerClient' => 'Client Registration Form',
@@ -94,37 +112,22 @@ if(count($_userData) > 0){
                         'track/client/current' => 'Client Tracker',
                         /*'request/view' => 'View Quote Requests'*/
                     ),
-                    'diary' => 'Diary',
-                    'Jobs' => array(
-                        'jobsAllocation' => 'Jobs Allocation',
 
-                    ),
-                    'Management' => array(
-                        'historyReports' => 'History Reports'
-                    ),
                     'Personal Stuff' => array(
                         'staffProfile' => 'My Profile',
                         'staff_leave' => 'Leave',
                         'payment_detail' => 'Payment Detail'
-                    ),
-                    'Staff' => array(
-                        'staff_list' => 'Lists',
-                        'holidays' => 'Holidays',
-                        /*'leave_application' => 'Leave Application Form',*/
-                        'wage_management' => 'Wage Management',
-                        'wage_summary' => 'Wage Summary',
-                        'paye' => 'PAYE'
                     )
                 );
                 break;
             case 5:
                 $navTitles = array(
+                    'myDiary' => 'Diary',
                     'Accounting' => array(
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',
                         'outstandingBalance' => 'Outstanding Balance'
                     ),
-                    'myDiary' => 'Diary',
                     'Personal Stuff' => array(
                         'staffProfile' => 'My Profile',
                         'staff_leave' => 'Leave',
@@ -135,6 +138,7 @@ if(count($_userData) > 0){
             case 4:
                 $navTitles = array(
                     'dashboard' => 'Home',
+                    'inspectionReport' => 'Inspection Report',
                     'myDiary' => 'Diary',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
@@ -146,9 +150,10 @@ if(count($_userData) > 0){
 			case 3:
 				$navTitles = array(
 					'diary' => 'Diary',
+                    'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
-                        'jobsAllocation' => 'Jobs Allocation',
-
+                        'jobsAllocation' => 'Allocation',
+                        'jobRegistration' => 'Registration'
                     ),
                     'Management' => array(
                         'historyReports' => 'History Reports'
@@ -170,24 +175,19 @@ if(count($_userData) > 0){
 				break;
             case 1:
                 $navTitles = array(
-                    'Accounting' => array(
-                        'jobsDone' => 'Jobs Done',
-                        'invoices' => 'Invoices For Month',
-                        'outstandingBalance' => 'Outstanding Balance'
+                    'diary' => 'Diary',
+                    'trackingLog' => 'Tracking Log',
+                    'Jobs' => array(
+                        'jobsAllocation' => 'Allocation',
+                        'jobRegistration' => 'Registration'
                     ),
-                    'Admin' => array(
-                        'sendRegistration' => 'Mail Registration',
-                        'registerClient' => 'Client Registration Form',
-                        'equipmentExcelFileList' => 'Client Equipment Excel',
-                        'equipment' => 'Equipment Register',
-                        'monthlyReport/potential' => 'Monthly Report',
-                        /*'joblist' => 'Job Sheet List',*/
-                        'track/client/current' => 'Client Tracker',
-                        /*'request/view' => 'View Quote Requests'*/
+                    'Management' => array(
+                        'inspectionReport' => 'Inspection Report',
+                        'historyReports' => 'History Reports',
+                        'userList' => 'User',
+                        'itemList' => 'Item',
+                        'tag' => 'Tags'
                     ),
-					'Management' => array(
-						'historyReports' => 'History Reports'
-					),
                     'PDF Archive' => array(
                         'pdfSummary/credit' => 'Credit Note',
                         'pdfSummary/invoice' => 'Invoice',
@@ -195,19 +195,32 @@ if(count($_userData) > 0){
                         'pdfSummary/outstanding' => 'Outstanding'
                     ),
                     'Staff' => array(
-						'staff_list' => 'Lists',
+                        'staff_list' => 'Lists',
                         'holidays' => 'Holidays',
                         /*'leave_application' => 'Leave Application Form',*/
-						'wage_management' => 'Wage Management',
-						'wage_summary' => 'Wage Summary',
-						'paye' => 'PAYE'
+                        'wage_management' => 'Wage Management',
+                        'wage_summary' => 'Wage Summary',
+                        'paye' => 'PAYE'
                     ),
-                    'diary' => 'Diary',
-                    'Jobs' => array(
-                        'jobsAllocation' => 'Jobs Allocation',
-
+                    'Accounting' => array(
+                        'jobsDone' => 'Jobs Done',
+                        'invoices' => 'Invoices For Month',
+                        'outstandingBalance' => 'Outstanding Balance'
                     ),
-                    'notices' => 'Notices'
+                    'Admin' => array(
+                        'jobAuditLog' => 'Job Audit Log'
+                    )
+                    /*'Admin' => array(
+                        'sendRegistration' => 'Mail Registration',
+                        'registerClient' => 'Client Registration Form',
+                        'equipmentExcelFileList' => 'Client Equipment Excel',
+                        'equipment' => 'Equipment Register',
+                        'monthlyReport/potential' => 'Monthly Report',
+                        //'joblist' => 'Job Sheet List',
+                        'track/client/current' => 'Client Tracker',
+                        //'request/view' => 'View Quote Requests'
+                    ),*/
+                    /*'notices' => 'Notices'*/
                 );
                 break;
             default:
@@ -216,14 +229,14 @@ if(count($_userData) > 0){
         }
     }
 }
-
+$navTitles['logout'] = 'Logout';
 
 function getSublink($link, $title, $uri){
     $active = array_key_exists($uri, $title);
     ?>
-    <li class="<?php echo $active ? 'selected' : '';?>">
-        <a><?php echo $link; ?> </a>
-        <ul>
+    <li class="dropdown <?php echo $active ? 'active' : '';?>">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $link; ?> </a>
+        <ul class="dropdown-menu">
             <?php
             foreach($title as $subLink => $subTitle){
                 if(is_array($subTitle)){
@@ -244,26 +257,23 @@ function getSublink($link, $title, $uri){
 <?php
 }
 ?>
-<div class="grid_16">
-    <ul class="sf-menu" id="navigationTop">
-            <?php
-            if(isset($navTitles) && count($navTitles) > 0){
-                foreach($navTitles as $link => $title){
-                    if(is_array($title)){
-                        getSublink($link, $title, $this->uri->segment(1) ? $this->uri->segment(1) : '');
-                    }else{
+<ul class="nav navbar-nav">
+        <?php
+        if(isset($navTitles) && count($navTitles) > 0){
+            foreach($navTitles as $link => $title){
+                if(is_array($title)){
+                    getSublink($link, $title, $this->uri->segment(1) ? $this->uri->segment(1) : '');
+                }else{
 
-                        ?>
-                        <li  class="<?php echo $this->uri->segment(1) == $link ? 'selected' : ''?>">
-                            <a href="<?php echo $link ? base_url() . $link : "#"?>" class="<?php echo $link.'Btn';?>">
-                                <?php echo $title; ?>
-                            </a>
-                        </li>
-                    <?php
-                    }
+                    ?>
+                    <li  class="<?php echo $this->uri->segment(1) == $link ? 'active' : ''?>">
+                        <a href="<?php echo $link ? base_url() . $link : "#"?>" class="<?php echo $link.'Btn';?>">
+                            <?php echo $title; ?>
+                        </a>
+                    </li>
+                <?php
                 }
             }
-        ?>
-    </ul>
-</div>
-<div class="clear"></div>
+        }
+    ?>
+</ul>

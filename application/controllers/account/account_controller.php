@@ -1,6 +1,8 @@
 <?php
 class Account_Controller extends CI_Controller{
 
+    var $data;
+
     function login(){
         $this->data['_registrationSuccess'] = false;
         $this->data['_hasLogError'] = false;
@@ -64,6 +66,7 @@ class Account_Controller extends CI_Controller{
 		$this->data['_hasLogError'] = false;
         if(isset($_POST['submit'])){
             $userData = $this->LoginValidate($_POST['login'], $_POST['pass']);
+
             if($userData['isLogged']){
                 $this->session->set_userdata($userData);
                 $userID = $this->session->userdata('userID');
@@ -138,7 +141,8 @@ class Account_Controller extends CI_Controller{
         if(count($user) > 0){
             $encryption_key = $this->config->item('encryption_key');
             foreach($user as $u){
-                if($password == $this->encrypt->decode($u->Password, $encryption_key) ){
+                if($password == $this->encrypt->decode($u->Password, $encryption_key) &&
+                    $u->isActive){
                     $userData = array(
                         'isLogged' => true,
                         'userID' => $u->ID,

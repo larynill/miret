@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
  
     RewriteEngine On
-    RewriteBase /merit_2/
+    #RewriteBase /merit/
 
     #RewriteMap lowercase int:tolower
     #RewriteCond $1 [A-Z]
@@ -11,7 +11,7 @@
  
     # If your default controller is something other than
     # "welcome" you should probably change this
-    RewriteRule ^(main_controller(/index)?|index(\.php)?)/?$ / [L,R=301]
+    RewriteRule ^(merit(/index)?|index(\.php)?)/?$ / [L,R=301]
     RewriteRule ^(.*)/index/?$ $1 [L,R=301]
  
     # Removes trailing slashes (prevents SEO duplicate content issues)

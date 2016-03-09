@@ -90,7 +90,7 @@ class PDF_MC_Table extends FPDF
         for($i=0;$i<count($data);$i++)
             $nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
         $h=5*$nb;
-        //Issue a pdf break first if needed
+        //Issue a page break first if needed
         $this->CheckPageBreak($h);
         //Draw the cells of the row
         for($i=0;$i<count($data);$i++)
@@ -105,8 +105,9 @@ class PDF_MC_Table extends FPDF
             $this->Rect($x,$y,$w,$h);
             //Print the text
             $thisHeight = $h;
-            if($this->NbLines($this->widths[$i],$data[$i]) > 1){
-                $thisHeight = $h - 5;//$this->FontSize;
+            $thisNB = $this->NbLines($this->widths[$i], $data[$i]);
+            if($thisNB > 1){
+                $thisHeight = $h - (5 * ($thisNB - 1));
             }
             $this->MultiCell($w,$thisHeight, $data[$i], $f , $a, $f);
             //Put the position to the right of the cell
@@ -118,7 +119,7 @@ class PDF_MC_Table extends FPDF
 
     function CheckPageBreak($h)
     {
-        //If the height h would cause an overflow, add a new pdf immediately
+        //If the height h would cause an overflow, add a new page immediately
         if($this->GetY()+$h>$this->PageBreakTrigger)
             $this->AddPage($this->CurOrientation);
     }

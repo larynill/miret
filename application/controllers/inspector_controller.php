@@ -516,7 +516,7 @@ class Inspector_Controller extends Merit{
 			redirect('login');
 		}
 
-		$userID = $this->session->userdata['userID'];
+		$userID = $this->session->userdata('userID');
 		$cutoff = 2010;
 
 		// current year

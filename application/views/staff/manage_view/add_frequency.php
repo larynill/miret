@@ -76,9 +76,11 @@ echo form_open('');
 			</td>
 		</tr>
         <tr>
-            <td colspan="2" style="text-align: right;">
-                <input type="submit" value="Add" name="submit" class="addBtn pure_black" />
-                <input type="button" value="Cancel" name="cancel" class="cancelBtn pure_black" />
+            <td colspan="2" style="white-space: nowrap!important;">
+                <div class="col-sm-4">
+                    <input type="submit" value="Add" name="submit" class="addBtn btn btn-sm btn-primary" />
+                    <input type="button" value="Cancel" name="cancel" class="cancelBtn btn btn-sm btn-default" />
+                </div>
             </td>
         </tr>
     </table>

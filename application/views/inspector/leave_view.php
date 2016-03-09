@@ -165,7 +165,7 @@
 					}
 				}else{?>
 					<tr>
-						<td colspan="4" style="text-align: center;">No Data</td>
+						<td colspan="4" style="text-align: center;">No data was found.</td>
 					</tr>
 				<?php
 				}

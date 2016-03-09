@@ -696,7 +696,7 @@ label.floatRight{
 
 .modal {
     display:none;
-    width:600px;
+    /*width:600px;*/
     padding:8px;
 
     background:rgba(0,0,0,.3);
