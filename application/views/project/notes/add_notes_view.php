@@ -26,14 +26,14 @@ echo form_close();
     $(function(){
         $('.add-history').click(function(e){
             var date = $.now();
-            var time = $.format.date(date,'dd-MM-yyyy hh:mm:ss a');
+            var time = $.format.date(date,'dd-MM-yyyy hh:mm a');
             var n = $('.added-form').length;
             var element =
                 '<div class="form-group">' +
                     '<label for="exampleInputEmail1">' +
                         'Date:' + time +
                         '<input type="hidden" name="history_date[]" value="' + time + '">' +
-                        '<a href="#" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>' +
+                        /*'<a href="#" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>' +*/
                     '</label>' +
                     '<textarea class="form-control input-sm" name="history[]"></textarea>' +
                 '</div>';

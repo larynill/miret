@@ -260,92 +260,78 @@
             ?>
             <div class="panel panel-primary">
                 <div class="panel-heading">Quotes</div>
-                <div class="panel-body">
-                    <table style="width: 100%;">
+                <div class="panel-body" style="max-height: 400px;overflow-x: auto">
+                    <ul class="list-group">
                         <?php
                         if(count($qoutes)>0){
                             foreach($qoutes as $qk=>$qv){?>
-                                <tr style="border-bottom: 1px solid #d2d2d2;" class="companyName" id="<?php echo $qv->TrackID;?>">
-                                    <td style="padding: 5px;text-align:center;cursor: pointer;background: <?php echo $qv->color;?>" title="Click to view details">
-                                        <?php
-                                        echo $qv->CompanyName;
-                                        echo $qv->notification;
-                                        ?>
-                                    </td>
-                                </tr>
+                                <li class="list-group-item" id="<?php echo $qv->TrackID;?>" style="cursor: pointer;background: <?php echo $qv->color.'!important';?>">
+                                    <?php
+                                    echo $qv->CompanyName;
+                                    echo $qv->notification;
+                                    ?>
+                                </li>
                             <?php }
                         }else{?>
-                            <tr>
-                                <td>
+                            <li class="list-group-item">
                                     No data was found.
-                                </td>
-                            </tr>
+                            </li>
                         <?php
                         }
                         ?>
-                    </table>
+                    </ul>
                 </div>
             </div>
             <div class="panel panel-primary">
                 <div class="panel-heading">Jobs to Assign</div>
-                <div class="panel-body">
-                    <table style="width: 100%!important;">
+                <div class="panel-body" style="max-height: 400px;overflow-x: auto">
+                    <ul class="list-group">
                         <?php
                         if(count($assignment)>0){
                             foreach($assignment as $ek=>$ev){?>
-                                <tr>
-                                    <th style="text-align: center;font-weight:normal;background:<?php echo $ev->color;?>;padding: 5px;cursor: pointer;" class="setInspection"  id="<?php echo $ev->TrackID;?>">
-                                        <?php echo $ev->project_name;?>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 5px 0;">
-                                        <input type="hidden" name="TrackID" value="<?php echo $ev->TrackID;?>">
-                                        <input type="button" name="inspector" value="Assign" class="m-btn green viewInspector" title="Click to Add Inspector" style="padding: 5px!important;width: 100px;" id="thisButtonView_<?php echo $ev->id;?>" data-val="<?php echo $ev->id;?>">
-                                    </td>
-                                </tr>
-                                <tr class="toggleThis" id="form_<?php echo $ev->id;?>" style="display: none;">
-                                    <td style="width: 100%;">
-                                        <table style="width: 100%;border-collapse: collapse;">
-                                            <?php
-                                            if(count($ev->inspector)>0){
-                                                $ref = 0;
-                                                foreach($ev->inspector as $ik=>$iv){
-                                                    ?>
-                                                    <tr style="border-bottom: 1px solid #d2d2d2">
-                                                        <td style="text-align: center!important;">
-                                                            <input type="hidden" name="AssignId" value="<?php echo $ev->id; ?>" />
-                                                            <input type="radio" name="UserID[<?php echo $ev->id;?>]" value="<?php echo $iv->ID;?>" style="width: 20px;" <?php echo $ref == 0 ? 'checked="checked"' : ''; ?>>
-                                                        </td>
-                                                        <td>
-                                                            <?php echo $iv->FName.' '.$iv->LName.' (<strong>'.$ev->jobs.' jobs</strong>)';?>
-                                                        </td>
-                                                    </tr>
-                                                    <?php
-                                                    $ref++;
-                                                }
+                                <li class="list-group-item setInspection" style="background:<?php echo $ev->color;?>;padding: 5px;cursor: pointer;" id="<?php echo $ev->TrackID;?>">
+                                    <?php echo $ev->project_name;?>
+                                    <input type="hidden" name="TrackID" value="<?php echo $ev->TrackID;?>">
+                                    <input type="button" name="inspector" value="Assign" class="m-btn green viewInspector" title="Click to Add Inspector" style="padding: 5px!important;width: 100px;" id="thisButtonView_<?php echo $ev->id;?>" data-val="<?php echo $ev->id;?>">
+                                </li>
+                                <li class="toggleThis" id="form_<?php echo $ev->id;?>" style="display: none;">
+                                    <table style="width: 100%;border-collapse: collapse;">
+                                        <?php
+                                        if(count($ev->inspector)>0){
+                                            $ref = 0;
+                                            foreach($ev->inspector as $ik=>$iv){
+                                                ?>
+                                                <tr style="border-bottom: 1px solid #d2d2d2">
+                                                    <td style="text-align: center!important;">
+                                                        <input type="hidden" name="AssignId" value="<?php echo $ev->id; ?>" />
+                                                        <input type="radio" name="UserID[<?php echo $ev->id;?>]" value="<?php echo $iv->ID;?>" style="width: 20px;" <?php echo $ref == 0 ? 'checked="checked"' : ''; ?>>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $iv->FName.' '.$iv->LName.' (<strong>'.$ev->jobs.' jobs</strong>)';?>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                                $ref++;
                                             }
-                                            ?>
-                                            <tr>
-                                                <td colspan="2">
-                                                    <input type="submit" name="submit" value="Submit" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;">
-                                                    <input type="button" name="inspector" value="Close" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;" id="<?php echo $ev->id;?>">
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td colspan="2">
+                                                <input type="submit" name="submit" value="Submit" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;">
+                                                <input type="button" name="inspector" value="Close" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;" id="<?php echo $ev->id;?>">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
                             <?php }
                             $ref = 0;
                         }else{?>
-                            <tr>
-                                <td colspan="2">
+                            <li class="list-group-item">
                                     No data was found.
-                                </td>
-                            </tr>
+                            </li>
                         <?php }
                         ?>
-                    </table>
+                    </ul>
                 </div>
             </div>
         <?php
@@ -355,63 +341,55 @@
             ?>
             <div class="panel panel-primary">
                 <div class="panel-heading">Quotes Request List</div>
-                <div class="panel-body">
-                    <table style="width: 100%">
+                <div class="panel-body" style="max-height: 400px;overflow-x: auto">
+                    <ul class="list-group">
                         <?php
                         if(count($qoutelist)>0){
                             foreach($qoutelist as $qk=>$qv){
                                 ?>
-                                <tr>
-                                    <td style="padding: 2px;text-align:center;background: <?php echo $qv->color;?>;" class="quote-class">
-                            <span style="color: #ffffff;"  class="quote-hover" id="<?php echo $qv->ID;?>">
-                                <?php
-                                echo $qv->CompanyName;
-                                ?>
-                            </span>
+                                <li style="padding: 2px;text-align:center;background: <?php echo $qv->color;?>;" class="list-group-item quote-class">
+                                    <span style="color: #ffffff;"  class="quote-hover" id="<?php echo $qv->ID;?>">
                                         <?php
-                                        echo $qv->notification;
+                                        echo $qv->CompanyName;
                                         ?>
-                                        <span class="data-area" id="form_<?php echo $qv->ID;?>"></span>
-                                    </td>
-                                </tr>
+                                    </span>
+                                    <?php
+                                    echo $qv->notification;
+                                    ?>
+                                    <span class="data-area" id="form_<?php echo $qv->ID;?>"></span>
+                                </li>
                             <?php }
                         }else{?>
-                            <tr>
-                                <td>
+                            <li class="list-group-item">
                                     No data was found.
-                                </td>
-                            </tr>
+                            </li>
                         <?php }
                         ?>
-                    </table>
+                    </ul>
                 </div>
             </div>
             <div class="panel panel-primary">
                 <div class="panel-heading">Job Request List</div>
-                <div class="panel-body">
-                    <table style="width: 100%">
+                <div class="panel-body" style="max-height: 400px;overflow-x: auto">
+                    <ul class="list-group">
                         <?php
                         if(count($assignment)>0){
                             foreach($assignment as $ak=>$av){
                                 ?>
-                                <tr>
-                                    <td style="padding: 2px;text-align:center;background:<?php echo $av->color;?>;" class="quote-class">
-                            <span style="color: #ffffff;" id="<?php echo $av->id;?>" class="quote-hover">
-                                <?php echo $av->project_name;?>
-                            </span>
-                                        <span class="data-area" id="form_<?php echo $av->id;?>"></span>
-                                    </td>
-                                </tr>
+                                <li style="padding: 5px;text-align:center;background:<?php echo $av->color;?>;" class="list-group-item quote-class">
+                                    <span style="color: #ffffff;" id="<?php echo $av->id;?>" class="quote-hover">
+                                        <?php echo $av->project_name;?>
+                                    </span>
+                                    <span class="data-area" id="form_<?php echo $av->id;?>"></span>
+                                </li>
                             <?php }
                         }else{?>
-                            <tr>
-                                <td>
-                                    No data was found.
-                                </td>
-                            </tr>
+                            <li class="list-group-item">
+                                No data was found.
+                            </li>
                         <?php }
                         ?>
-                    </table>
+                    </ul>
                 </div>
             </div>
         <?php
@@ -419,7 +397,27 @@
         ?>
         <div class="panel panel-primary">
             <div class="panel-heading">Items to Action</div>
-            <div class="panel-body">
+            <div class="panel-body" style="height: 300px;overflow-x: auto">
+                <ul class="list-group">
+                    <?php
+                    if(count($items_to_action) > 0){
+                        foreach($items_to_action as $val){
+                            ?>
+                            <li class="list-group-item">
+                                <?php echo $val;?>
+                            </li>
+                            <?php
+                        }
+                    }
+                    else{
+                        ?>
+                        <li class="list-group-item">
+                            No data was found.
+                        </li>
+                    <?php
+                    }
+                    ?>
+                </ul>
             </div>
         </div>
     </div>

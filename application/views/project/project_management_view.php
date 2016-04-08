@@ -108,6 +108,7 @@ echo form_close();
 </style>
 <script>
     $(function(e){
+        var enable_add_job = <?php echo $enable;?>;
         var df_link = $('.df_link').attr('link');
         var id = <?php echo isset($_GET['id']) ? $_GET['id'] : 0;?>;
         var url = bu + 'jobRegistration/' + df_link + (id ? '?id=' + id : '');
@@ -133,5 +134,10 @@ echo form_close();
             }
 
         });
+
+        var disableFormChanges = function(){
+
+        };
+        disableFormChanges();
     });
 </script>

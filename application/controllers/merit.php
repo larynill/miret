@@ -2,6 +2,8 @@
 include('notification_helper.php');
 include('job_helper.php');
 include('controller_logger.php');
+include('send_email_controller.php');
+include('items_to_action_controller.php');
 
 class Merit extends CI_Controller{
     var $data;
@@ -14,11 +16,21 @@ class Merit extends CI_Controller{
     function __construct()
     {
         parent::__construct();
+
+        if($this->session->userdata('isLogged') === false){
+            redirect('login');
+        }
 		//$this->firstReminderSend();
         $this->GetUserInfo();
         $this->Setting(); // the setting of the website.
         //$this->ClientFirstReminderSend('',date('Y-m-d', strtotime('+5 days')));
 		header('Content-type: text/html; charset=utf-8');
+
+        //region Prevent Back Button on browser
+        header("cache-Control: no-store, no-cache, must-revalidate");
+        header("cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+        //endregion
 
 		$this->main_model->setLastId('Value');
 		$this->data['unitrate'] = $this->main_model->getinfo('tbl_rate',1,'ID');
@@ -35,7 +47,6 @@ class Merit extends CI_Controller{
     }
 
     function index(){
-
         if($this->session->userdata('isLogged') == true){
             redirect('trackingLog');
         }
@@ -664,4 +675,65 @@ class Merit extends CI_Controller{
 			new DateTime("last day of $y-$m")
 		);
 	}
+
+    function sendEmail($job_id,$franchise_id,$date,$msg,$send = true){
+        $has_pay_setup = $this->my_model->getInfo('tbl_contacts',$franchise_id);
+
+        $debugResult = array();
+
+        if(count($has_pay_setup) > 0){
+            foreach($has_pay_setup as $pay_setup){
+                $date = date('Y-m-d',strtotime($date));
+
+                $this->my_model->setShift();
+                $whatVal = array($job_id,$date);
+                $whatFld = array('client_id','date');
+                $pdf_file = (Object)$this->my_model->getInfo('tbl_pdf_archive',$whatVal,$whatFld);
+
+                $cc = array(
+                    $pay_setup->take_off_agent_email,
+                    $pay_setup->staff_email
+                );
+                $cc_alias = array(
+                    $pay_setup->take_off_agent_name,
+                    $pay_setup->staff_name
+                );
+                $dir = realpath(APPPATH.'../pdf');;
+                $url = $dir.'/inspection_report/'.$job_id.'/'.$pdf_file->file_name;
+
+                $date_ = new DateTime($date);
+                $week = $date_->format('W');
+                $sendMailSetting = array(
+                    'to' => $pay_setup->accountant_email,
+                    'to_alias' => $pay_setup->accountant_name,
+                    'cc' => $cc,
+                    'cc_alias' => $cc_alias,
+                    'from' => 'no-reply@subbiesolutions.co.nz',
+                    'name' => 'Synergy Administrator',
+                    'subject' => 'Pay Period Summary Report for Week ' . $week . ' from ' . date('j F Y',strtotime($date)) .' to '.date('j F Y',strtotime('+6 days '.$date)),
+                    'url' => $url,
+                    'file_names' => $pdf_file->file_name,
+                    'debug_type' => 2,
+                    'debug' => true
+                );
+
+                if($send){
+                    $email_send = new Send_Email_Controller();
+                    $debugResult['result'] = $email_send->sendingEmail(
+                        $msg,
+                        $sendMailSetting
+                    );
+                }else{
+                    $debugResult['result'] = (Object)array(
+                        'type' => 2,
+                        'debug' => 'Email needs to be review before sending'
+                    );
+                }
+                $debugResult['is_send'] = $send;
+                $debugResult['mail_settings'] = $sendMailSetting;
+            }
+        }
+
+        return $debugResult;
+    }
 }

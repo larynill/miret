@@ -1,4 +1,4 @@
-<title>Login | Merit Builders</title>
+<title>Login | Synergy Project</title>
 <style>
     body{
         background: #f3f3f3 url("<?php echo base_url(). 'plugins/img/bg_login_top.jpg'?>") no-repeat top center;

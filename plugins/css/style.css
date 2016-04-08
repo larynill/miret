@@ -61,7 +61,7 @@ input[type="checkbox"] { vertical-align: bottom; }
 .ie7 input[type="checkbox"] { vertical-align: baseline; }
 .ie6 input { vertical-align: text-bottom; }
 label, input[type="button"], input[type="submit"], input[type="image"], button { cursor: pointer; }
-button, input, select, textarea { margin: 0; width:100%;}
+button, input, select, textarea { margin: 0; /*width:100%;*/}
 textarea { border:1px solid #d3d3d3; padding:4px 3px 4px 3px; }
 input[type="text"], input[type="password"] { border:1px solid #d3d3d3; padding:4px 0px 4px 3px}
 

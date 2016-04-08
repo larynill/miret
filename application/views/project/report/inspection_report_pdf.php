@@ -175,18 +175,18 @@ ob_start();
                         </tr>
                         <tr>
                             <td class="text-left info">Email</td>
-                            <td class="text-left">info@synergybc.co.nz</td>
+                            <td class="text-left">info@Synergy Projectbc.co.nz</td>
                         </tr>
                         <tr>
                             <td class="text-left info">Web</td>
-                            <td class="text-left">www.synergybuildingconsultants.co.nz</td>
+                            <td class="text-left">www.Synergy Projectbuildingconsultants.co.nz</td>
                         </tr>
                         <tr>
                             <td class="text-left info">Phone</td>
-                            <td class="text-left">0800 SYNERGY – (0800 796374)</td>
+                            <td class="text-left">0800 Synergy Project – (0800 796374)</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="text-left">&copy; Copyright Synergy Property Inspections</td>
+                            <td colspan="2" class="text-left">&copy; Copyright Synergy Project Property Inspections</td>
                         </tr>
                     </table>
                 </td>
@@ -268,10 +268,10 @@ ob_start();
             <p>Thank you so much for the opportunity to inspect and report on your new property. We appreciate the confidence
                 you placed in our team by allowing us to assist you in this way.</p><br/>
             <p>If you have any questions about this inspection please do not hesitate to give us a call.</p><br/>
-            <p>Thank you again for the confidence you have placed in Synergy Property Inspections.</p><br/>
+            <p>Thank you again for the confidence you have placed in Synergy Project Property Inspections.</p><br/>
             <p>Sincerely,</p><br/>
             <p><?php echo $inspection_report->inspector;?></p><br/>
-            <p>Synergy Property Inspections</p><br/>
+            <p>Synergy Project Property Inspections</p><br/>
             <p><img src="<?php echo base_url().'img/logo-other.gif'?>" width="150"></p><br/><br/>
             <p style="text-align: justify">
                 *** Please note what this report should be seen as a reasonable attempt to identify any significant defects at the time
@@ -286,7 +286,7 @@ ob_start();
         <div class="title" style="page-break-before: always;">SUMMARY</div>
         <p style="text-align: justify">
             This section of the report is to provide the reader with the inspector’s overall opinion of the property. The summary
-            is designed to identify the main points about the property and Synergy Property Inspections recommends that the
+            is designed to identify the main points about the property and Synergy Project Property Inspections recommends that the
             entire report be read in full. Please note that this report is completed in accordance with Terms of Agreement,
             Disclaimer and special reporting conditions that are detailed in this report.
         </p><br/>
@@ -390,7 +390,7 @@ ob_start();
         <p style="text-align: justify">
             Please Read Carefully.<br/><br/>
             The inspection of the property identified above is subject to the following Terms and Conditions:<br/><br/>
-            a) The inspection by Synergy Property Inspections will be performed in accordance with generally accepted
+            a) The inspection by Synergy Project Property Inspections will be performed in accordance with generally accepted
             Standards of Practice.<br/><br/>
             b) A report will be provided at the conclusion of the inspection. This Report will be based on a limited visual
             inspection of the readily accessible aspects of the building. The Report is representative of the Inspector's opinion of
@@ -529,7 +529,7 @@ ob_start();
             </tr>
             <tr>
                 <td colspan="2">Inspector: <?php echo $inspection_report->inspector;?></td>
-                <td>Company: Synergy Building Consultants</td>
+                <td>Company: Synergy Project Building Consultants</td>
             </tr>
             <tr>
                 <td colspan="2">Qualifications: </td>
@@ -575,7 +575,7 @@ ob_start();
                 <td>Date: <?php echo date('d F Y')?></td>
             </tr>
             <tr>
-                <td colspan="2">Signature: &nbsp;<span style="margin-left: 150px;">(for and on behalf of Synergy Property Inspections)</span></td>
+                <td colspan="2">Signature: &nbsp;<span style="margin-left: 150px;">(for and on behalf of Synergy Project Property Inspections)</span></td>
             </tr>
         </table><br/>
         <p style="text-align: justify">
@@ -631,8 +631,10 @@ $pdf = $domPdf->output();
 
 // You can now write $pdf to disk, store it in a database or stream it
 // to the client.
-$pdfName = date('Ymd_His');
+$pdfName = str_replace(' ','_',$inspection_report->project_name) . '_Inspection_Report_' . date('Ymd_Hi');
 @ $domPdf->stream($pdfName.".pdf", array("Attachment" => 0));
 
-$file_to_save = $pdfName.'.pdf';
+$file_to_save = $save_path . $pdfName.'.pdf';
+
+file_put_contents($file_to_save, $domPdf->output());
 ?>

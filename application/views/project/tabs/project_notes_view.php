@@ -14,9 +14,9 @@ if(count(@$notes) > 0) {
                 <div class="div-content">
                     <div class="form-group">
                         <label for="exampleInputEmail1">
-                            Date: <?php echo date('d-m-Y h:i:s A')?>
+                            Date: <?php echo date('d-m-Y h:i A')?>
                             <input type="hidden" name="history_date[<?php echo $_id;?>]" value="<?php echo date('Y-m-d H:i:s')?>">
-                            <a href="#" id="<?php echo $_id;?>" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>
+                            <!--<a href="#" id="<?php /*echo $_id;*/?>" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>-->
                         </label>
                         <textarea class="form-control input-sm" name="history[<?php echo $_id;?>]" rows="5"></textarea>
                     </div>
@@ -29,9 +29,9 @@ if(count(@$notes) > 0) {
                         <div class="div-content">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">
-                                    Date: <?php echo date('d-m-Y h:i:s A',strtotime($val->date_time))?>
-                                    <input type="hidden" name="history_date[<?php echo $val->id;?>]" value="<?php echo date('Y-m-d H:i:s',strtotime($val->date_time))?>">
-                                    <a href="#" id="<?php echo $val->id;?>" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>
+                                    Date: <?php echo date('d-m-Y h:i A',strtotime($val->date_time))?>
+                                    <input type="hidden" name="history_date[<?php echo $val->id;?>]" value="<?php echo date('Y-m-d H:i',strtotime($val->date_time))?>">
+                                    <!--<a href="#" id="<?php /*echo $val->id;*/?>" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>-->
                                 </label>
                                 <textarea class="form-control input-sm" name="history[<?php echo $val->id;?>]" readonly rows="5" ><?php echo $val->history?></textarea>
                             </div>
@@ -45,7 +45,7 @@ if(count(@$notes) > 0) {
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
-                    <button type="button" class="btn btn-sm btn-primary add-history pull-left" disabled><i class="glyphicon glyphicon-plus"></i> Add Note</button>
+                    <button type="button" class="btn btn-sm btn-primary add-history pull-left"><i class="glyphicon glyphicon-plus"></i> Add Note</button>
                 </div>
             </div>
         </div><br/>
@@ -73,15 +73,15 @@ if(count(@$notes) > 0) {
 
         $('.add-history').click(function(e){
             var date = $.now();
-            var time = $.format.date(date,'dd-MM-yyyy hh:mm:ss a');
-            var time_ = $.format.date(date,'yyyy-MM-dd HH:mm:ss');
+            var time = $.format.date(date,'dd-MM-yyyy hh:mm a');
+            var time_ = $.format.date(date,'yyyy-MM-dd HH:mm');
             var n = $('.added-form').length;
             var element =
                 '<div class="form-group">' +
                     '<label for="exampleInputEmail1">' +
                         'Date:' + time +
                         '<input type="hidden" name="history_date[' + (last_id ? last_id + n : '') + ']" value="' + time_ + '">' +
-                        '<a href="#" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>' +
+                        /*'<a href="#" class="delete-history"><i class="glyphicon glyphicon-trash"></i></a>' +*/
                     '</label>' +
                     '<textarea class="form-control input-sm" name="history[' + (last_id ? last_id + n : '') + ']" rows="5"></textarea>' +
                 '</div>';

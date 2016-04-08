@@ -57,3 +57,13 @@ if(! function_exists('CountDays'))
         return $days_between;
     }
 }
+
+if(! function_exists('ValidateDate'))
+{
+    function ValidateDate($date,$format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+}
+

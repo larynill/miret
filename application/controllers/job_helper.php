@@ -2,7 +2,7 @@
 
 class Job_Helper extends CI_Controller{
 
-    function jobDetails($job_id = ''){
+    function jobDetails($job_id = '',$group_by = false){
         $this->main_model->setJoin(array(
             'table' => array(
                 'tbl_user as account_manager','tbl_user as inspector',
@@ -45,6 +45,9 @@ class Job_Helper extends CI_Controller{
         $fld[] = 'property_status.job_type_specs as property_status';
 
         $this->main_model->setSelectFields($fld);
+        if($group_by){
+            $this->main_model->setGroupBy('tbl_job_registration.id');
+        }
         $job = $this->main_model->getinfo('tbl_job_registration',$job_id,'tbl_job_registration.id');
 
         $this->main_model->setNormalized('job_type_specs','id');

@@ -11,12 +11,14 @@
         <th>Inspector</th>
         <th>Inspector<br/>to visit</th>
         <th>Report Sent</th>
-        <th style="width: 12%">Notes</th>
+        <th style="width: 10%">Notes</th>
+        <th style="width: 3%">Report</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
     <?php
+
     if(count($tracking) > 0){
         foreach($tracking as $k=>$v){
             $words = $v->inspector_name ? explode(" ", $v->inspector_name) : array();
@@ -88,6 +90,15 @@
                 <td class="notes">
                     <?php
                     echo '<a href="#" class="btn-review btn btn-sm btn-primary" id="' . $v->id . '" data-title="' . $v->project_name . '" style="padding: 2px 10px;;">Review/Add</a>&nbsp;';
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if($v->report_file){
+                        ?>
+                        <a href="<?php echo base_url('pdf/inspection_report/' . $v->id . '/' . $v->report_file)?>" target="_blank">view</a>
+                        <?php
+                    }
                     ?>
                 </td>
                 <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>

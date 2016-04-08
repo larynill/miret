@@ -6,10 +6,6 @@ class Job_Controller extends Merit{
 
     function __construct(){
         parent::__construct();
-
-        if($this->session->userdata('isLogged') == false){
-            redirect('login');
-        }
     }
 
     function jobRegistration(){
@@ -153,7 +149,7 @@ class Job_Controller extends Merit{
                                 $l->tracking_change_logger($p, 'tbl_job_history', $job_id, 1);
 
                                 $n = new Job_Helper();
-                                $n->setJobNotification($id,'new Notes is Created',false);
+                                $n->setJobNotification($id,'new Note created',false);
                             }
                         }
                         else{
@@ -163,7 +159,7 @@ class Job_Controller extends Merit{
                             $l->tracking_change_logger($p, 'tbl_job_history', $job_id, 1);
 
                             $n = new Job_Helper();
-                            $n->setJobNotification($id,'new Notes is Created',false);
+                            $n->setJobNotification($id,'new Note created',false);
                         }
                     }
                 }
@@ -221,7 +217,7 @@ class Job_Controller extends Merit{
                     $l->tracking_change_logger($p, 'tbl_job_inspection', $id, 1);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'Job Inspection details is Created',false);
+                    $n->setJobNotification($id,'Job Inspection details created',false);
                 }
 
                 $url = 'jobRegistration';
@@ -357,8 +353,23 @@ class Job_Controller extends Merit{
     }
 
     function trackingLog(){
+        $this->load->helper('directory');
         $job_details = new Job_Helper();
-        $this->data['tracking'] = $job_details->jobDetails();
+        $this->data['tracking'] = $job_details->jobDetails('',true);
+        $path = realpath(APPPATH.'../pdf/inspection_report');
+        if(count($this->data['tracking']) > 0){
+            foreach($this->data['tracking'] as $v){
+                $v->report_file = '';
+                if(file_exists($path.'/'.$v->id)){
+                    $dir_map = directory_map($path.'/'.$v->id);
+                    if(count($dir_map) > 0){
+                        sort($dir_map);
+                        $v->report_file = end($dir_map);
+                    }
+                }
+
+            }
+        }
         $this->data['_pageLoad'] = 'track/tracking_log_view';
         $this->load->view('main_view',$this->data);
     }
@@ -424,8 +435,7 @@ class Job_Controller extends Merit{
                         );
                         if($job_id){
                             $_data = $this->main_model->getinfo('tbl_job_history',$k);
-                            if(count($_data) > 0){
-
+                            if(count($_data) > 0 && $k != 0){
                                 $this->main_model->update('tbl_job_history',$post,$k,'id',false);
                             }
                             else{
@@ -438,18 +448,27 @@ class Job_Controller extends Merit{
                     }
                 }
             }
-
             $p = array_merge($post,$job_data);
             $l = new Controller_Logger();
             $l->tracking_change_logger($p, 'tbl_job_history', $job_id, 2);
 
             $n = new Job_Helper();
-            $n->setJobNotification($job_id,'new Notes is Created',false);
+            $n->setJobNotification($job_id,'new Note created',false);
 
-            redirect((isset($_GET['s_form']) ? 'jobRegistration?id=' . $job_id : 'trackingLog'));
+            redirect((isset($_GET['is_form']) ? 'jobRegistration?id=' . $job_id : 'trackingLog'));
         }
 
         if(isset($_GET['is_review'])){
+            $this->merit_model->setJoin(array(
+                'table' => array('tbl_user'),
+                'join_field' => array('ID'),
+                'source_field' => array('tbl_job_history.user_id'),
+                'type' => 'left'
+            ));
+            $fld = ArrayWalk($this->merit_model->getFields('tbl_job_history'),'tbl_job_history.');
+            $fld[] = 'CONCAT(tbl_user.FName," ",tbl_user.LName) as author_name';
+
+            $this->merit_model->setSelectFields($fld);
             $this->merit_model->setOrder('date_time','DESC');
             $notes = $this->merit_model->getInfo('tbl_job_history',$job_id,'job_id');
             $this->data['notes'] = $notes;
@@ -542,6 +561,14 @@ class Job_Controller extends Merit{
             $this->data['inspection_report'] = (Object)$this->main_model->getInfo('tbl_site_inspection_report',$_GET['job'],'job_id');
             $this->data['inspection_report']->conclusion = json_decode($this->data['inspection_report']->conclusion);
             $this->data['inspection_report']->notes = json_decode($this->data['inspection_report']->notes);
+
+            $dir = realpath(APPPATH.'../pdf/inspection_report');
+
+            $this->data['save_path'] = $dir . '/' . $_GET['job'] . '/';
+
+            if(!is_dir($this->data['save_path'])){
+                mkdir($this->data['save_path'], 0777, TRUE);
+            }
 
             $this->load->view('project/report/inspection_report_pdf',$this->data);
         }

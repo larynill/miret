@@ -163,15 +163,15 @@ ob_start();
                 </tr>
                 <tr>
                     <td class="text-left info">Email</td>
-                    <td class="text-left">info@synergybc.co.nz</td>
+                    <td class="text-left">info@Synergy Projectbc.co.nz</td>
                 </tr>
                 <tr>
                     <td class="text-left info">Web</td>
-                    <td class="text-left">www.synergybuildingconsultants.co.nz</td>
+                    <td class="text-left">www.Synergy Projectbuildingconsultants.co.nz</td>
                 </tr>
                 <tr>
                     <td class="text-left info">Phone</td>
-                    <td class="text-left">0800 SYNERGY – (0800 796374)</td>
+                    <td class="text-left">0800 Synergy Project – (0800 796374)</td>
                 </tr>
             </table>
             <strong>Page <span class="pagenum"></span></strong>

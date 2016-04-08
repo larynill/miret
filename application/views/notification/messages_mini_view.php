@@ -29,6 +29,7 @@
                 url = bu + 'notificationHide?hideAll=1';
 
                 $('.hideAllNotification').parent('tr').html('');
+                $( ".badge" ).remove()
             }
             replace.html(pleaseWait);
             $.post(
@@ -157,7 +158,7 @@
         ?>
         <tr>
             <td class="hideAllNotification noNotificationHide" style="padding: 3px 5px;">
-                Hide all the Messages
+                Hide all Messages
             </td>
         </tr>
         <?php
@@ -168,7 +169,7 @@
             <a href="<?php echo base_url() . 'notificationView?viewBy=message&toPage=' . $toPage; ?>" class="notificationLink" style="color: #000000;">
                 <table class="notificationLinkTable">
                     <tr>
-                        <td>View all the Messages</td>
+                        <td>View all Messages</td>
                         <td>
                             <span class="m-icon-swap-right" style="float: right;top: 0;"></span>
                         </td>

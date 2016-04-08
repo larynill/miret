@@ -217,15 +217,20 @@ class Admin_Controller extends Merit{
 			redirect('diary');
 		}
 
+        //region Items to Action
+        $items_to_action = new Items_To_Action_Controller();
+        $this->data['items_to_action'] = $items_to_action->getItems();
+        //endregion
+
         $this->data['_pageLoad'] = 'diary/diary_view';//load the view.
         $this->load->view('main_view', $this->data);
     }
 
 	//this is for the HOVER
 	function client_info_hover(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
 		$assignId = $this->uri->segment(2);
 		$isForQuote = $this->uri->segment(3);
@@ -309,9 +314,9 @@ class Admin_Controller extends Merit{
 
 	//to insert inspection queue
 	function inspection_queue(){
-		if($this->session->userdata('isLogged') == false && $this->session->userdata('userAccountType') != 2){
+		/*if($this->session->userdata('isLogged') == false && $this->session->userdata('userAccountType') != 2){
             redirect('login');
-        }
+        }*/
 
 		$clientId = $this->uri->segment(2);
 		$trackId = $this->uri->segment(3);
@@ -336,9 +341,9 @@ class Admin_Controller extends Merit{
 	}
 
 	function equipmentHistory(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 		$clientID = $this->uri->segment(2);
 		$this->data['quote'] = $this->main_model->getinfo('tbl_client_quotes',$clientID);
 		if(count($this->data['quote'])>0){
@@ -361,27 +366,27 @@ class Admin_Controller extends Merit{
 	}
 
 	function equipmentReport(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
 		$this->data['_pageLoad'] = 'equipment/report/equipment_report';//load the view.
         $this->load->view('main_view', $this->data);
 	}
 
 	function machineDetails(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
 			redirect('login');
-		}
+		}*/
 
 		$this->data['_pageLoad'] = 'equipment/details/equipment_details';//load the view.
 		$this->load->view('main_view', $this->data);
 	}
 
 	function quotationSetUp(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
 			redirect('login');
-		}
+		}*/
 		$clientID = $this->uri->segment(2);
 		$trackID = $this->uri->segment(3);
 		$quoteID = $this->uri->segment(4);
@@ -458,9 +463,9 @@ class Admin_Controller extends Merit{
 	}
 
 	function to_be_send_quote(){
-		if($this->session->userdata('isLogged') == false){
+		/*if($this->session->userdata('isLogged') == false){
 			redirect('login');
-		}
+		}*/
 
 		$quotationID = $this->uri->segment(4);
 		$trackID = $this->uri->segment(2);
@@ -617,9 +622,9 @@ class Admin_Controller extends Merit{
 	}
 
     function registerClient(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
         $clientID = '';
         $this->data['_city'] = $this->GetCityData();
@@ -768,9 +773,9 @@ class Admin_Controller extends Merit{
     }
 
     function joblist(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
         $jobData = $this->main_model->getinfo('tbl_job_monthly');
         $userData = $this->main_model->getinfo('tbl_user');
 
@@ -822,9 +827,9 @@ class Admin_Controller extends Merit{
     }
 
     function viewClient(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
         $clientID = '';
         if($this->uri->segment(2)){
             $uriDecode = $this->encryption->decode($this->uri->segment(2));
@@ -928,9 +933,9 @@ class Admin_Controller extends Merit{
     }
 
     function updateClientData(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
         $client_id = $this->encryption->decode($this->uri->segment(2));
         if(!$client_id){
@@ -976,9 +981,9 @@ class Admin_Controller extends Merit{
     }
 
     function addEquipment(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
         $id = $this->encryption->decode($this->uri->segment(2));
         if(!$id){
@@ -998,9 +1003,9 @@ class Admin_Controller extends Merit{
     }
 
     function editEquipment(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
         $id = $this->uri->segment(2);
         $client_id = $this->uri->segment(3);
@@ -1021,17 +1026,17 @@ class Admin_Controller extends Merit{
     }
 
     function idashboard(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
         $this->data['_pageLoad'] = 'dashboard/admin_dashboard';
         $this->load->view('main_view', $this->data);
     }
 
     function equipment(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
         $clientData = $this->main_model->getinfo('tbl_client');
         $equipData = $this->main_model->getinfo('tbl_client_equipment');
         if(count($clientData) > 0){
@@ -1106,9 +1111,9 @@ class Admin_Controller extends Merit{
     }
 
     function monthlyReport(){
-        if($this->session->userdata('isLogged') == false){
+        /*if($this->session->userdata('isLogged') == false){
             redirect('login');
-        }
+        }*/
 
         if($this->uri->segment(2) == 'potential')
         {
@@ -2284,9 +2289,10 @@ class Admin_Controller extends Merit{
 			redirect('');
 		}
 
-		$selectedFields = ArrayWalk($this->my_model->getFields('tbl_job_registration'),'tbl_job_registration.');
+		$selectedFields = ArrayWalk($this->merit_model->getFields('tbl_job_registration'),'tbl_job_registration.');
 		$selectedFields[] = 'tbl_job_registration.insured_name';
-		$selectedFields[] = 'concat(tbl_user.FName," ",tbl_user.LName) as Name';
+		$selectedFields[] = 'concat(user_assignment.FName," ",user_assignment.LName) as user_assignment_inspector';
+		$selectedFields[] = 'concat(job_registration.FName," ",job_registration.LName) as job_inspector';
 		$selectedFields[] = 'tbl_user_assignment.UserID';
 		$selectedFields[] = 'tbl_user_assignment.InspectionDate';
 		$selectedFields[] = 'tbl_user_assignment.InspectionTime';
@@ -2294,34 +2300,147 @@ class Admin_Controller extends Merit{
 		$selectedFields[] = 'tbl_user_assignment.IsDone';
 		$selectedFields[] = 'tbl_job_type_specs.job_type_specs';
 
-		$this->main_model->setJoin(array(
-			'table' => array('tbl_user_assignment','tbl_user','tbl_job_type_specs'),
-			'join_field' => array('TrackID','ID','id'),
-			'source_field' => array('tbl_job_registration.ID','tbl_user_assignment.UserID','tbl_job_registration.job_type_id')
+		$this->merit_model->setJoin(array(
+			'table' => array(
+                'tbl_user_assignment',
+                'tbl_user as user_assignment',
+                'tbl_user as job_registration',
+                'tbl_job_type_specs'
+            ),
+			'join_field' => array('TrackID','ID','ID','id'),
+			'source_field' => array(
+                'tbl_job_registration.id',
+                'tbl_user_assignment.UserID',
+                'tbl_job_registration.inspector_id',
+                'tbl_job_registration.job_type_id'
+            ),
+            'type' => 'left',
+            'join_append' => array(
+                'tbl_user_assignment',
+                'user_assignment',
+                'job_registration',
+                'tbl_job_type_specs'
+            )
 		));
 
-		$this->main_model->setSelectFields($selectedFields);
-		$this->main_model->setOrder('InspectionDate','DESC');
+		$this->merit_model->setSelectFields($selectedFields);
+		$this->merit_model->setOrder('InspectionDate','DESC');
+        $this->merit_model->setGroupBy(array('tbl_job_registration.id','TrackID'));
         if($this->session->userdata('userAccountType') == 4){
             $userID = $this->session->userdata('userID');
-            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_job_registration',$userID,'inspector_id');
-            $this->data['jobDone'] = count($this->main_model->getinfo('tbl_user_assignment',array($userID,true),array('UserID','IsDone')));
+            $this->data['jobAllocation'] = $this->merit_model->getinfo('tbl_job_registration',$userID,'inspector_id');
+            $this->data['jobDone'] = count($this->merit_model->getinfo('tbl_user_assignment',array($userID,true),array('UserID','IsDone')));
 
             $whatFld = '';
             $whatVal = 'InspectionDate > "'.date('Y-m-d').'" AND IsDone = false AND UserID = "'.$userID.'"';
-            $this->data['pendingJobs'] = count($this->main_model->getinfo('tbl_user_assignment',$whatVal,$whatFld));
+            $this->data['pendingJobs'] = count($this->merit_model->getinfo('tbl_user_assignment',$whatVal,$whatFld));
         }else{
-            $this->data['jobAllocation'] = $this->main_model->getinfo('tbl_job_registration');
-            $this->data['jobDone'] = count($this->main_model->getinfo('tbl_user_assignment',true,'IsDone'));
+            $this->data['jobAllocation'] = $this->merit_model->getinfo('tbl_job_registration');
+            $this->data['jobDone'] = count($this->merit_model->getinfo('tbl_user_assignment',true,'IsDone'));
 
             $whatFld = '';
             $whatVal = 'InspectionDate > "'.date('Y-m-d').'" AND IsDone = false';
-            $this->data['pendingJobs'] = count($this->main_model->getinfo('tbl_user_assignment',$whatVal,$whatFld));
+            $this->data['pendingJobs'] = count($this->merit_model->getinfo('tbl_user_assignment',$whatVal,$whatFld));
         }
 
+        $job_id = $this->uri->segment(2);
 
-		$this->data['_pageLoad'] = 'jobsheet/job_allocation_view';
-		$this->load->view('main_view', $this->data);
+        if($job_id){
+
+            $this->merit_model->setSelectFields(array('id','CONCAT(FName," ",LName) as name','AccountType','isQualifiedInspector'));
+            $accounts = $this->merit_model->getinfo('tbl_user');
+            $inspector = array();
+
+            if(count($accounts) > 0){
+                foreach($accounts as $k=>$v){
+
+                    @$inspector[''] = '-';
+                    if($v->AccountType == 4 || $v->isQualifiedInspector){
+                        $inspector[$v->id] = $v->name;
+                    }
+                }
+            }
+
+
+            $this->merit_model->setJoin(array(
+                'table' => array('tbl_user'),
+                'join_field' => array('ID'),
+                'source_field' => array('tbl_user_assignment.UserID'),
+                'type' => 'left'
+            ));
+            $this->merit_model->setNormalized('name','ID');
+            $this->merit_model->setSelectFields(array('tbl_user.ID','CONCAT(tbl_user.FName, " ", tbl_user.LName) as name'));
+            $this->data['current_inspector'] = $this->merit_model->getInfo('tbl_user_assignment',$job_id,'TrackID');
+
+            $this->merit_model->setJoin(array(
+                'table' => array('tbl_user'),
+                'join_field' => array('ID'),
+                'source_field' => array('tbl_job_registration.inspector_id'),
+                'type' => 'left'
+            ));
+            $this->merit_model->setNormalized('name','ID');
+            $this->merit_model->setSelectFields(array('tbl_user.ID','CONCAT(tbl_user.FName, " ", tbl_user.LName) as name'));
+            $this->data['current_inspector'] += $this->merit_model->getInfo('tbl_job_registration',$job_id,'tbl_job_registration.id');
+            $this->data['current'] = end($this->data['current_inspector']);
+
+            $array_diff = count(@$inspector) > 0 && count($this->data['current_inspector']) > 0 ?
+                array_diff_key(@$inspector,$this->data['current_inspector']) : array('' => '-');
+
+            $this->data['inspector'] = $array_diff;
+            $this->merit_model->setShift();
+            $this->data['assignment'] = (Object)$this->merit_model->getInfo('tbl_job_registration',$job_id);
+            if(isset($_POST['submit'])){
+                $whatFld = array('UserID','TrackID');
+                $whatVal = array($_POST['inspector_id'],$job_id);
+                $user_assignment = $this->merit_model->getinfo('tbl_user_assignment',$whatVal,$whatFld);
+
+                if(count($user_assignment) > 0){
+                    foreach($user_assignment as $val){
+                        $post = array(
+                            'InspectionIsSet' => 1,
+                            'TrackID' => $job_id,
+                            'InspectionDate' => date('Y-m-d H:i:s',strtotime($_POST['inspection_time'])),
+                            'InspectionTime' => date('h:i A',strtotime($_POST['inspection_time']))
+                        );
+                        if($_POST['inspector_id']){
+                            $post['UserID'] = $_POST['inspector_id'];
+                        }
+                        $this->merit_model->update('tbl_user_assignment',$post,$val->id,'id',false);
+                    }
+                }
+                else{
+                    $post = array(
+                        'TrackID' => $job_id,
+                        'InspectionIsSet' => 1,
+                        'ClientSchedule' => date('Y-m-d'),
+                        'DateAssigned' => date('Y-m-d'),
+                        'InspectionDate' => date('Y-m-d H:i:s',strtotime($_POST['inspection_time'])),
+                        'InspectionTime' => date('h:i A',strtotime($_POST['inspection_time']))
+                    );
+                    if($_POST['inspector_id']){
+                        $post['UserID'] = $_POST['inspector_id'];
+                    }
+                    $this->merit_model->insert('tbl_user_assignment',$post);
+                }
+
+                $post = array(
+                    'inspector_id' => $_POST['inspector_id'],
+                    'inspection_time' => date('Y-m-d H:i:s',strtotime($_POST['inspection_time']))
+                );
+                if($_POST['inspector_id']){
+                    $post['inspector_id'] = $_POST['inspector_id'];
+                }
+
+                $this->merit_model->update('tbl_job_registration',$post,$job_id);
+                redirect('jobsAllocation');
+            }
+
+            $this->load->view('jobsheet/add_job_allocation_view', $this->data);
+        }
+        else{
+            $this->data['_pageLoad'] = 'jobsheet/job_allocation_view';
+            $this->load->view('main_view', $this->data);
+        }
 	}
 
 	function historyReports(){

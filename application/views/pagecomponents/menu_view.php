@@ -21,10 +21,16 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Management' => array(
+                    'Inspections' => array(
+                        'inspectionReport' => 'Inspection Report',
+                    ),
+                    'Reports' => array(
                         'historyReports' => 'History Reports',
+                    ),
+                    'Management' => array(
                         'userList' => 'User'
                     ),
+                    'contactList' => 'Contacts',
                     'Staff' => array(
                         'staff_list' => 'Lists',
                         'holidays' => 'Holidays',
@@ -48,9 +54,13 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Management' => array(
-                        'historyReports' => 'History Reports'
+                    'Inspections' => array(
+                        'inspectionReport' => 'Inspection Report',
                     ),
+                    'Reports' => array(
+                        'historyReports' => 'History Reports',
+                    ),
+                    'contactList' => 'Contacts',
                     'Staff' => array(
                         'staff_list' => 'Lists',
                         'wage_management' => 'Wage Management',
@@ -91,9 +101,13 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Jobs Allocation',
 
                     ),
-                    'Management' => array(
-                        'historyReports' => 'History Reports'
+                    'Inspections' => array(
+                        'inspectionReport' => 'Inspection Report',
                     ),
+                    'Reports' => array(
+                        'historyReports' => 'History Reports',
+                    ),
+                    'contactList' => 'Contacts',
                     'Staff' => array(
                         'staff_list' => 'Lists',
                         'holidays' => 'Holidays',
@@ -155,9 +169,13 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Management' => array(
-                        'historyReports' => 'History Reports'
+                    'Inspections' => array(
+                        'inspectionReport' => 'Inspection Report',
                     ),
+                    'Reports' => array(
+                        'historyReports' => 'History Reports',
+                    ),
+                    'contactList' => 'Contacts',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
 						'staff_leave' => 'Leave',
@@ -181,13 +199,14 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Management' => array(
+                    'Inspections' => array(
                         'inspectionReport' => 'Inspection Report',
-                        'historyReports' => 'History Reports',
-                        'userList' => 'User',
-                        'itemList' => 'Item',
-                        'tag' => 'Tags'
                     ),
+                    'Reports' => array(
+                        'historyReports' => 'History Reports',
+                    ),
+                    'contactList' => 'Contacts',
+                    'franchiseList' => 'Franchise',
                     'PDF Archive' => array(
                         'pdfSummary/credit' => 'Credit Note',
                         'pdfSummary/invoice' => 'Invoice',
@@ -202,13 +221,16 @@ if(count($_userData) > 0){
                         'wage_summary' => 'Wage Summary',
                         'paye' => 'PAYE'
                     ),
-                    'Accounting' => array(
+
+                    'Admin' => array(
+                        'jobAuditLog' => 'Job Audit Log',
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',
-                        'outstandingBalance' => 'Outstanding Balance'
-                    ),
-                    'Admin' => array(
-                        'jobAuditLog' => 'Job Audit Log'
+                        'outstandingBalance' => 'Outstanding Balance',
+                        'userList' => 'User',
+                        'itemList' => 'Item',
+                        'tag' => 'Tags',
+                        'emailLog' => 'Email Log'
                     )
                     /*'Admin' => array(
                         'sendRegistration' => 'Mail Registration',
@@ -231,12 +253,12 @@ if(count($_userData) > 0){
 }
 $navTitles['logout'] = 'Logout';
 
-function getSublink($link, $title, $uri){
+function getSublink($link, $title, $uri, $is_multi_level = false){
     $active = array_key_exists($uri, $title);
     ?>
     <li class="dropdown <?php echo $active ? 'active' : '';?>">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $link; ?> </a>
-        <ul class="dropdown-menu">
+        <a href="#" class="dropdown-toggle"><?php echo $link; ?> </a>
+        <ul <?php echo $is_multi_level ? 'class="dropdown-menu multi-level"' : 'class="dropdown-menu"'?>>
             <?php
             foreach($title as $subLink => $subTitle){
                 if(is_array($subTitle)){
@@ -244,7 +266,7 @@ function getSublink($link, $title, $uri){
                 }
                 else{
                     ?>
-                    <li>
+                    <li >
                         <a href="<?php echo $subTitle ? base_url() . $subLink : "#" ?>" style="white-space: nowrap!important;"
                            class="<?php echo $subLink.'Btn';?>"><?php echo $subTitle; ?></a>
                     </li>
@@ -256,13 +278,31 @@ function getSublink($link, $title, $uri){
     </li>
 <?php
 }
+
+function array_depth(array $array) {
+    $max_depth = 1;
+
+    foreach ($array as $value) {
+        if (is_array($value)) {
+            $depth = array_depth($value) + 1;
+
+            if ($depth > $max_depth) {
+                $max_depth = $depth;
+            }
+        }
+    }
+
+    return $max_depth;
+}
+
 ?>
 <ul class="nav navbar-nav">
         <?php
         if(isset($navTitles) && count($navTitles) > 0){
             foreach($navTitles as $link => $title){
                 if(is_array($title)){
-                    getSublink($link, $title, $this->uri->segment(1) ? $this->uri->segment(1) : '');
+                    $is_multi_level = array_depth($title) > 1 ? true : false;
+                    getSublink($link, $title, $this->uri->segment(1) ? $this->uri->segment(1) : '',$is_multi_level);
                 }else{
 
                     ?>

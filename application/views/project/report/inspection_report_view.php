@@ -18,7 +18,14 @@ $side = array(
 );
 ksort($side);
 $_facing = array(
-    'east & south' => 'east & south'
+    'north' => 'north',
+    'south' => 'south',
+    'east' => 'east',
+    'west' => 'west',
+    'south-east' => 'south-east',
+    'north-east' => 'north-east',
+    'south-west' => 'south-west',
+    'north-west' => 'north-west',
 );
 
 ksort($_facing);
@@ -82,6 +89,11 @@ $url = current_url();
 ?>
     <fieldset>
         <div class="col-sm-6">
+            <div class="alert-msg">
+                <div class="alert alert-info" style="padding: 7px!important;">
+                    Please select a <strong>Job</strong> before making changes.
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Job Number:</label>
                 <div class="col-sm-8">
@@ -359,13 +371,39 @@ echo form_close();
             $('.conclusion').each(function(k,v){
                 if ($(this).is("select")) {
                     $('<span class="number-text">#' + ref + '</span>').prependTo($(this).parent());
-                    $('span#' + this.id).html('<span class="dp-number-text">#' + ref + '</span>');
+                    $('span#' + this.id)
+                        .html('<span class="dp-number-text">#' + ref + '</span>')
+                        .attr('data-number',ref);
                     $(this).attr('data-number',ref);
                     ref++;
                 }
             });
         };
 
+        var disabled_action = function(job_id){
+            $('.text').each(function(k,v){
+                $(this).removeAttr('disabled');
+                if(!job_id.val()){
+                    $(this).attr('disabled','disabled');
+                }
+            });
+        };
+        disabled_action(job_id_);
+        var alert_msg = function(job_id){
+            var alert_ = $('.alert-msg');
+
+            alert_.css({
+                display: 'inline'
+            });
+
+            if(job_id.val()){
+                alert_.css({
+                   display: 'none'
+                });
+            }
+        };
+
+        alert_msg(job_id_);
         has_job_id();
         add_hash_number();
 
@@ -378,7 +416,7 @@ echo form_close();
                 if($(this).attr('id') == this_id){
                     var hash = '<span class="dp-number-text">#' + number + '</span>';
                     $(this)
-                        .html(($(this).is('textarea') ? hash : '') + val.replace(/\n/g,'<br/>'));
+                        .html(hash + val.replace(/\n/g,'<br/>'));
                 }
             });
 
@@ -398,6 +436,7 @@ echo form_close();
                 trigger: 'hover',
                 template: template,
                 placement: 'top',
+                delay: {"show": 1500},
                 content: 'Anything shown in blue inside this letter, '
                 + 'will not be included in the report when it is generated. '
                 + 'Blue indicates placeholder indication for navigation purpose only. '
@@ -429,9 +468,11 @@ echo form_close();
 
         job_id_.change(function(){
             var job_id = $(this).val();
-            generate_btn.attr('disabled','disabled');
-            if(job_id){
 
+            generate_btn.attr('disabled','disabled');
+            alert_msg($(this));
+            disabled_action($(this));
+            if(job_id){
                 generate_btn.removeAttr('disabled');
                $.ajax({
                    url: bu + 'inspectionReport?job=' + job_id,
@@ -452,6 +493,8 @@ echo form_close();
                                            $('.text').each(function(){
                                                var _id = this.id;
                                                if(_k == _id){
+                                                   var number = $(this).data('number');
+
                                                    if ($(this).is('input[type="text"]')) {
                                                        $(this).val(_v);
                                                        // <input> element.
@@ -460,13 +503,17 @@ echo form_close();
                                                        $(this).val(_v);
                                                        // <select> element.
                                                    } else if ($(this).is("textarea")) {
-                                                       $(this).html(_v)
+                                                       $(this).html(_v);
                                                    }
                                                    else{
-                                                       $(this).html(_v);
-                                                       if(val){
+                                                       var hash = '';
+
+                                                       if(_v){
+                                                           hash = '<span class="dp-number-text">#' + number + '</span>';
                                                            $(this).parent().find('.dbl-break').html('<br/><br/>');
                                                        }
+
+                                                       $(this).html((typeof number === 'undefined' ? '' : hash) + _v);
                                                    }
                                                }
                                            });
@@ -476,6 +523,7 @@ echo form_close();
                                else{
                                    $('.text').each(function(){
                                        var _id = this.id;
+                                       var number = $(this).data('number');
                                        if(key == _id){
                                            if ($(this).is('input[type="text"]')) {
                                                $(this).val(val);
@@ -491,10 +539,13 @@ echo form_close();
                                                $(this).html(val)
                                            }
                                            else{
-                                               $(this).html(val);
+                                               var hash = '';
                                                if(val){
+                                                   hash = '<span class="dp-number-text">#' + number + '</span>';
                                                    $(this).parent().find('.dbl-break').html('<br/><br/>');
                                                }
+
+                                               $(this).html((typeof number === 'undefined' ? '' : hash) + val);
                                            }
                                        }
                                    });
@@ -504,7 +555,29 @@ echo form_close();
                        });
                    }
                });
-           }
+            }
+            if(!job_id){
+                $('.text').each(function(){
+                    if ($(this).is('input[type="text"]')) {
+                        $(this).val('');
+                        // <input> element.
+                    }
+                    else if ($(this).is('input:radio')) {
+                        $(this).prop('checked', true);
+                    }
+                    else if ($(this).is("select")) {
+                        $(this).val();
+                        // <select> element.
+                    } else if ($(this).is("textarea")) {
+                        $(this).val('')
+                    }
+                    else {
+                        $(this).html('');
+                    }
+                });
+
+                initial_value();
+            }
        });
 
         var initial_value = function(){
@@ -515,8 +588,12 @@ echo form_close();
                     var _this = this;
                     var _id = _this.id;
                     var this_val = $(this).html();
+                    var number = $(this).data('number');
+                    var hash = '<span class="dp-number-text">#' + number + '</span>';
+
                     if(this_id == _id){
-                        $(this).html(this_val + val);
+                        var len = $(this).find('.dp-number-text').length;
+                        $(this).html((!len ? (typeof number === 'undefined' ? '' : hash) : '') + this_val + val);
                     }
                 });
             });

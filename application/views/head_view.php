@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title><?php echo $page_title;?> | Merit Builders</title>
+    <title><?php echo $page_title;?> | Synergy Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!--<link rel="shortcut icon" href="/favicon.ico">-->
@@ -113,6 +113,10 @@
     <link href="<?php echo base_url();?>plugins/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
     <script src="<?php echo base_url();?>plugins/js/bootstrap-datetimepicker.js"></script>
 
+    <!--Multi-select-->
+    <link href="<?php echo base_url();?>plugins/multi-select/css/bootstrap-multiselect.css" rel="stylesheet">
+    <script src="<?php echo base_url();?>plugins/multi-select/js/bootstrap-multiselect.js"></script>
+
     <!--Slick Grid-->
     <link href="<?php echo base_url();?>plugins/slick-grid/css/example-bootstrap.css" rel="stylesheet">
     <link href="<?php echo base_url();?>plugins/slick-grid/css/slick.grid.css" rel="stylesheet">
@@ -137,6 +141,7 @@
     <!--email validation-->
     <script src="<?php echo base_url();?>plugins/js/email.validation.js"></script>
     <script src="<?php echo base_url();?>plugins/js/idle-timer.js"></script>
+
 
     <script>
         /*$.ajaxSetup({ cache: true });*/
