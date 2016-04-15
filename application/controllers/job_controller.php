@@ -354,8 +354,11 @@ class Job_Controller extends Merit{
 
     function trackingLog(){
         $this->load->helper('directory');
+        $account_type = $this->data['accountType'];
+        $user_id = $this->data['_userID'];
+        $inspector_id = $account_type == 4 ? $user_id : '';
         $job_details = new Job_Helper();
-        $this->data['tracking'] = $job_details->jobDetails('',true);
+        $this->data['tracking'] = $job_details->jobDetails('',$inspector_id,true);
         $path = realpath(APPPATH.'../pdf/inspection_report');
         if(count($this->data['tracking']) > 0){
             foreach($this->data['tracking'] as $v){
@@ -367,7 +370,6 @@ class Job_Controller extends Merit{
                         $v->report_file = end($dir_map);
                     }
                 }
-
             }
         }
         $this->data['_pageLoad'] = 'track/tracking_log_view';
@@ -481,11 +483,16 @@ class Job_Controller extends Merit{
     }
 
     function inspectionReport(){
+        $this->load->helper('directory');
         $this->main_model->setSelectFields(array(
             'id','CONCAT(LPAD(id,5,0)," (", project_name ,")") as job_name'
         ));
+        $account_type = $this->data['accountType'];
+        $user_id = $this->data['_userID'];
+        $whatVal = $account_type == 4 ? $user_id : '';
+        $whatFld = $account_type == 4 ? 'inspector_id' : '';
         $this->main_model->setNormalized('job_name','id');
-        $this->data['job_number'] = $this->main_model->getinfo('tbl_job_registration');
+        $this->data['job_number'] = $this->main_model->getinfo('tbl_job_registration',$whatVal,$whatFld);
         $this->data['job_number'][''] = '-';
         ksort($this->data['job_number']);
 
@@ -512,6 +519,7 @@ class Job_Controller extends Merit{
 
         if(isset($_POST['generate'])){
             unset($_POST['generate']);
+            $_POST['user_id'] = $user_id;
             $_POST['conclusion'] = count($_POST['conclusion']) > 0 ? json_encode($_POST['conclusion']) : '';
             $_POST['notes'] = count($_POST['notes']) > 0 ? json_encode($_POST['notes']) : '';
             //region Upload Photo
@@ -528,6 +536,7 @@ class Job_Controller extends Merit{
 
                     if (move_uploaded_file($_FILES['photo']['tmp_name'], $file)) {
                         $_POST['photo'] = $file_name;
+                        $_POST['is_generated'] = 1;
                     }
 
                 }
@@ -569,15 +578,39 @@ class Job_Controller extends Merit{
             if(!is_dir($this->data['save_path'])){
                 mkdir($this->data['save_path'], 0777, TRUE);
             }
+            $post['is_generated'] = 1;
+            $_POST['user_id'] = $user_id;
+            $this->merit_model->update('tbl_site_inspection_report',$post,$_GET['job'],'job_id',false);
 
             $this->load->view('project/report/inspection_report_pdf',$this->data);
         }
+
         if(isset($_GET['job']) && $_GET['job']){
             $_job_id = $_GET['job'];
             $job = new Job_Helper();
             $_job = $job->jobDetails($_job_id);
 
             echo json_encode($_job);
+        }
+        else if(isset($_GET['email'])){
+            $this->load->view('project/report/email_setup_view',$this->data);
+        }
+        else if(isset($_GET['r'])){
+            $id = isset($_GET['id']) ? $_GET['id'] : 0;
+            $path = realpath(APPPATH.'../pdf/inspection_report');
+            $_file = '';
+            if(file_exists($path.'/'.$id)){
+                $dir_map = directory_map($path.'/'.$id);
+                if(count($dir_map) > 0){
+                    sort($dir_map);
+                    $_file = end($dir_map);
+                }
+            }
+            $this->data['_file'] = $_file;
+            $this->data['_id'] = $id;
+            $this->data['_pageTitle'] .= ' - Review';
+            $this->data['_pageLoad'] = 'project/report/inspection_report_review';
+            $this->load->view('main_view',$this->data);
         }
         else{
             if(isset($_GET['tag'])){
@@ -738,5 +771,10 @@ class Job_Controller extends Merit{
             'from' => json_encode($tags)
         );
         $this->main_model->insert('tbl_system_audit_log', $post, false);*/
+    }
+
+    function onSiteVisit(){
+        $this->data['_pageLoad'] = 'on_site/on_site_view';
+        $this->load->view('main_view',$this->data);
     }
 }

@@ -94,7 +94,7 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Property Status:</label>
-                <?php echo form_dropdown('property_status_id',$drop_down[9],@$job->property_status_id,'class="form-control input-sm required"');?>
+                <?php echo form_dropdown('property_status_id',$drop_down[9],@$job->property_status_id,'class="form-control input-sm"');?>
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Tenant:</label>
@@ -135,7 +135,7 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Inspector:</label>
-                <?php echo form_dropdown('inspector_id',$inspector,@$job->inspector_id,'class="form-control input-sm required"');?>
+                <?php echo form_dropdown('inspector_id',$inspector,@$job->inspector_id,'class="form-control input-sm"');?>
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Account Mgr:</label>

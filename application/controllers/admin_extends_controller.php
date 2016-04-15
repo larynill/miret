@@ -290,4 +290,50 @@ class Admin_Extends_Controller extends Admin_Controller{
             $this->my_model->update('tbl_email_log',array('type'=>3),$_POST['id']);
         }
     }
+
+    function leads(){
+
+        $action = $this->uri->segment(2);
+
+        if(isset($_POST['submitLead'])){
+            unset($_POST['submitLead']);
+            $_POST['user_id'] = $this->session->userdata('user_id');
+            $this->my_model->insert('tbl_leads',$_POST);
+            redirect('leads');
+        }
+
+        if($action == 'add_lead'){
+
+            $this->my_model->setNormalized('leads_status','id');
+            $this->my_model->setSelectFields(array('id','leads_status'));
+            $this->data['leads_status'] = $this->my_model->getInfo('tbl_leads_status');
+
+            $this->my_model->setNormalized('Name','id');
+            $this->my_model->setSelectFields(array('id','Name'));
+            $this->data['country'] = $this->my_model->getInfo('tbl_country');
+
+            $this->load->view('leads/add_leads_view',$this->data);
+        } else {
+
+            $this->my_model->setJoin(
+                array(
+                    'table' => array('tbl_country','tbl_leads_status'),
+                    'join_field' => array('id','id'),
+                    'source_field' => array('tbl_leads.country','tbl_leads.status_id'),
+                    'type' => 'left'
+                )
+            );
+            $fields = $this->arrayWalk(
+                array('id','first_name','last_name','title','phone','email','city','state_province')
+                ,'tbl_leads.'
+            );
+            $fields[] = 'tbl_country.Name as country_name';
+            $fields[] = 'tbl_leads_status.leads_status';
+            $this->my_model->setSelectFields($fields);
+            $this->data['leads'] = $this->my_model->getInfo('tbl_leads',$this->session->userdata('user_id'),'tbl_leads.user_id');
+
+            $this->data['_pageLoad'] = 'leads/leads_view';
+            $this->load->view('main_view',$this->data);
+        }
+    }
 }

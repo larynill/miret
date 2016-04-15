@@ -13,7 +13,13 @@
         <th>Report Sent</th>
         <th style="width: 10%">Notes</th>
         <th style="width: 3%">Report</th>
-        <th>&nbsp;</th>
+        <?php
+        if($accountType != 4){
+            ?>
+            <th>&nbsp;</th>
+        <?php
+        }
+        ?>
     </tr>
     </thead>
     <tbody>
@@ -96,12 +102,18 @@
                     <?php
                     if($v->report_file){
                         ?>
-                        <a href="<?php echo base_url('pdf/inspection_report/' . $v->id . '/' . $v->report_file)?>" target="_blank">view</a>
+                        <a href="<?php echo base_url('inspectionReport?r=1&id=' . $v->id)?>">view</a>
                         <?php
                     }
                     ?>
                 </td>
-                <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>
+                <?php
+                if($accountType != 4){
+                    ?>
+                    <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>
+                    <?php
+                }
+                ?>
             </tr>
         <?php
         }
@@ -109,7 +121,7 @@
     else{
         ?>
         <tr>
-            <td colspan="12">No data was found.</td>
+            <td colspan="13">No data was found.</td>
         </tr>
     <?php
     }
