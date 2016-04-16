@@ -13,6 +13,7 @@
         <th>Report Sent</th>
         <th style="width: 10%">Notes</th>
         <th style="width: 3%">Report</th>
+<<<<<<< HEAD
         <?php
         if($accountType != 4){
             ?>
@@ -20,6 +21,9 @@
         <?php
         }
         ?>
+=======
+        <th>&nbsp;</th>
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
     </tr>
     </thead>
     <tbody>
@@ -102,11 +106,16 @@
                     <?php
                     if($v->report_file){
                         ?>
+<<<<<<< HEAD
                         <a href="<?php echo base_url('inspectionReport?r=1&id=' . $v->id)?>">view</a>
+=======
+                        <a href="<?php echo base_url('pdf/inspection_report/' . $v->id . '/' . $v->report_file)?>" target="_blank">view</a>
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                         <?php
                     }
                     ?>
                 </td>
+<<<<<<< HEAD
                 <?php
                 if($accountType != 4){
                     ?>
@@ -114,6 +123,9 @@
                     <?php
                 }
                 ?>
+=======
+                <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
             </tr>
         <?php
         }
@@ -121,7 +133,11 @@
     else{
         ?>
         <tr>
+<<<<<<< HEAD
             <td colspan="13">No data was found.</td>
+=======
+            <td colspan="12">No data was found.</td>
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
         </tr>
     <?php
     }

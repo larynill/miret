@@ -290,6 +290,7 @@ class Admin_Extends_Controller extends Admin_Controller{
             $this->my_model->update('tbl_email_log',array('type'=>3),$_POST['id']);
         }
     }
+<<<<<<< HEAD
 
     function leads(){
 
@@ -336,4 +337,6 @@ class Admin_Extends_Controller extends Admin_Controller{
             $this->load->view('main_view',$this->data);
         }
     }
+=======
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
 }

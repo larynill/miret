@@ -152,11 +152,15 @@ if(count($_userData) > 0){
             case 4:
                 $navTitles = array(
                     'dashboard' => 'Home',
+<<<<<<< HEAD
                     'trackingLog' => 'Tracking Log',
                     'Inspections' => array(
                         '../insurance/public/' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
+=======
+                    'inspectionReport' => 'Inspection Report',
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                     'myDiary' => 'Diary',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
@@ -198,14 +202,20 @@ if(count($_userData) > 0){
             case 1:
                 $navTitles = array(
                     'diary' => 'Diary',
+<<<<<<< HEAD
                     'leads' => 'Leads',
+=======
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                     'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
                     'Inspections' => array(
+<<<<<<< HEAD
                         '../insurance/public/' => 'On-site Visit',
+=======
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(

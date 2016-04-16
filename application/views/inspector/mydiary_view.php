@@ -157,6 +157,7 @@
                     $(this).css(
                         'z-index', 99999
                     );
+<<<<<<< HEAD
                     $('.tooltipevent')
                         .fadeIn('500')
                         .fadeTo('10', 1.9);
@@ -165,6 +166,14 @@
                         $('.tooltipevent')
                             .css('top', e.pageY - 5)
                             .css('left', e.pageX + 30);
+=======
+                    $('.tooltipevent').fadeIn('500');
+                    $('.tooltipevent').fadeTo('10', 1.9);
+
+                }).mousemove(function(e) {
+                        $('.tooltipevent').css('top', e.pageY - 5);
+                        $('.tooltipevent').css('left', e.pageX + 30);
+>>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                     });
 
             },
