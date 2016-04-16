@@ -94,11 +94,7 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Property Status:</label>
-<<<<<<< HEAD
                 <?php echo form_dropdown('property_status_id',$drop_down[9],@$job->property_status_id,'class="form-control input-sm"');?>
-=======
-                <?php echo form_dropdown('property_status_id',$drop_down[9],@$job->property_status_id,'class="form-control input-sm required"');?>
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Tenant:</label>

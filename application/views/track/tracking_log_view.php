@@ -13,7 +13,6 @@
         <th>Report Sent</th>
         <th style="width: 10%">Notes</th>
         <th style="width: 3%">Report</th>
-<<<<<<< HEAD
         <?php
         if($accountType != 4){
             ?>
@@ -21,9 +20,6 @@
         <?php
         }
         ?>
-=======
-        <th>&nbsp;</th>
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
     </tr>
     </thead>
     <tbody>

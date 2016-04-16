@@ -5,10 +5,7 @@
  */
 .bootstrap-datetimepicker-widget {
   list-style: none;
-<<<<<<< HEAD
   z-index: 99999999!important;
-=======
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
 }
 .bootstrap-datetimepicker-widget.dropdown-menu {
   margin: 2px 0;

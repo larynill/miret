@@ -2,11 +2,7 @@
 
 class Job_Helper extends CI_Controller{
 
-<<<<<<< HEAD
     function jobDetails($job_id = '',$inspector_id = '',$group_by = false){
-=======
-    function jobDetails($job_id = '',$group_by = false){
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
         $this->main_model->setJoin(array(
             'table' => array(
                 'tbl_user as account_manager','tbl_user as inspector',
@@ -52,7 +48,6 @@ class Job_Helper extends CI_Controller{
         if($group_by){
             $this->main_model->setGroupBy('tbl_job_registration.id');
         }
-<<<<<<< HEAD
         $whatVal = '';
         $whatFld = '';
         if($inspector_id){
@@ -64,9 +59,6 @@ class Job_Helper extends CI_Controller{
             $whatFld = 'tbl_job_registration.id';
         }
         $job = $this->main_model->getinfo('tbl_job_registration',$whatVal,$whatFld);
-=======
-        $job = $this->main_model->getinfo('tbl_job_registration',$job_id,'tbl_job_registration.id');
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
 
         $this->main_model->setNormalized('job_type_specs','id');
         $this->main_model->setSelectFields(array('id','job_type_specs'));
@@ -112,11 +104,7 @@ class Job_Helper extends CI_Controller{
         $title = 'Job <strong>' . $job_num . '  ' . $job_data->project_name . '</strong> ' . ($used_is ? 'is ' : '') . $msg . '.';
         $notification = '<strong>Job:</strong> <a href="' . base_url() . 'jobRegistration?id=' . $job_id . '">' .
             $job_num . '</a>  ' . $job_data->project_name .
-<<<<<<< HEAD
             ($used_is ? ' is ' : ' ') . $msg .'<strong>';
-=======
-            ($used_is ? 'is ' : ' ') . $msg .'<strong>';
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
 
         $n = new Notification_Helper();
         $n->createNotificationHelper($job_id, $this->session->userdata('userID'), $title, $notification);
