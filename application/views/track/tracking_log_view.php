@@ -47,7 +47,7 @@
                     <div class="job-details" id="form_<?php echo $v->id;?>">
                         <table class="table-details" style="width: 100%;">
                             <tr>
-                                <th classolspan="4"><center>Job Details</center></th>
+                                <th colspan="4"><center>Job Details</center></th>
                             </tr>
                             <tr>
                                 <td id="contentholder">Owner:</td>
@@ -216,16 +216,6 @@
                 title: 'Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
         });
-        // $('.job-name').click(function(){
-        //     $(this).modifiedModal({
-        //         // url: bu + 'jobNotes/' + this.id,
-        //         // var bu = '<?php echo base_url();?>';
-        //         // url: bu + 'jobdetails',
-        //         title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
-
-                
-        //     });
-        // });
         $('.btn-add').click(function(){
             $(this).modifiedModal({
                 // url: bu + 'jobNotes/' + this.id,

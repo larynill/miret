@@ -2,23 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2d17853f-e0da-4e30-8e1e-28c933563d23" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/plugins/css/bootstrap-select.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/plugins/js/bootstrap-waitingfor.min.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/controllers/on_site_controller.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/js/bootstrap-select.js" afterPath="$PROJECT_DIR$/plugins/js/bootstrap-select.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/css/bootstrap-theme.css.map" afterPath="$PROJECT_DIR$/plugins/css/bootstrap-theme.css.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/css/bootstrap.css.map" afterPath="$PROJECT_DIR$/plugins/css/bootstrap.css.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/config/database.php" afterPath="$PROJECT_DIR$/application/config/database.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/client/edit_client_profile.php" afterPath="$PROJECT_DIR$/application/views/client/edit_client_profile.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/css/fileinput.css" afterPath="$PROJECT_DIR$/plugins/css/fileinput.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/js/fileinput.js" afterPath="$PROJECT_DIR$/plugins/js/fileinput.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/head_view.php" afterPath="$PROJECT_DIR$/application/views/head_view.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/job_controller.php" afterPath="$PROJECT_DIR$/application/controllers/job_controller.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/pagecomponents/menu_view.php" afterPath="$PROJECT_DIR$/application/views/pagecomponents/menu_view.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/on_site/on_site_view.php" afterPath="$PROJECT_DIR$/application/views/on_site/on_site_view.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/track/tracking_log_view.php" afterPath="$PROJECT_DIR$/application/views/track/tracking_log_view.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="merit.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -55,9 +40,18 @@
       <file leaf-file-name="tracking_log_view.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/views/track/tracking_log_view.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.63106793" vertical-offset="0" max-vertical-offset="3360">
-              <caret line="26" column="9" selection-start-line="26" selection-start-column="9" selection-end-line="26" selection-end-column="9" />
-              <folding />
+            <state vertical-scroll-proportion="0.49029127" vertical-offset="2952" max-vertical-offset="3570">
+              <caret line="217" column="11" selection-start-line="217" selection-start-column="11" selection-end-line="217" selection-end-column="11" />
+              <folding>
+                <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#10;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#11;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#td#1;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#td#2;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#td#3;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#table#0;n#div#0;n#td#4;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -221,6 +215,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../merit" />
   </component>
   <component name="RunManager">
     <list size="0" />
@@ -303,9 +298,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/views/track/tracking_log_view.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63106793" vertical-offset="0" max-vertical-offset="3360">
-          <caret line="26" column="9" selection-start-line="26" selection-start-column="9" selection-end-line="26" selection-end-column="9" />
-          <folding />
+        <state vertical-scroll-proportion="0.49029127" vertical-offset="2952" max-vertical-offset="3570">
+          <caret line="217" column="11" selection-start-line="217" selection-start-column="11" selection-end-line="217" selection-end-column="11" />
+          <folding>
+            <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#10;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#11;n#tr#0;n#thead#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#1;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#2;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#3;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#0;n#td#4;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
