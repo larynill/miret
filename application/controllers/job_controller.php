@@ -772,9 +772,4 @@ class Job_Controller extends Merit{
         );
         $this->main_model->insert('tbl_system_audit_log', $post, false);*/
     }
-
-    function onSiteVisit(){
-        $this->data['_pageLoad'] = 'on_site/on_site_view';
-        $this->load->view('main_view',$this->data);
-    }
 }
