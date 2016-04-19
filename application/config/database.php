@@ -52,6 +52,7 @@ $db['default']['hostname'] = 'localhost';//192.168.0.107
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';//h1oXzjCe
 $db['default']['database'] = 'db_merit';
+$db['default']['site'] = 'db_insurance';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

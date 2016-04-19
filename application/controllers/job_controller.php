@@ -354,7 +354,6 @@ class Job_Controller extends Merit{
 
     function trackingLog(){
         $this->load->helper('directory');
-
         $account_type = $this->data['accountType'];
         $user_id = $this->data['_userID'];
         $inspector_id = $account_type == 4 ? $user_id : '';
@@ -495,7 +494,6 @@ class Job_Controller extends Merit{
         $whatFld = $account_type == 4 ? 'inspector_id' : '';
         $this->main_model->setNormalized('job_name','id');
         $this->data['job_number'] = $this->main_model->getinfo('tbl_job_registration',$whatVal,$whatFld);
-
         $this->data['job_number'][''] = '-';
         ksort($this->data['job_number']);
 
@@ -774,10 +772,5 @@ class Job_Controller extends Merit{
             'from' => json_encode($tags)
         );
         $this->main_model->insert('tbl_system_audit_log', $post, false);*/
-    }
-
-    function onSiteVisit(){
-        $this->data['_pageLoad'] = 'on_site/on_site_view';
-        $this->load->view('main_view',$this->data);
     }
 }
