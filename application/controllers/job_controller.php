@@ -359,6 +359,7 @@ class Job_Controller extends Merit{
         $inspector_id = $account_type == 4 ? $user_id : '';
         $job_details = new Job_Helper();
         $this->data['tracking'] = $job_details->jobDetails('',$inspector_id,true);
+
         $path = realpath(APPPATH.'../pdf/inspection_report');
         if(count($this->data['tracking']) > 0){
             foreach($this->data['tracking'] as $v){

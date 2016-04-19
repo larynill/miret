@@ -25,6 +25,7 @@ class Items_To_Action_Controller extends CI_Controller{
             'type' => 'left'
         ));
         $this->main_model->setSelectFields('tbl_job_registration.*','CONCAT(tbl_user.FName, " ", tbl_user.LName) as name');
+
         $_job_data = $this->merit_model->getInfo('tbl_job_registration',$whatVal,$whatFld);
 
         if(count($_job_data) > 0){

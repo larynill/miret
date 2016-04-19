@@ -1,17 +1,18 @@
 <table class="table table-responsive table-colored-header">
     <thead>
     <tr>
+        <!-- <th class="b"></th> -->
         <th>Date Received</th>
         <th>Policy No.</th>
         <th>Client Ref.</th>
         <th>Our Ref.</th>
-        <th style="width: 25%;">Job Name</th>
-        <th>Status</th>
-        <th>Job Type</th>
-        <th>Inspector</th>
-        <th>Inspector<br/>to visit</th>
-        <th>Report Sent</th>
-        <th style="width: 10%">Notes</th>
+        <th style="width: 20%;">Job Name</th>
+        <th class="data-column">Status</th>
+        <th class="data-column">Job Type</th>
+        <th class="data-column">Inspector</th>
+        <th class="data-column">Inspector<br/>to visit</th>
+        <th class="data-column">Report Sent</th>
+        <th style="width: 10%" >Notes</th>
         <th style="width: 3%">Report</th>
         <?php
         if($accountType != 4){
@@ -35,12 +36,13 @@
                 }
             }
             ?>
-            <tr>
-                <td><?php echo $v->date_entered;?></td>
+            <tr id="a">
+                <!-- <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a b"> <span class="glyphicon glyphicon-th-list" id="b"></span></td> -->
+                <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a"><?php echo $v->date_entered;?></td>
                 <td><?php echo $v->policy_number;?></td>
                 <td class="white-space"><?php echo $v->client_ref;?></td>
                 <td class="white-space"><?php echo $v->job_ref;?></td>
-                <td class="white-space job-name" id="<?php echo $v->id;?>">
+                <td class="white-space job-name" id="<?php echo $v->id;?>" data-title="<?php echo $v->project_name;?>">
                     <?php echo $v->project_name;?>
                     <div class="job-details" id="form_<?php echo $v->id;?>">
                         <table class="table-details" style="width: 100%;">
@@ -48,7 +50,7 @@
                                 <th colspan="4" class="text-center">Job Details</th>
                             </tr>
                             <tr>
-                                <td>Owner:</td>
+                                <td id="contentholder">Owner:</td>
                                 <td><?php echo $v->owner;?></td>
                                 <td>Owner Email:</td>
                                 <td><?php echo $v->owner_email;?></td>
@@ -76,23 +78,23 @@
                             <tr>
                                 <td>Tenant:</td>
                                 <td><?php echo $v->tenant;?></td>
-                                <td>Property Status:</td>
+                                <td >Property Status:</td>
                                 <td><?php echo $v->property_status;?></td>
                             </tr>
                         </table>
                     </div>
                 </td>
-                <td>
-                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>"><?php echo $v->job_status_code;?></strong>
+                <td class="data-column">
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>" ><?php echo $v->job_status_code;?></strong>
                 </td>
-                <td>
+                <td class="data-column">
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>"><?php echo $v->job_type_code;?></strong>
                 </td>
-                <td>
+                <td class="data-column">
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>"><?php echo $acronym;?></strong>
                 </td>
-                <td class="white-space"><?php echo $v->inspection_time;?></td>
-                <td class="white-space"><?php echo $v->date_completed;?></td>
+                <td class="white-space data-column"><?php echo $v->inspection_time;?></td>
+                <td class="white-space data-column"><?php echo $v->date_completed;?></td>
                 <td class="notes">
                     <?php
                     echo '<a href="#" class="btn-review btn btn-sm btn-primary" id="' . $v->id . '" data-title="' . $v->project_name . '" style="padding: 2px 10px;;">Review/Add</a>&nbsp;';
@@ -114,6 +116,14 @@
                     <?php
                 }
                 ?>
+            </tr>
+            <tr>
+                <td  id="a<?php echo $v->id;?>" class="columnHide">
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>">Inspector:<br><?php echo $v->inspector_name;?></strong><br>
+                    <?php echo $v->inspection_time;?>
+                </td>
             </tr>
         <?php
         }
@@ -178,7 +188,14 @@
             function(){
                 $('.job-details').css({'display':'none'});
             }
-        );
+        )
+            .click(function(){
+                $(this).modifiedModal({
+                    // url: bu + 'jobNotes/' + this.id,
+                    title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
+
+                });
+            });
         $('.btn-review').click(function(){
             $(this).modifiedModal({
                 url: bu + 'jobNotes/' + this.id + '?is_review=1',
@@ -190,6 +207,12 @@
                 url: bu + 'jobNotes/' + this.id,
                 title: 'Add Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
+        });
+        $('.a').click(function() {
+         var trid = $(this).closest('td').attr('id');
+         // alert(trid);
+         // $(trid).show();
+         $('#a'+ trid).toggle();
         });
     })
 </script>
