@@ -354,11 +354,13 @@ class Job_Controller extends Merit{
 
     function trackingLog(){
         $this->load->helper('directory');
+
         $account_type = $this->data['accountType'];
         $user_id = $this->data['_userID'];
         $inspector_id = $account_type == 4 ? $user_id : '';
         $job_details = new Job_Helper();
         $this->data['tracking'] = $job_details->jobDetails('',$inspector_id,true);
+
         $path = realpath(APPPATH.'../pdf/inspection_report');
         if(count($this->data['tracking']) > 0){
             foreach($this->data['tracking'] as $v){
@@ -493,6 +495,7 @@ class Job_Controller extends Merit{
         $whatFld = $account_type == 4 ? 'inspector_id' : '';
         $this->main_model->setNormalized('job_name','id');
         $this->data['job_number'] = $this->main_model->getinfo('tbl_job_registration',$whatVal,$whatFld);
+
         $this->data['job_number'][''] = '-';
         ksort($this->data['job_number']);
 
