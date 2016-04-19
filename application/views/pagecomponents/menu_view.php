@@ -154,7 +154,7 @@ if(count($_userData) > 0){
                     'dashboard' => 'Home',
                     'trackingLog' => 'Tracking Log',
                     'Inspections' => array(
-                        '../insurance/public/' => 'On-site Visit',
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'myDiary' => 'Diary',
@@ -205,7 +205,7 @@ if(count($_userData) > 0){
                         'jobRegistration' => 'Registration'
                     ),
                     'Inspections' => array(
-                        '../insurance/public/' => 'On-site Visit',
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(

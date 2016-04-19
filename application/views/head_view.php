@@ -142,7 +142,6 @@
     <script src="<?php echo base_url();?>plugins/js/email.validation.js"></script>
     <script src="<?php echo base_url();?>plugins/js/idle-timer.js"></script>
 
-
     <script>
         /*$.ajaxSetup({ cache: true });*/
 		var bu = '<?php echo base_url();?>';
