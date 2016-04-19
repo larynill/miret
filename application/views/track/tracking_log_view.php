@@ -47,7 +47,7 @@
                     <div class="job-details" id="form_<?php echo $v->id;?>">
                         <table class="table-details" style="width: 100%;">
                             <tr>
-                                <th colspan="4" class="text-center">Job Details</th>
+                                <th colspan="4"><center>Job Details</center></th>
                             </tr>
                             <tr>
                                 <td id="contentholder">Owner:</td>
@@ -133,7 +133,7 @@
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>">Inspector:<br><?php echo $v->inspector_name;?></strong><br>
                     <?php echo $v->inspection_time;?>
-                </td>
+                </td>   
             </tr>
         <?php
         }
@@ -203,7 +203,7 @@
             function(){
                 console.log('working');
                 var ele = $('.job-details').html();
-                  $(this).modifiedModal({
+                $(this).modifiedModal({
                 html: ele,
                 title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
                 
