@@ -2458,9 +2458,12 @@ table th[class*="col-"] {
   .job-details > .table-details{
     display: none;
   }
-.a{
+  .a{
   pointer-events:auto;
-}
+  }
+  .job-name{
+    pointer-events:auto;
+  }
   .data-column{
     display: none;
   }

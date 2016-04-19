@@ -3,9 +3,9 @@
     <tr>
         <!-- <th class="b"></th> -->
         <th>Date Received</th>
-        <th>Policy No.</th>
-        <th>Client Ref.</th>
-        <th>Our Ref.</th>
+        <th class="data-column">Policy No.</th>
+        <th class="data-column">Client Ref.</th>
+        <th class="data-column">Our Ref.</th>
         <th style="width: 20%;">Job Name</th>
         <th class="data-column">Status</th>
         <th class="data-column">Job Type</th>
@@ -39,31 +39,37 @@
             <tr id="a">
                 <!-- <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a b"> <span class="glyphicon glyphicon-th-list" id="b"></span></td> -->
                 <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a"><?php echo $v->date_entered;?></td>
-                <td><?php echo $v->policy_number;?></td>
-                <td class="white-space"><?php echo $v->client_ref;?></td>
-                <td class="white-space"><?php echo $v->job_ref;?></td>
+                <td style="cursor:pointer" class="a data-column" id="<?php echo $v->id;?>"><?php echo $v->policy_number;?></td>
+                <td style="cursor:pointer" class="white-space a data-column" id="<?php echo $v->id;?>"><?php echo $v->client_ref;?></td>
+                <td style="cursor:pointer" class="white-space a data-column"><?php echo $v->job_ref;?></td>
                 <td class="white-space job-name" id="<?php echo $v->id;?>" data-title="<?php echo $v->project_name;?>">
                     <?php echo $v->project_name;?>
                     <div class="job-details" id="form_<?php echo $v->id;?>">
                         <table class="table-details" style="width: 100%;">
                             <tr>
-                                <th classolspan="4" class="text-center">Job Details</th>
+                                <th classolspan="4"><center>Job Details</center></th>
                             </tr>
                             <tr>
                                 <td id="contentholder">Owner:</td>
                                 <td><?php echo $v->owner;?></td>
+                            </tr>
+                            <tr>
                                 <td>Owner Email:</td>
                                 <td><?php echo $v->owner_email;?></td>
                             </tr>
                             <tr>
                                 <td>Mobile:</td>
                                 <td><?php echo $v->owner_mobile;?></td>
+                            </tr>
+                            <tr>
                                 <td>Phone:</td>
                                 <td><?php echo $v->owner_phone;?></td>
                             </tr>
                             <tr>
                                 <td>Insured Name:</td>
                                 <td><?php echo $v->insured_name;?></td>
+                            </tr>
+                            <tr>
                                 <td>Account Mgr:</td>
                                 <td><?php echo $v->account_manager_name;?></td>
                             </tr>
@@ -78,6 +84,8 @@
                             <tr>
                                 <td>Tenant:</td>
                                 <td><?php echo $v->tenant;?></td>
+                            </tr>
+                            <tr>
                                 <td >Property Status:</td>
                                 <td><?php echo $v->property_status;?></td>
                             </tr>
@@ -104,16 +112,11 @@
                     <?php
                     if($v->report_file){
                         ?>
-<<<<<<< HEAD
                         <a href="<?php echo base_url('inspectionReport?r=1&id=' . $v->id)?>">view</a>
-=======
-                        <a href="<?php echo base_url('pdf/inspection_report/' . $v->id . '/' . $v->report_file)?>" target="_blank">view</a>
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
                         <?php
                     }
                     ?>
                 </td>
-<<<<<<< HEAD
                 <?php
                 if($accountType != 4){
                     ?>
@@ -121,14 +124,13 @@
                     <?php
                 }
                 ?>
-=======
-                <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
             </tr>
-            <tr>
+            <tr >
                 <td  id="a<?php echo $v->id;?>" class="columnHide">
-                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br>
-                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Policy Number:<br></strong><?php echo $v->policy_number;?><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Client Reference:<br></strong><?php echo $v->client_ref;?><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>">Inspector:<br><?php echo $v->inspector_name;?></strong><br>
                     <?php echo $v->inspection_time;?>
                 </td>   
@@ -139,11 +141,7 @@
     else{
         ?>
         <tr>
-<<<<<<< HEAD
             <td colspan="13">No data was found.</td>
-=======
-            <td colspan="12">No data was found.</td>
->>>>>>> 38adecbc82bdc07c40b0e1f0994baccc4a3c49f9
         </tr>
     <?php
     }
@@ -200,6 +198,17 @@
             function(){
                 $('.job-details').css({'display':'none'});
             }
+        )
+        .click(
+            function(){
+                console.log('working');
+                var ele = $('.job-details').html();
+                  $(this).modifiedModal({
+                html: ele,
+                title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
+                
+            });
+            }
         );
         $('.btn-review').click(function(){
             $(this).modifiedModal({
@@ -207,18 +216,19 @@
                 title: 'Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
         });
-        $('.job-name').click(function(){
-            $(this).modifiedModal({
-                // url: bu + 'jobNotes/' + this.id,
-                // var bu = '<?php echo base_url();?>';
-                // url: bu + 'jobdetails',
-                title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
+        // $('.job-name').click(function(){
+        //     $(this).modifiedModal({
+        //         // url: bu + 'jobNotes/' + this.id,
+        //         // var bu = '<?php echo base_url();?>';
+        //         // url: bu + 'jobdetails',
+        //         title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
+
                 
-            });
-        });
+        //     });
+        // });
         $('.btn-add').click(function(){
             $(this).modifiedModal({
-                url: bu + 'jobNotes/' + this.id,
+                // url: bu + 'jobNotes/' + this.id,
                 title: 'Add Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
         });
@@ -229,4 +239,4 @@
          $('#a'+ trid).toggle();
         });
     })
-</script>
+</script>   
