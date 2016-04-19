@@ -234,6 +234,7 @@ class On_Site_Controller extends Merit{
         $this->data['job_detail'] = $job_detail;
 
         $this->merit_model->setSelectFields(array('id', 'instruction_received'));
+        $this->merit_model->setNormalized('instruction_received','id');
         $instruction_received = $this->merit_model->getInfo($site . '.tbl_instruction_received');
         $this->data['instruction_received'] = $instruction_received;
 

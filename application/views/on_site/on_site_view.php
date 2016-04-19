@@ -65,6 +65,9 @@
     .panel-body{
         font-size: 12px!important;
     }
+    input[type=checkbox],input[type=radio]{
+        height: 20px;
+    }
 </style>
 <?php
 echo form_open('');
@@ -74,7 +77,7 @@ echo form_open('');
         <div class="panel-heading" role="tab" data-toggle="collapse" data-parent="#accordion" data-target="#job_details" aria-expanded="true">
             <h4 class="panel-title">Job Details</h4>
         </div>
-        <div id="job_details" class="panel-collapse collapse in" role="tabpanel">
+        <div id="job_details" class="panel-collapse collapse" role="tabpanel">
             <div class="panel-body">
                 <div class="row">
                     <div class="col-sm-6">
@@ -105,21 +108,9 @@ echo form_open('');
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-10">
+                                    <div class="col-md-5">
                                         <label class="control-label">Instruction Received</label>
-                                        <div class="row">
-                                            <?php
-                                            if(count($instruction_received) > 0){
-                                                foreach ($instruction_received as $v) {
-                                                    ?>
-                                                    <div class="col-md-3 form-inline">
-                                                        <input type="radio" name="job_details[instruction_received]" class="job-details" value="<?php echo $v->id;?>" <?php echo @$job_detail->instruction_received == $v->id ? 'checked' : '' ?>/>&nbsp;<?php echo $v->instruction_received ?>
-                                                    </div>
-                                                <?php
-                                                }
-                                            }
-                                            ?>
-                                        </div>
+                                        <?php echo form_dropdown('job_details[instruction_received]',$instruction_received,'','class="job-details form-control input-sm"');?>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +121,7 @@ echo form_open('');
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <label class="control-label">Name</label>
                                         <input type="text" class="form-control input-sm job-details" data-type="owner" name="job_details[occupier_name]" value="<?php echo @$job_detail->occupier_name ?>" />
                                     </div>
@@ -146,9 +137,9 @@ echo form_open('');
                                         <label class="control-label">Mobile</label>
                                         <input type="text" class="form-control input-sm job-details" data-type="owner_mobile" name="job_details[occupier_mobile]" value="<?php echo @$job_detail->occupier_mobile ?>" />
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <label class="control-label">Email</label>
-                                        <input type="email" class="form-control input-sm job-details" data-type="owner_emaile" name="job_details[occupier_email]" value="<?php echo @$job_detail->occupier_email ?>" />
+                                        <input type="email" class="form-control input-sm job-details" data-type="owner_email" name="job_details[occupier_email]" value="<?php echo @$job_detail->occupier_email ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -268,7 +259,7 @@ echo form_open('');
                                         <label class="control-label">Mobile</label>
                                         <input type="text" class="form-control job-details input-sm" data-type="owner_mobile" name="job_details[property_mobile]" value="<?php echo @$job_detail->property_mobile ?>" />
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <label class="control-label">Email</label>
                                         <input type="email" class="form-control job-details input-sm" data-type="owner_email" name="job_details[property_email]" value="<?php echo @$job_detail->property_email ?>" />
                                     </div>
@@ -565,7 +556,7 @@ function generateInputs($field_value, $per_option, $default_value, $menu_info, $
                                     continue;
                                 }
                             }
-                            $str .= '<div class="col-md-6">';
+                            $str .= '<div class="col-md-9">';
                             $keyExist = $is_checked && is_array($is_val) ? array_key_exists('_count', $is_val) : 0;
                             $str .= '<div class="form-inline" style="margin-bottom: 5px;">';
 
@@ -701,8 +692,14 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
                 }
                 else{
                     $str .=
-                        '<div class="col-md-' . $rowCount . '">
-                            <input type="' . $v . '" class="form-control input-sm" name="' . $fn . '" placeholder="' . $placeholder . '" value="' . $input_field_value . '"' . ($is_test ? ' disabled' : '') . '>
+                        '<div class="row">
+                             <div class="col-md-' . $rowCount . '">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="' . $v . '" class="form-control input-sm" name="' . $fn . '" placeholder="' . $placeholder . '" value="' . $input_field_value . '"' . ($is_test ? ' disabled' : '') . '>
+                                    </div>
+                                </div>
+                             </div>
                         </div>';
                 }
             }
@@ -736,11 +733,11 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
             (array_key_exists($i, $jsonValue) ? $jsonValue[$i] : '') :
             $default_value;
         $field_name = $v->field_name . (!$v->field_dynamic && ($v->field_group || $v->is_multiple) ? '][' : '');
-        $str .= "<div class='col-md-4'>";
+        $str .= "<div class='col-md-3'>";
         $genStr = generateInputs($v, $v->per_option, $inpt_default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, ($i == 0 ? $v->field_label : ''), $v->field_dynamic, $v->label_header, $v->field_style, $i);
         $str .= $genStr;
         if($v->has_room_dropdown){
-            $str .= "</div><div class='col-md-4'>" . ($i == 0 ? "<label class='control-label'>&nbsp;</label>" : '');
+            $str .= "</div><div class='col-md-2'>" . ($i == 0 ? "<label class='control-label'>&nbsp;</label>" : '');
             $room = array('' => '-');
             $room += $option[2][2][1];
 
@@ -801,28 +798,44 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         <div class="panel-body"><!--  panel-collapse collapse in" id="defect_room<?php echo $room_id ? '_' . $room_id : '' ?>"> -->
             <input type="hidden" name="jobDefectsMenuId" class="jobDefectsMenuId" value="<?php echo $m->id ?>" />
             <input type="hidden" name="jobDefectsRoomId" class="jobDefectsRoomId" value="<?php echo $room_id ?>" />
-            <div class="form-group">
-                <input type="file" name="jobDefects[]" class="file jobDefects" multiple />
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <input type="file" name="jobDefects[]" class="file jobDefects" multiple />
+                    </div>
+                    <?php
+                    if(count($dropdown) > 0){
+                        echo '<div class="form-group">';
+                        echo form_dropdown(
+                            $dropdown['name'], $dropdown['value'], null,
+                            'class="jobDefectDropdown form-control input-sm" id="' . $dropdown['name'] . '" title="'. $dropdown['title'] .'"'
+                        );
+                        echo '</div>';
+                    }
+                    ?>
+                </div>
             </div>
-            <?php
-            if(count($dropdown) > 0){
-                echo '<div class="form-group">';
-                echo form_dropdown(
-                    $dropdown['name'], $dropdown['value'], null,
-                    'class="jobDefectDropdown form-control input-sm" id="' . $dropdown['name'] . '" title="'. $dropdown['title'] .'"'
-                );
-                echo '</div>';
-            }
-            ?>
-            <div class="form-group">
-                <input type="text" name="title" class="jobDefectTitle form-control input-sm" placeholder="Defect Title" />
-            </div>
-            <div class="form-group">
-                <textarea name="details" class="jobDefectDescription form-control input-sm" rows="3" style="resize: none;" placeholder="Defect Information"></textarea>
-            </div>
-            <div class="form-group text-right">
-                <div class="alert alert-warning hidden" role="alert">Failed to upload a file</div>
-                <input type="button" name="upload" class="btn btn-primary jobUploadBtn" value="Upload" disabled/>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <input type="text" name="title" class="jobDefectTitle form-control input-sm" placeholder="Defect Title" />
+                    </div>
+                </div>
+            </div><br/>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <textarea name="details" class="jobDefectDescription form-control input-sm" rows="5" style="resize: none;" placeholder="Defect Information"></textarea>
+                    </div>
+                </div>
+            </div><br/>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group text-right">
+                        <div class="alert alert-warning hidden" role="alert">Failed to upload a file</div>
+                        <input type="button" name="upload" class="btn btn-primary jobUploadBtn" value="Upload" disabled/>
+                    </div>
+                </div>
             </div>
             <br />
 
