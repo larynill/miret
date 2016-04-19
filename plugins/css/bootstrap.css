@@ -2461,6 +2461,9 @@ table th[class*="col-"] {
   .a{
   pointer-events:auto;
   }
+  .pending-msg{
+    display: none;
+  }
   .job-name{
     pointer-events:auto;
   }
