@@ -38,6 +38,9 @@
             <td>
                 <?php echo $pendingJobs;?>
             </td>
+            <td>
+                
+            </td>
         </tr>
     </table>
     <table class="table table-colored-header">
