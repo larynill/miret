@@ -3,9 +3,9 @@
     <tr>
         <!-- <th class="b"></th> -->
         <th>Date Received</th>
-        <th>Policy No.</th>
-        <th>Client Ref.</th>
-        <th>Our Ref.</th>
+        <th class="data-column">Policy No.</th>
+        <th class="data-column">Client Ref.</th>
+        <th class="data-column">Our Ref.</th>
         <th style="width: 20%;">Job Name</th>
         <th class="data-column">Status</th>
         <th class="data-column">Job Type</th>
@@ -39,9 +39,9 @@
             <tr id="a">
                 <!-- <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a b"> <span class="glyphicon glyphicon-th-list" id="b"></span></td> -->
                 <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a"><?php echo $v->date_entered;?></td>
-                <td><?php echo $v->policy_number;?></td>
-                <td class="white-space"><?php echo $v->client_ref;?></td>
-                <td class="white-space"><?php echo $v->job_ref;?></td>
+                <td style="cursor:pointer" class="a data-column" id="<?php echo $v->id;?>"><?php echo $v->policy_number;?></td>
+                <td style="cursor:pointer" class="white-space a data-column" id="<?php echo $v->id;?>"><?php echo $v->client_ref;?></td>
+                <td style="cursor:pointer" class="white-space a data-column"><?php echo $v->job_ref;?></td>
                 <td class="white-space job-name" id="<?php echo $v->id;?>" data-title="<?php echo $v->project_name;?>">
                     <?php echo $v->project_name;?>
                     <div class="job-details" id="form_<?php echo $v->id;?>">
@@ -52,18 +52,24 @@
                             <tr>
                                 <td id="contentholder">Owner:</td>
                                 <td><?php echo $v->owner;?></td>
+                            </tr>
+                            <tr>
                                 <td>Owner Email:</td>
                                 <td><?php echo $v->owner_email;?></td>
                             </tr>
                             <tr>
                                 <td>Mobile:</td>
                                 <td><?php echo $v->owner_mobile;?></td>
+                            </tr>
+                            <tr>
                                 <td>Phone:</td>
                                 <td><?php echo $v->owner_phone;?></td>
                             </tr>
                             <tr>
                                 <td>Insured Name:</td>
                                 <td><?php echo $v->insured_name;?></td>
+                            </tr>
+                            <tr>
                                 <td>Account Mgr:</td>
                                 <td><?php echo $v->account_manager_name;?></td>
                             </tr>
@@ -78,6 +84,8 @@
                             <tr>
                                 <td>Tenant:</td>
                                 <td><?php echo $v->tenant;?></td>
+                            </tr>
+                            <tr>
                                 <td >Property Status:</td>
                                 <td><?php echo $v->property_status;?></td>
                             </tr>
@@ -117,10 +125,12 @@
                 }
                 ?>
             </tr>
-            <tr>
+            <tr >
                 <td  id="a<?php echo $v->id;?>" class="columnHide">
-                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br>
-                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Policy Number:<br></strong><?php echo $v->policy_number;?><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Client Reference:<br></strong><?php echo $v->client_ref;?><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br><br>
+                    <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>">Inspector:<br><?php echo $v->inspector_name;?></strong><br>
                     <?php echo $v->inspection_time;?>
                 </td>
@@ -189,13 +199,17 @@
                 $('.job-details').css({'display':'none'});
             }
         )
-            .click(function(){
-                $(this).modifiedModal({
-                    // url: bu + 'jobNotes/' + this.id,
-                    title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
-
-                });
+        .click(
+            function(){
+                console.log('working');
+                var ele = $('.job-details').html();
+                  $(this).modifiedModal({
+                html: ele,
+                title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
+                
             });
+            }
+        );
         $('.btn-review').click(function(){
             $(this).modifiedModal({
                 url: bu + 'jobNotes/' + this.id + '?is_review=1',
@@ -204,7 +218,7 @@
         });
         $('.btn-add').click(function(){
             $(this).modifiedModal({
-                url: bu + 'jobNotes/' + this.id,
+                // url: bu + 'jobNotes/' + this.id,
                 title: 'Add Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
         });
@@ -215,4 +229,4 @@
          $('#a'+ trid).toggle();
         });
     })
-</script>
+</script>   
