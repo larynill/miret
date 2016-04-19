@@ -47,11 +47,7 @@
                     <div class="job-details" id="form_<?php echo $v->id;?>">
                         <table class="table-details" style="width: 100%;">
                             <tr>
-<<<<<<< HEAD
                                 <th classolspan="4"><center>Job Details</center></th>
-=======
-                                <th colspan="4" class="text-center">Job Details</th>
->>>>>>> a947f92350fb39a3587785f4959bdb77ea7ada31
                             </tr>
                             <tr>
                                 <td id="contentholder">Owner:</td>
@@ -137,7 +133,7 @@
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_type;?>">Job type:<br><?php echo $v->job_type;?></strong><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->inspector_name;?>">Inspector:<br><?php echo $v->inspector_name;?></strong><br>
                     <?php echo $v->inspection_time;?>
-                </td>
+                </td>   
             </tr>
         <?php
         }
@@ -203,35 +199,23 @@
                 $('.job-details').css({'display':'none'});
             }
         )
-<<<<<<< HEAD
         .click(
             function(){
                 console.log('working');
                 var ele = $('.job-details').html();
-                  $(this).modifiedModal({
+                $(this).modifiedModal({
                 html: ele,
                 title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>',
                 
             });
             }
         );
-=======
-            .click(function(){
-                var ele = $('#form_' + this.id);
-                $(this).modifiedModal({
-                    html: ele.html(),
-                    title: 'Job Details for <strong>' + $(this).attr('data-title') + '</strong>'
-
-                });
-            });
->>>>>>> a947f92350fb39a3587785f4959bdb77ea7ada31
         $('.btn-review').click(function(){
             $(this).modifiedModal({
                 url: bu + 'jobNotes/' + this.id + '?is_review=1',
                 title: 'Notes for <strong>' + $(this).attr('data-title') + '</strong>'
             });
         });
-<<<<<<< HEAD
         // $('.job-name').click(function(){
         //     $(this).modifiedModal({
         //         // url: bu + 'jobNotes/' + this.id,
@@ -242,8 +226,6 @@
                 
         //     });
         // });
-=======
->>>>>>> a947f92350fb39a3587785f4959bdb77ea7ada31
         $('.btn-add').click(function(){
             $(this).modifiedModal({
                 // url: bu + 'jobNotes/' + this.id,
