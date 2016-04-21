@@ -93,6 +93,12 @@
 					.val(tempTax);
 			}
 		});
+		$('.a').click(function() {
+         var trid = $(this).closest('td').attr('id');
+         // alert(trid);
+         // $(trid).show();
+         $('#a'+ trid).toggle();
+        });
 	});
 </script>
 <div class="row">
@@ -108,11 +114,11 @@
             <thead>
             <tr>
                 <th style="white-space: nowrap;width: 20%">Name</th>
-                <th style="width: 25%;">Email</th>
+                <th style="width: 25%;" class="data-column">Email</th>
                 <th>IRD</th>
                 <th>Account No.</th>
                 <th>Wage Type</th>
-                <th>Position</th>
+                <th class="data-column">Position</th>
                 <th></th>
             </tr>
             </thead>
@@ -122,10 +128,10 @@
                 foreach($staffList as $k=>$v){
                     ?>
                     <tr>
-                        <td style="text-align: left;white-space: nowrap;">
+                        <td style="text-align: left;white-space: nowrap;cursor: pointer;" class="a" id="<?php echo $v->ID?>">
                             <?php echo $v->FName.' '.$v->LName;?>
                         </td>
-                        <td style="white-space: nowrap;text-align: left;">
+                        <td style="white-space: nowrap;text-align: left;" class="data-column">
                             <?php echo $v->EmailAddress;?>
                         </td>
                         <td>
@@ -137,12 +143,18 @@
                         <td>
                             <?php echo $v->description;?>
                         </td>
-                        <td>
+                        <td class="data-column">
                             <?php echo $v->AccountName;?>
                         </td>
                         <td style="white-space: nowrap;">
                             <a href="#" class="editStaff" id="<?php echo $v->ID?>">edit</a>
                         </td>
+                    </tr>
+                    <tr>
+                    	<td style="text-align: left"  class="columnHide" id="a<?php echo $v->ID;?>" >
+                    		<strong>Email: </strong><?php echo $v->EmailAddress;?><br><br>
+                    		<strong>Position: </strong><?php echo $v->AccountName;?><br><br>
+                    	</td>
                     </tr>
                 <?php
                 }
