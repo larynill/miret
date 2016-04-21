@@ -104,7 +104,7 @@ class Job_Controller extends Merit{
                     $l->tracking_change_logger($p, '', $id, 2);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'Updated');
+                    $n->setJobNotification($id,'updated');
 
                     $this->main_model->update('tbl_job_registration',$_post,$id,'id',false);
                 }
@@ -114,7 +114,7 @@ class Job_Controller extends Merit{
                     $l->tracking_change_logger($p, '', $_id, 1);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'Created');
+                    $n->setJobNotification($id,'created');
 
                     $_id = $this->main_model->insert('tbl_job_registration',$_post,false);
                 }
@@ -140,7 +140,7 @@ class Job_Controller extends Merit{
                                 $l->tracking_change_logger($p, 'tbl_job_history', $job_id, 2);
 
                                 $n = new Job_Helper();
-                                $n->setJobNotification($id,'Notes is Updated',false);
+                                $n->setJobNotification($id,'Notes updated',false);
                             }
                             else{
                                 $this->main_model->insert('tbl_job_history',$post,false);
@@ -207,7 +207,7 @@ class Job_Controller extends Merit{
                         $l->tracking_change_logger($p, 'tbl_job_inspection', $id, 2);
 
                         $n = new Job_Helper();
-                        $n->setJobNotification($id,'Job Inspection details is Updated',false);
+                        $n->setJobNotification($id,'Job Inspection details updated',false);
                     }
                 }
                 else{
@@ -258,7 +258,7 @@ class Job_Controller extends Merit{
                                         $l->tracking_change_logger($p, 'tbl_job_photos', $id, 2);
 
                                         $n = new Job_Helper();
-                                        $n->setJobNotification($id,'Photo is Updated',false);
+                                        $n->setJobNotification($id,'Photo updated',false);
                                     }
                                 }else{
                                     $p = array_merge($post,$job_data);
@@ -267,7 +267,7 @@ class Job_Controller extends Merit{
                                     $this->my_model->insert('tbl_job_photos',$post,false);
 
                                     $n = new Job_Helper();
-                                    $n->setJobNotification($id,'Photo is Uploaded',false);
+                                    $n->setJobNotification($id,'Photo uploaded',false);
                                 }
                             }
                         }
@@ -288,7 +288,7 @@ class Job_Controller extends Merit{
                             $l->tracking_change_logger($p, 'tbl_job_photos', $id, 2);
 
                             $n = new Job_Helper();
-                            $n->setJobNotification($id,"Photo's comment is Updated.",false);
+                            $n->setJobNotification($id,"Photo's comment updated.",false);
                         }
                     }
                 }

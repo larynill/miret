@@ -305,10 +305,10 @@ echo form_open('');
                                     <div class="col-md-6 form-inline">
                                         <label class="control-label">Electricity</label>
                                         <div class="row">
-                                            <div class="col-md-5">
+                                            <div class="col-md-6">
                                                 <input type="radio" name="job_details[electricity]" class="job-details" value="1" <?php echo @$job_detail->electricity == 1 ? 'checked' : '' ?>/>&nbsp;Connected
                                             </div>
-                                            <div class="col-md-7">
+                                            <div class="col-md-6">
                                                 <input type="radio" name="job_details[electricity]" class="job-details" value="0" <?php echo @$job_detail->electricity == 0 ? 'checked' : '' ?>/>&nbsp;Disconnected
                                             </div>
                                         </div>
@@ -316,10 +316,10 @@ echo form_open('');
                                     <div class="col-md-6 form-inline">
                                         <label class="control-label">Water</label>
                                         <div class="row">
-                                            <div class="col-md-5">
+                                            <div class="col-md-6">
                                                 <input type="radio" name="job_details[water]" class="job-details" value="1" <?php echo @$job_detail->water == 1 ? 'checked' : '' ?>/>&nbsp;Connected
                                             </div>
-                                            <div class="col-md-7">
+                                            <div class="col-md-6">
                                                 <input type="radio" name="job_details[water]" class="job-details" value="0" <?php echo @$job_detail->water == 0 ? 'checked' : '' ?>/>&nbsp;Disconnected
                                             </div>
                                         </div>
@@ -517,8 +517,8 @@ if(count($menu) > 0){
 <br />
     <div class="form-group pull-right">
         <input type="hidden" name="time_start" value="<?php echo date('Y-m-d H:i:s') ?>" />
-        <input type="submit" name="submit" value="Save" class="btn btn-primary saveBtn" />
-        <a href="<?php echo base_url('jobView') ?>" class="btn btn-danger">Cancel</a>
+        <input type="submit" name="submit" value="Save" class="btn btn-primary btn-sm saveBtn" />
+        <input type="reset" class="btn btn-danger btn-sm" value="Cancel" />
     </div>
 </div>
 <?php
@@ -1140,7 +1140,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
     });
 
     <?php
-    $room_id = 6;
+    $room_id = '';
     echo $menu_id ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
     echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');" : "";
     ?>
@@ -1150,6 +1150,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
             uploadAsync: false,
             uploadUrl: "<?php echo base_url('jobDefects') ?>",
             showPreview: false,
+            showRemove: false,
             maxFileCount: 1,
             uploadExtraData: function(e){
                 var data = {
@@ -1248,7 +1249,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
     yesDeleteBtn.click(function(e){
         waitingDialog.show('Please wait...');
         $.ajax({
-            url: '<?php echo base_url("/jobDefectsDelete") ?>',
+            url: '<?php echo base_url("jobDefectsDelete") ?>',
             method: "POST",
             data: {
                 id: deleteDefectId
@@ -1302,9 +1303,10 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         .fileinput({
             uploadAsync: false,
             uploadUrl: bu + "jobReportOrientation/" + id,
-            removeClass: "btn btn-danger btn-sm",
-            uploadClass: "btn btn-info btn-sm",
+            removeClass: "btn btn-danger",
+            uploadClass: "btn btn-info",
             showPreview: false,
+            showRemove: false,
             maxFileCount: 1,
             allowedFileTypes: ['image']
         });
