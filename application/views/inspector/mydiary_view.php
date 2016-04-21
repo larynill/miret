@@ -157,12 +157,15 @@
                     $(this).css(
                         'z-index', 99999
                     );
-                    $('.tooltipevent').fadeIn('500');
-                    $('.tooltipevent').fadeTo('10', 1.9);
+
+                    $('.tooltipevent')
+                        .fadeIn('500')
+                        .fadeTo('10', 1.9);
 
                 }).mousemove(function(e) {
-                        $('.tooltipevent').css('top', e.pageY - 5);
-                        $('.tooltipevent').css('left', e.pageX + 30);
+                        $('.tooltipevent')
+                            .css('top', e.pageY - 5)
+                            .css('left', e.pageX + 30);
                     });
 
             },

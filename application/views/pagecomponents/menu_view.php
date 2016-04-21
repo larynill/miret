@@ -152,7 +152,11 @@ if(count($_userData) > 0){
             case 4:
                 $navTitles = array(
                     'dashboard' => 'Home',
-                    'inspectionReport' => 'Inspection Report',
+                    'trackingLog' => 'Tracking Log',
+                    'Inspections' => array(
+                        '../insurance/public/' => 'On-site Visit',
+                        'inspectionReport' => 'Inspection Report',
+                    ),
                     'myDiary' => 'Diary',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
@@ -194,6 +198,7 @@ if(count($_userData) > 0){
             case 1:
                 $navTitles = array(
                     'diary' => 'Diary',
+                    'leads' => 'Leads',
                     'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
                         'jobsAllocation' => 'Allocation',
