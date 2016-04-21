@@ -32,7 +32,7 @@
                 <td class="data-column"><?php echo $lv->leads_status?></td>
             </tr>
             <tr>
-                <td style="display: none" id="a<?php echo $lv->id;?>">
+                <td style="display: none;text-align: left" id="a<?php echo $lv->id;?>">
                     <strong>Phone: </strong><?php echo $lv->phone?><br><br>
                     <strong>Email: </strong><?php echo $lv->email?><br><br>
                     <strong>City: </strong><?php echo $lv->city?><br><br>
