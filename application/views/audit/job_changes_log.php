@@ -72,10 +72,11 @@
         cursor: pointer;
     }
 </style>
-
-<table>
-    <tr>
-        <td colspan="2" style="padding-bottom: 10px;">
+<div class="responsive table-colored-header">
+    <div class="col-sm-8">
+    <table class="table">
+        <tr>
+            <td colspan="2" style="padding-bottom: 10px;">
             <div class="form-inline">
                 <?php
                 echo form_dropdown('update_type', $update_type, '', 'class="uType form-control input-sm" style="width: 100px;"');
@@ -90,13 +91,23 @@
                     </div>
                 </div>
             </div>
-        </td>
-    </tr>
-    <tr style="vertical-align: top;">
-        <td>
-            <div class="logGrid grid"></div>
-        </td>
-        <td style="width: 100%;padding: 0 5px">
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div class="col-sm-8 ">
+    <table class="table">
+        <tr>
+            <td>
+                <div class="logGrid grid"></div>
+             </td>
+        </tr>
+    </table>
+    </div>
+    <div class="col-sm-4">
+    <table class="table">
+        <tr>
+            <td style="width: 100%;padding: 0 5px" class="col-sm-4">
             <div id="emailDetail"<?php echo !in_array($accountType, array(1,2,4)) ? ' style="display: none;"' : ''; ?>>
                 <div class="ourHeader">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -182,25 +193,10 @@
                 <div class="ourForm collapse in"></div>
             </div>
         </td>
-    </tr>
-</table>
-<div class="modal fade deleteModal">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body center" style="text-align: center;">
-                <div class="modal-body-delete-txt">Are sure you want to delete this?</div>
-                <div style="margin: 10px 0;">
-                    <button type="button" class="btn btn-danger btn-sm yesDeleteBtn" data-dismiss="modal">Yes</button>
-                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
+        </tr>
+    </table>
     </div>
-</div
+</div>
 <script src="<?php echo base_url() . "plugins/js/bootstrapValidator.js"; ?>"></script>
 <script src="<?php echo base_url() . "plugins/js/bootstrap-select.js"; ?>"></script>
 <script src="<?php echo base_url() . "plugins/js/jquery.growl.js" ; ?>"></script>
