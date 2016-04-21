@@ -125,7 +125,7 @@
                 ?>
             </tr>
             <tr >
-                <td  id="a<?php echo $v->id;?>" class="columnHide">
+                <td  id="a<?php echo $v->id;?>" class="columnHide" style="text-align: left">
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Policy Number:<br></strong><?php echo $v->policy_number;?><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Client Reference:<br></strong><?php echo $v->client_ref;?><br><br>
                     <strong data-toggle="tooltip" data-placement="right" title="<?php echo $v->job_status;?>">Status:<br><?php echo $v->job_status_code;?></strong><br><br>
