@@ -48,10 +48,10 @@
         <tr>
             <th rowspan="2" style="width: 10%;">Date Entered</th>
             <th rowspan="2" style="width: 10%;">Inspection Date</th>
-            <th rowspan="2">Client Name</th>
+            <th rowspan="2" class="data-column">Client Name</th>
             <th rowspan="2">Job Name</th>
-            <th rowspan="2">Job Type</th>
-            <th rowspan="2" style="width: 15%;">Inspector</th>
+            <th rowspan="2" class="data-column">Job Type</th>
+            <th rowspan="2" style="width: 15%;" class="data-column">Inspector</th>
             <th colspan="2" style="width: 25%;">Time</th>
             <th rowspan="2">&nbsp;</th>
         </tr>
@@ -79,7 +79,7 @@
                 }
                 ?>
                 <tr style="<?php echo $color ? 'background:'.$color.';color: #ffffff;' : '';?>;">
-                    <td>
+                    <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a">
                         <?php
                         echo $pending;
                         echo ValidateDate($v->date_entered,'Y-m-d H:i:s') ? date('j M Y',strtotime($v->date_entered)) : '&nbsp;'
@@ -90,7 +90,7 @@
                         echo ValidateDate($v->InspectionDate,'Y-m-d H:i:s') ? date('j M Y',strtotime($v->InspectionDate)) : '&nbsp;'
                         ?>
                     </td>
-                    <td style="text-align: left;">
+                    <td style="text-align: left;" class="data-column">
                         <?php
                         echo $v->insured_name;
                         ?>
@@ -100,12 +100,12 @@
                         echo $v->project_name;
                         ?>
                     </td>
-                    <td>
+                    <td class="data-column">
                         <?php
                         echo $v->job_type_specs;
                         ?>
                     </td>
-                    <td>
+                    <td class="data-column">
                         <?php
                         echo $v->job_inspector;
                         ?>
@@ -124,6 +124,13 @@
                         <?php
                         echo '<a href="#" class="allocate-btn btn btn-sm btn-primary" id="' . $v->id . '" style="padding: 2px 5px;">'. ($v->user_assignment_inspector ? 'Re-Allocate' : 'Allocate') .'</a>';
                         ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="a<?php echo $v->id;?>" class="columnHide">
+                        <strong>Client Name: </strong><?php echo $v->insured_name;?><br><br>
+                        <strong>Job Type: </strong><?php echo $v->job_type_specs;?><br><br>
+                        <strong>Inspector: </strong><?php echo $v->job_inspector;?>
                     </td>
                 </tr>
             <?php
@@ -146,6 +153,12 @@
                 url: bu + 'jobsAllocation/' + this.id,
                 title: 'Allocate Job'
             });
+        });
+        $('.a').click(function() {
+         var trid = $(this).closest('td').attr('id');
+         // alert(trid);
+         // $(trid).show();
+         $('#a'+ trid).toggle();
         });
     });
 </script>
