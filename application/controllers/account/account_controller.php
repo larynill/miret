@@ -4,6 +4,7 @@ class Account_Controller extends CI_Controller{
     var $data;
 
     function login(){
+        echo $this->encrypt->encode('admin');
         $this->data['_registrationSuccess'] = false;
         $this->data['_hasLogError'] = false;
         $this->data['_errorMessage'] = '';
