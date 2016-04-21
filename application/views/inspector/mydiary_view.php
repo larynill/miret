@@ -157,7 +157,6 @@
                     $(this).css(
                         'z-index', 99999
                     );
-
                     $('.tooltipevent')
                         .fadeIn('500')
                         .fadeTo('10', 1.9);

@@ -10,47 +10,47 @@ echo form_open('');
             <div class="sixteen_column section">
                 <div class="four column">
                     <div class="column_content">
-                        <label>First Name: </label>
-                        <input type="text" id="firstName" name="FirstName" class="required" title="FirstName" value="<?php echo $v->FirstName;?>"/>
+                        <label class="control-label">First Name: </label>
+                        <input type="text" id="firstName" name="FirstName" class="form-control input-sm required" title="FirstName" value="<?php echo $v->FirstName;?>"/>
                     </div>
                 </div>
                 <div class="four column">
                     <div class="column_content">
-                        <label>Last Name: </label>
-                        <input type="text" id="lastName" name="LastName" class="required" title="LastName"  value="<?php echo $v->LastName;?>" />
+                        <label class="control-label">Last Name: </label>
+                        <input type="text" id="lastName" name="LastName" class="form-control input-sm required" title="LastName"  value="<?php echo $v->LastName;?>" />
                     </div>
                 </div>
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Company Name: </label>
-                        <input type="text" class="required" name="CompanyName" class="required" title="CompanyName" value="<?php echo $v->CompanyName;?>"/>
+                        <label class="control-label">Company Name: </label>
+                        <input type="text" class="form-control input-sm required" name="CompanyName" class="form-control input-sm required" title="CompanyName" value="<?php echo $v->CompanyName;?>"/>
                     </div>
                 </div>
             </div>
             <div class="sixteen_column section">
                 <div class="two column">
                     <div class="column_content">
-                        <label>Physical Address: </label>
-                        <input type="text" name="PhysicalAddress[]" placeholder="Street Number" class="" value="<?php echo $v->street; ?>"/>
+                        <label class="control-label">Physical Address: </label>
+                        <input type="text" name="PhysicalAddress[]" placeholder="Street Number" class="form-control input-sm" value="<?php echo $v->street; ?>"/>
                     </div>
                 </div>
                 <div class="four column">
                     <div class="column_content">
-                        <label>&nbsp</label>
-                        <input type="text" name="PhysicalAddress[]" placeholder="Street Name" class="" value="<?php echo $v->street_name; ?>"/>
+                        <label class="control-label">&nbsp</label>
+                        <input type="text" name="PhysicalAddress[]" placeholder="Street Name" class="form-control input-sm" value="<?php echo $v->street_name; ?>"/>
                     </div>
                 </div>
                 <div class="five column">
                     <div class="column_content">
-                        <label>&nbsp</label>
-                        <input type="text" name="PhysicalAddress[]" placeholder="Suburb" class="" value="<?php echo $v->suburb; ?>"/>
+                        <label class="control-label">&nbsp</label>
+                        <input type="text" name="PhysicalAddress[]" placeholder="Suburb" class="form-control input-sm" value="<?php echo $v->suburb; ?>"/>
                     </div>
                 </div>
             </div>
             <div class="sixteen_column section">
                 <div class="four column">
                     <div class="column_content">
-                        <label>City: </label>
+                        <label class="control-label">City: </label>
                         <?php
                         echo form_dropdown('PhysicalAddress[]', $_city, $v->city_id);
                         ?>
@@ -58,7 +58,7 @@ echo form_open('');
                 </div>
                 <div class="four column">
                     <div class="column_content">
-                        <label>Country: </label>
+                        <label class="control-label">Country: </label>
                         <?php
                         echo form_dropdown('PhysicalAddress[]', $_country, $v->country_id);
                         ?>
@@ -66,7 +66,7 @@ echo form_open('');
                 </div>
                 <div class="two column">
                     <div class="column_content">
-                        <label>ZIP: </label>
+                        <label class="control-label">ZIP: </label>
                         <input type="text" name="PhysicalAddress[]" value="<?php echo $v->zip_code;?>" class="numberOnly" />
                     </div>
                 </div>
@@ -74,25 +74,25 @@ echo form_open('');
             <div class="sixteen_column section">
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Postal Address </label>
-                        <input type="text" name="PostalAdress" class="" value="<?php echo $v->PostalAdress;?>"/>
+                        <label class="control-label">Postal Address </label>
+                        <input type="text" name="PostalAdress" class="form-control input-sm" value="<?php echo $v->PostalAdress;?>"/>
                     </div>
                 </div>
                 <div class="two column">
                     <div class="column_content">
-                        <label>Work Phone: </label>
+                        <label class="control-label">Work Phone: </label>
                         <input type="text" name="WorkPhone[]" value="<?php echo $v->area_code;?>" placeholder="area code" class="required numberOnly" title="Work Phone"/>
                     </div>
                 </div>
                 <div class="two column">
                     <div class="column_content">
-                        <label>&nbsp </label>
+                        <label class="control-label">&nbsp </label>
                         <input type="text" name="WorkPhone[]" value="<?php echo $v->number;?>" placeholder="number" class="required numberOnly" title="Work Phone"/>
                     </div>
                 </div>
                 <div class="two column">
                     <div class="column_content">
-                        <label>&nbsp </label>
+                        <label class="control-label">&nbsp </label>
                         <input type="text" name="WorkPhone[]"value="<?php echo $v->ext;?>" placeholder="extension " class="required numberOnly" title="Work Phone"/>
                     </div>
                 </div>
@@ -100,13 +100,13 @@ echo form_open('');
             <div class="sixteen_column section">
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Email: </label>
-                        <input type="text" name="Email" class="" value="<?php echo $v->Email; ?>"/>
+                        <label class="control-label">Email: </label>
+                        <input type="text" name="Email" class="form-control input-sm" value="<?php echo $v->Email; ?>"/>
                     </div>
                 </div>
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Mobile Phone: </label>
+                        <label class="control-label">Mobile Phone: </label>
                         <input type="text" name="MobilePhone" value="<?php echo $v->MobilePhone; ?>" class="required numberOnly" title="Mobile Phone"/>
                     </div>
                 </div>
@@ -114,13 +114,13 @@ echo form_open('');
             <div class="sixteen_column section">
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Person In Charge: </label>
-                        <input type="text" name="PersonInCharge" value="<?php echo $v->ContactPerson; ?>" class=""/>
+                        <label class="control-label">Person In Charge: </label>
+                        <input type="text" name="PersonInCharge" value="<?php echo $v->ContactPerson; ?>" class="form-control input-sm"/>
                     </div>
                 </div>
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Fax Number: </label>
+                        <label class="control-label">Fax Number: </label>
                         <input type="text" name="FaxNumber" value="<?php echo $v->FaxNumber; ?>" class="numberOnly "/>
                     </div>
                 </div>
@@ -128,22 +128,22 @@ echo form_open('');
             <div class="sixteen_column section">
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Last Update: </label>
-                        <input type="text" class="date_picker" value="<?php echo $v->LastUpdate != '0000-00-00' ? date('j F Y',strtotime($v->LastUpdate)) : date('j F Y'); ?>" name="LastUpdate" class="required"/>
+                        <label class="control-label">Last Update: </label>
+                        <input type="text" class="date_picker" value="<?php echo $v->LastUpdate != '0000-00-00' ? date('j F Y',strtotime($v->LastUpdate)) : date('j F Y'); ?>" name="LastUpdate" class="form-control input-sm required"/>
                     </div>
                 </div>
                 <div class="eight column">
                     <div class="column_content">
-                        <label>Our Area Designation: </label>
-                        <?php echo form_dropdown('AreaDesignationID', $_designation_area, $v->AreaDesignationID, 'class="required"'); ?>
+                        <label class="control-label">Our Area Designation: </label>
+                        <?php echo form_dropdown('AreaDesignationID', $_designation_area, $v->AreaDesignationID, 'class="form-control input-sm required"'); ?>
                     </div>
                 </div>
             </div>
             <div class="sixteen_column section">
                 <div class="sixteen column ">
                     <div class="column_content">
-                        <label>Notes: </label>
-                        <textarea rows="8" name="Notes" class="" style="height: 50px;"><?php echo $v->Notes; ?></textarea>
+                        <label class="control-label">Notes: </label>
+                        <textarea rows="8" name="Notes" class="form-control input-sm" style="height: 50px;"><?php echo $v->Notes; ?></textarea>
                     </div>
                 </div>
             </div>

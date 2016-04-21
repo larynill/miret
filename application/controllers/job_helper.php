@@ -93,7 +93,7 @@ class Job_Helper extends CI_Controller{
         return $job;
     }
 
-    function setJobNotification($job_id,$msg,$used_is = true){
+    function setJobNotification($job_id,$msg){
 
         $this->main_model->setShift();
         $_fld = ArrayWalk($this->main_model->getFields('tbl_job_registration',array('id')),'tbl_job_registration.');
@@ -102,10 +102,9 @@ class Job_Helper extends CI_Controller{
         $job_data = (Object)$this->main_model->getInfo('tbl_job_registration',$job_id);
 
         $job_num = str_pad($job_id,5,'0',STR_PAD_LEFT);
-        $title = 'Job <strong>' . $job_num . '  ' . $job_data->project_name . '</strong> ' . ($used_is ? 'is ' : '') . $msg . '.';
+        $title = 'Job <strong>' . $job_num . '  ' . $job_data->project_name . '</strong> ' . $msg . '.';
         $notification = '<strong>Job:</strong> <a href="' . base_url() . 'jobRegistration?id=' . $job_id . '">' .
-            $job_num . '</a>  ' . $job_data->project_name .
-            ($used_is ? ' is ' : ' ') . $msg .'<strong>';
+        $job_num . '</a>  ' . $job_data->project_name . ' ' . $msg .'<strong>';
 
         $n = new Notification_Helper();
         $n->createNotificationHelper($job_id, $this->session->userdata('userID'), $title, $notification);

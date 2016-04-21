@@ -104,7 +104,7 @@ class Job_Controller extends Merit{
                     $l->tracking_change_logger($p, '', $id, 2);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'Updated');
+                    $n->setJobNotification($id,'updated');
 
                     $this->main_model->update('tbl_job_registration',$_post,$id,'id',false);
                 }
@@ -114,7 +114,7 @@ class Job_Controller extends Merit{
                     $l->tracking_change_logger($p, '', $_id, 1);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'Created');
+                    $n->setJobNotification($id,'created');
 
                     $_id = $this->main_model->insert('tbl_job_registration',$_post,false);
                 }
@@ -140,7 +140,7 @@ class Job_Controller extends Merit{
                                 $l->tracking_change_logger($p, 'tbl_job_history', $job_id, 2);
 
                                 $n = new Job_Helper();
-                                $n->setJobNotification($id,'Notes is Updated',false);
+                                $n->setJobNotification($id,'Notes updated',false);
                             }
                             else{
                                 $this->main_model->insert('tbl_job_history',$post,false);
@@ -207,7 +207,7 @@ class Job_Controller extends Merit{
                         $l->tracking_change_logger($p, 'tbl_job_inspection', $id, 2);
 
                         $n = new Job_Helper();
-                        $n->setJobNotification($id,'Job Inspection details is Updated',false);
+                        $n->setJobNotification($id,'Job Inspection details updated',false);
                     }
                 }
                 else{
@@ -258,7 +258,7 @@ class Job_Controller extends Merit{
                                         $l->tracking_change_logger($p, 'tbl_job_photos', $id, 2);
 
                                         $n = new Job_Helper();
-                                        $n->setJobNotification($id,'Photo is Updated',false);
+                                        $n->setJobNotification($id,'Photo updated',false);
                                     }
                                 }else{
                                     $p = array_merge($post,$job_data);
@@ -267,7 +267,7 @@ class Job_Controller extends Merit{
                                     $this->my_model->insert('tbl_job_photos',$post,false);
 
                                     $n = new Job_Helper();
-                                    $n->setJobNotification($id,'Photo is Uploaded',false);
+                                    $n->setJobNotification($id,'Photo uploaded',false);
                                 }
                             }
                         }
@@ -288,7 +288,7 @@ class Job_Controller extends Merit{
                             $l->tracking_change_logger($p, 'tbl_job_photos', $id, 2);
 
                             $n = new Job_Helper();
-                            $n->setJobNotification($id,"Photo's comment is Updated.",false);
+                            $n->setJobNotification($id,"Photo's comment updated.",false);
                         }
                     }
                 }
@@ -354,12 +354,12 @@ class Job_Controller extends Merit{
 
     function trackingLog(){
         $this->load->helper('directory');
-
         $account_type = $this->data['accountType'];
         $user_id = $this->data['_userID'];
         $inspector_id = $account_type == 4 ? $user_id : '';
         $job_details = new Job_Helper();
         $this->data['tracking'] = $job_details->jobDetails('',$inspector_id,true);
+
         $path = realpath(APPPATH.'../pdf/inspection_report');
         if(count($this->data['tracking']) > 0){
             foreach($this->data['tracking'] as $v){
@@ -484,7 +484,6 @@ class Job_Controller extends Merit{
     }
 
     function inspectionReport(){
-
         $this->load->helper('directory');
         $this->main_model->setSelectFields(array(
             'id','CONCAT(LPAD(id,5,0)," (", project_name ,")") as job_name'
@@ -538,7 +537,6 @@ class Job_Controller extends Merit{
 
                     if (move_uploaded_file($_FILES['photo']['tmp_name'], $file)) {
                         $_POST['photo'] = $file_name;
-
                         $_POST['is_generated'] = 1;
                     }
 
@@ -581,7 +579,6 @@ class Job_Controller extends Merit{
             if(!is_dir($this->data['save_path'])){
                 mkdir($this->data['save_path'], 0777, TRUE);
             }
-
             $post['is_generated'] = 1;
             $_POST['user_id'] = $user_id;
             $this->merit_model->update('tbl_site_inspection_report',$post,$_GET['job'],'job_id',false);
@@ -775,10 +772,5 @@ class Job_Controller extends Merit{
             'from' => json_encode($tags)
         );
         $this->main_model->insert('tbl_system_audit_log', $post, false);*/
-    }
-
-    function onSiteVisit(){
-        $this->data['_pageLoad'] = 'on_site/on_site_view';
-        $this->load->view('main_view',$this->data);
     }
 }
