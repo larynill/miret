@@ -127,7 +127,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td id="a<?php echo $v->id;?>" class="columnHide">
+                    <td id="a<?php echo $v->id;?>" class="columnHide" style="text-align: left">
                         <strong>Client Name: </strong><?php echo $v->insured_name;?><br><br>
                         <strong>Job Type: </strong><?php echo $v->job_type_specs;?><br><br>
                         <strong>Inspector: </strong><?php echo $v->job_inspector;?>
