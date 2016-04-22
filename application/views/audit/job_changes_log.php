@@ -1,6 +1,6 @@
 <style>
     .logGrid{
-        width: 700px;
+        /*width: 350px;*/
         height: 450px;
         border: 1px solid #000000;
         font-size: 11px!important;
@@ -73,10 +73,7 @@
     }
 </style>
 <div class="responsive">
-    <div class="col-sm-8">
-    <table class="table">
-        <tr>
-            <td colspan="2" style="padding-bottom: 10px;">
+    <div class="col-sm-8" style="padding-bottom: 10px">
             <div class="form-inline">
                 <?php
                 echo form_dropdown('update_type', $update_type, '', 'class="uType form-control input-sm" style="width: 100px;"');
@@ -91,24 +88,12 @@
                     </div>
                 </div>
             </div>
-            </td>
-        </tr>
-    </table>
     </div>
 <div class="row">
-    <div class="col-sm-8">
-    <table class="table">
-        <tr>
-            <td>
-                <div class="logGrid grid responsive"></div>
-             </td>
-        </tr>
-    </table>
+    <div class="col-sm-9" style="padding-bottom: 10px">
+        <div class="logGrid grid responsive"></div>
     </div>
-    <div class="col-sm-4">
-    <table class="table">
-        <tr>
-            <td style="width: 100%;padding: 0 5px" class="col-sm-4">
+    <div class="col-sm-3">
             <div id="emailDetail"<?php echo !in_array($accountType, array(1,2,4)) ? ' style="display: none;"' : ''; ?>>
                 <div class="ourHeader">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -193,9 +178,6 @@
                 </div>
                 <div class="ourForm collapse in"></div>
             </div>
-        </td>
-        </tr>
-    </table>
     </div>
     </div>
 </div>
