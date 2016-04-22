@@ -72,7 +72,7 @@
         cursor: pointer;
     }
 </style>
-<div class="responsive table-colored-header">
+<div class="responsive">
     <div class="col-sm-8">
     <table class="table">
         <tr>
@@ -95,11 +95,12 @@
         </tr>
     </table>
     </div>
-    <div class="col-sm-8 ">
+<div class="row">
+    <div class="col-sm-8">
     <table class="table">
         <tr>
             <td>
-                <div class="logGrid grid"></div>
+                <div class="logGrid grid responsive"></div>
              </td>
         </tr>
     </table>
@@ -196,6 +197,7 @@
         </tr>
     </table>
     </div>
+    </div>
 </div>
 <script src="<?php echo base_url() . "plugins/js/bootstrapValidator.js"; ?>"></script>
 <script src="<?php echo base_url() . "plugins/js/bootstrap-select.js"; ?>"></script>
@@ -232,7 +234,7 @@
                 enableCellNavigation: true,
                 enableColumnReorder: false,
                 multiColumnSort: true,
-                forceFitColumns: true
+                forceFitColumns: true 
             },
             filterContainsAll, filterMatchAll, filterContainsAny,
             lastFilter;

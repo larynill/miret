@@ -23,7 +23,7 @@
 	echo '<strong>Tax Code:</strong> ' . form_dropdown('tax_codes', $tax_codes, '', 'class="tax_codes drop-down"');
 	?>
 </div>
-<div class="payeTableGrid grid"></div>
+<div class="payeTableGrid grid responsive"></div>
 
 <script language="JavaScript">
 	var payeTableGrid, payeTableData = [], payeTableDataView,
