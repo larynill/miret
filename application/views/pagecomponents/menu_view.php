@@ -262,9 +262,9 @@ $navTitles['logout'] = 'Logout';
 function getSublink($link, $title, $uri, $is_multi_level = false){
     $active = array_key_exists($uri, $title);
     ?>
-    <li class="dropdown <?php echo $active ? 'active' : '';?>">
+    <li class="dropdown <?php echo $active ? 'active' : '';?> dropbtn" id="<?=$link;?>" onClick="myFunction(this)" >
         <a href="#" class="dropdown-toggle"><?php echo $link; ?> </a>
-        <ul <?php echo $is_multi_level ? 'class="dropdown-menu multi-level"' : 'class="dropdown-menu"'?>>
+        <ul <?php echo $is_multi_level ? 'class="dropdown-menu multi-level"' : 'class="dropdown-menu"'?> id="myDropdown<?=$link;?>" >
             <?php
             foreach($title as $subLink => $subTitle){
                 if(is_array($subTitle)){
@@ -323,3 +323,13 @@ function array_depth(array $array) {
         }
     ?>
 </ul>
+<script>
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction(a) {
+    var id = $(a).attr("id");
+    document.getElementById("myDropdown" + id).classList.toggle("show");
+    event.stopPropagation();
+}
+
+</script>

@@ -11,7 +11,7 @@
     }
     .column-left{
         text-align: left;
-    }
+    }   
     .is_active{
         background: #ffbab5;
     }

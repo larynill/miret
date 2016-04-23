@@ -6575,12 +6575,12 @@ button.close {
 .affix {
   position: fixed;
 }
-.dropdown:hover{
+.dropdown:active{
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad;
 }
-.dropdown:hover .dropdown-menu {
+.dropdown:active .dropdown-menu {
     display: block;
 }
 @-ms-viewport {
