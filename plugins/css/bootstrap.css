@@ -6606,6 +6606,16 @@ button.close {
 .visible-lg-inline-block {
   display: none !important;
 }
+@media(min-width: 1200px){
+.dropdown:hover{
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+}
 @media (max-width: 767px) {
   .visible-xs {
     display: block !important;
