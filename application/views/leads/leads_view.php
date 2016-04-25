@@ -21,7 +21,9 @@
         foreach($leads as $lv){
             ?>
             <tr>
-                <td style="cursor:pointer" id="<?php echo $lv->id;?>" class="a"><?php echo $lv->first_name?></td>
+                <td style="cursor:pointer" id="<?php echo $lv->id;?>" class="a">
+                     <span class="glyphicon glyphicon-list data-column2" style="padding-right: 10px;"></span><?php echo $lv->first_name?>
+                     </td>
                 <td><?php echo $lv->last_name?></td>
                 <td><?php echo $lv->title?></td>
                 <td class="data-column"><?php echo $lv->phone?></td>

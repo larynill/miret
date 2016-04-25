@@ -38,7 +38,7 @@
             ?>
             <tr id="a">
                 <!-- <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a b"> <span class="glyphicon glyphicon-th-list" id="b"></span></td> -->
-                <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a"><?php echo $v->date_entered;?></td>
+                <td style="cursor:pointer" id="<?php echo $v->id;?>" class="a"><span class="glyphicon glyphicon-list data-column2" style="padding-right: 10px;"></span><?php echo $v->date_entered;?></td>
                 <td style="cursor:pointer" class="a data-column" id="<?php echo $v->id;?>"><?php echo $v->policy_number;?></td>
                 <td style="cursor:pointer" class="white-space a data-column" id="<?php echo $v->id;?>"><?php echo $v->client_ref;?></td>
                 <td style="cursor:pointer" class="white-space a data-column"><?php echo $v->job_ref;?></td>

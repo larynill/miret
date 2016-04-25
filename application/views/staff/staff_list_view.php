@@ -129,6 +129,7 @@
                     ?>
                     <tr>
                         <td style="text-align: left;white-space: nowrap;cursor: pointer;" class="a" id="<?php echo $v->ID?>">
+                        <span class="glyphicon glyphicon-list data-column2" style="padding-right: 10px;"></span>
                             <?php echo $v->FName.' '.$v->LName;?>
                         </td>
                         <td style="white-space: nowrap;text-align: left;" class="data-column">

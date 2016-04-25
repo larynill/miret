@@ -2276,6 +2276,9 @@ th {
   max-width: 100%;
   margin-bottom: 20px;
 }
+.data-column2{
+  display: none;
+}
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
@@ -2457,6 +2460,9 @@ table th[class*="col-"] {
 @media screen and (max-width: 767px) {
   .job-details > .table-details{
     display: none;
+  }
+  .data-column2{
+    display: inline;
   }
   .a{
   pointer-events:auto;
