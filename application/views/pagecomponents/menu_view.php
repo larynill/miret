@@ -331,5 +331,13 @@ function myFunction(a) {
     document.getElementById("myDropdown" + id).classList.toggle("show");
     event.stopPropagation();
 }
+$("body").click(function(){
+  $("#myDropdown" + id).hide();
+});
+
+// Prevent events from getting pass .popup
+$("#myDropdown" + id).click(function(e){
+  e.stopPropagation();
+});
 
 </script>
