@@ -3,6 +3,7 @@
 class Items_To_Action_Controller extends CI_Controller{
 
     public $all_items = true;
+    public $account_type;
     public $whatVal;
     public $whatFld;
 
@@ -26,11 +27,14 @@ class Items_To_Action_Controller extends CI_Controller{
         $this->main_model->setSelectFields('tbl_job_registration.*','CONCAT(tbl_user.FName, " ", tbl_user.LName) as name');
 
         $_job_data = $this->merit_model->getInfo('tbl_job_registration',$whatVal,$whatFld);
-
+        $account = array(1,2,3,6);
         if(count($_job_data) > 0){
             foreach($_job_data as $val){
 
-                $str = '<strong>#' . str_pad($val->id,5,'0',STR_PAD_LEFT) . ':</strong> <u>' . $val->project_name .':</u>';
+                $str = '<strong>#' . str_pad($val->id,5,'0',STR_PAD_LEFT) . ':</strong> <u>';
+                $str .= in_array($this->account_type,$account) ?
+                        '<a href="' . base_url('jobRegistration?id=' . $val->id ) . '">' . $val->project_name .'</a>' : $val->project_name;
+                $str .= ':</u>';
                 $datetime_str = '0000-00-00 00:00:00';
 
                 $this->merit_model->setShift();

@@ -22,6 +22,7 @@ if(count($_userData) > 0){
                         'jobRegistration' => 'Registration'
                     ),
                     'Inspections' => array(
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(
@@ -55,6 +56,7 @@ if(count($_userData) > 0){
                         'jobRegistration' => 'Registration'
                     ),
                     'Inspections' => array(
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(
@@ -102,6 +104,7 @@ if(count($_userData) > 0){
 
                     ),
                     'Inspections' => array(
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(
@@ -174,6 +177,7 @@ if(count($_userData) > 0){
                         'jobRegistration' => 'Registration'
                     ),
                     'Inspections' => array(
+                        'onSiteVisit' => 'On-site Visit',
                         'inspectionReport' => 'Inspection Report',
                     ),
                     'Reports' => array(
@@ -229,6 +233,7 @@ if(count($_userData) > 0){
                     ),
 
                     'Admin' => array(
+                        'postalCodes' => 'Postal Codes',
                         'jobAuditLog' => 'Job Audit Log',
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',

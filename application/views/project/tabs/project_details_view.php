@@ -1,4 +1,8 @@
-
+<?php
+reset($drop_down[10]);
+$job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
+?>
+<input type="hidden" name="job_type_id" class="job_type_id" value="<?php echo $job_type_id;?>">
 <div class="container-fluid">
     <div class="row" style="font-size: 12px;">
         <div class="col-sm-4 well well-sm" >
@@ -61,7 +65,7 @@
                 <input type="email" class="form-control input-sm required" name="owner_email" placeholder="Owner Email" value="<?php echo @$job->owner_email;?>">
             </div>
         </div>
-        <div class="col-sm-4 well well-sm">
+        <div class="col-sm-5 well well-sm">
             <div class="form-group">
                 <label for="exampleInputEmail1">Contact Number:</label>
                 <div class="form-horizontal">
@@ -124,14 +128,10 @@
                 ?>
             </div>
         </div>
-        <div class="col-sm-4 well well-sm">
+        <div class="col-sm-3 well well-sm">
             <div class="form-group">
                 <label for="exampleInputEmail1">Job Status:</label>
                 <?php echo form_dropdown('job_status_id',$drop_down[11],@$job->job_status_id,'class="form-control input-sm required"');?>
-            </div>
-            <div class="form-group">
-                <label for="exampleInputEmail1">Job Type:</label>
-                <?php echo form_dropdown('job_type_id',$drop_down[10],@$job->job_type_id,'class="form-control input-sm required"');?>
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Inspector:</label>

@@ -158,7 +158,7 @@
         ?>
         <tr>
             <td class="hideAllNotification noNotificationHide" style="padding: 3px 5px;">
-                Hide all Messages
+                <a href="#" class="hideAllNotification noNotificationHide">Hide all Messages</a>
             </td>
         </tr>
         <?php
@@ -169,7 +169,7 @@
             <a href="<?php echo base_url() . 'notificationView?viewBy=message&toPage=' . $toPage; ?>" class="notificationLink" style="color: #000000;">
                 <table class="notificationLinkTable">
                     <tr>
-                        <td>View all Messages</td>
+                        <td><a class="notification" href="<?php echo base_url() . 'notificationView?viewBy=message&toPage=' . $toPage; ?>">View all Messages</a></td>
                         <td>
                             <span class="m-icon-swap-right" style="float: right;top: 0;"></span>
                         </td>

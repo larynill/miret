@@ -108,6 +108,8 @@ echo form_close();
 </style>
 <script>
     $(function(e){
+        var unlock_btn = $('.unlock-btn');
+        var job_type_dp = $('.job_type_dp');
         var enable_add_job = <?php echo $enable;?>;
         var df_link = $('.df_link').attr('link');
         var id = <?php echo isset($_GET['id']) ? $_GET['id'] : 0;?>;
@@ -123,6 +125,16 @@ echo form_close();
         };
 
         _has_link();
+
+        unlock_btn.click(function(){
+            job_type_dp.removeAttr('disabled');
+        });
+
+        job_type_dp.change(function(){
+            var hidden_job_type_id = $('.tab-content').find('.job_type_id');
+            hidden_job_type_id.val($(this).val());
+            $(this).attr('disabled','disabled');
+        });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             var link = $(this).attr('aria-controls');

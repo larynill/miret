@@ -37,7 +37,6 @@ class Job_Controller extends Merit{
 
             $job_photos = $this->main_model->getinfo('tbl_job_photos',$id,'job_id');
             $this->data['job_photos'] = $job_photos;
-
             $this->data['_pageTitle'] = 'Job Registration - Edit (' . $job->project_name . ')';
 
             $this->main_model->setShift();
@@ -302,10 +301,20 @@ class Job_Controller extends Merit{
         }
         //endregion
         //endregion
+        
+        $array = array();
+        $dropdown = $this->main_model->getinfo('tbl_job_type_specs');
+        if(count($dropdown) > 0){
+            foreach($dropdown as $k=>$v){
+                if($v->job_type_id != 10){
+                    $array[$v->job_type_id][''] = '-';
+                }
+                $array[$v->job_type_id][$v->id] = $v->job_type_specs;
+            }
+        }
+        $this->data['drop_down'] = $array;
 
         if($link){
-            $dropdown = $this->main_model->getinfo('tbl_job_type_specs');
-
             $this->main_model->setSelectFields(array('id','CONCAT(FName," ",LName) as name','AccountType','isQualifiedInspector'));
             $accounts = $this->main_model->getinfo('tbl_user');
             $inspector = array();
@@ -328,15 +337,7 @@ class Job_Controller extends Merit{
 
             $this->data['inspector'] = @$inspector;
             $this->data['accounts'] = $accounts_array;
-            $array = array();
 
-            if(count($dropdown) > 0){
-                foreach($dropdown as $k=>$v){
-                    $array[$v->job_type_id][''] = '-';
-                    $array[$v->job_type_id][$v->id] = $v->job_type_specs;
-                }
-            }
-            $this->data['drop_down'] = $array;
             $this->session->set_userdata(array('_link' => $link));
 
             $file_name = 'project_' . $link . '_view.php';

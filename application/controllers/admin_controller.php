@@ -111,6 +111,14 @@ class Admin_Controller extends Merit{
 				}
 			}
 		}
+
+        $userType = $this->session->userdata('userAccountType');
+        $userTypeArr = array(1,2,6);
+        $field = in_array($userType,$userTypeArr) ? '' : array('date_report_sent =');
+        $value = in_array($userType,$userTypeArr) ? '' : array('0000-00-00');
+        $this->main_model->setOrder('date_entered','DESC');
+        $this->data['active_jobs'] = $this->main_model->getinfo('tbl_job_registration', $value, $field);
+
 		$this->main_model->setJoin(array(
 			'table' => array('tbl_tracker','tbl_client'),
 			'join_field' => array('ID','ID'),
@@ -219,6 +227,7 @@ class Admin_Controller extends Merit{
 
         //region Items to Action
         $items_to_action = new Items_To_Action_Controller();
+        $items_to_action->account_type = $this->data['accountType'];
         $this->data['items_to_action'] = $items_to_action->getItems();
         //endregion
 

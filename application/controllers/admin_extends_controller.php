@@ -21,7 +21,6 @@ class Admin_Extends_Controller extends Admin_Controller{
         $this->merit_model->setNormalized('name','id');
         $this->merit_model->setSelectFields(array('id','name'));
         $this->data['franchise'] = $this->merit_model->getInfo('tbl_franchise');
-        $this->data['franchise'][''] = 'Select Franchise';
 
         ksort($this->data['franchise']);
 
@@ -75,7 +74,6 @@ class Admin_Extends_Controller extends Admin_Controller{
                 $this->merit_model->setShift();
                 $contact = (Object)$this->merit_model->getInfo('tbl_contacts',$id);
             }
-
             $this->data['contact_list'] = $contact;
             $this->load->view('contact/add_contact_view',$this->data);
         }
@@ -121,7 +119,8 @@ class Admin_Extends_Controller extends Admin_Controller{
 
             $this->merit_model->setSelectFields($fld);
             $contacts = $this->merit_model->getInfo('tbl_contacts');
-
+            $this->data['franchise'][''] = 'Select Franchise';
+            ksort($this->data['franchise']);
             $contact_info = $this->merit_model->getInfo('tbl_contact_info');
             $this->data['contacts'] = json_encode($contacts);
             $this->data['contact_info'] = json_encode($contact_info);
@@ -335,5 +334,10 @@ class Admin_Extends_Controller extends Admin_Controller{
             $this->data['_pageLoad'] = 'leads/leads_view';
             $this->load->view('main_view',$this->data);
         }
+    }
+
+    function postalCodes(){
+        $this->data['_pageLoad'] = 'postal_code/postal_code_view';
+        $this->load->view('main_view',$this->data);
     }
 }

@@ -283,45 +283,14 @@
                 </div>
             </div>
             <div class="panel panel-primary">
-                <div class="panel-heading">Jobs to Assign</div>
+                <div class="panel-heading">Active Jobs</div>
                 <div class="panel-body" style="max-height: 400px;overflow-x: auto">
                     <ul class="list-group">
                         <?php
-                        if(count($assignment)>0){
-                            foreach($assignment as $ek=>$ev){?>
-                                <li class="list-group-item setInspection" style="background:<?php echo $ev->color;?>;padding: 5px;cursor: pointer;" id="<?php echo $ev->TrackID;?>">
+                        if(count($active_jobs)>0){
+                            foreach($active_jobs as $ek=>$ev){?>
+                                <li class="list-group-item setInspection" style="color:#ffffff;background:green;padding: 5px;cursor: pointer;" id="<?php echo $ev->id;?>">
                                     <?php echo $ev->project_name;?>
-                                    <input type="hidden" name="TrackID" value="<?php echo $ev->TrackID;?>">
-                                    <input type="button" name="inspector" value="Assign" class="m-btn green viewInspector" title="Click to Add Inspector" style="padding: 5px!important;width: 100px;" id="thisButtonView_<?php echo $ev->id;?>" data-val="<?php echo $ev->id;?>">
-                                </li>
-                                <li class="toggleThis" id="form_<?php echo $ev->id;?>" style="display: none;">
-                                    <table style="width: 100%;border-collapse: collapse;">
-                                        <?php
-                                        if(count($ev->inspector)>0){
-                                            $ref = 0;
-                                            foreach($ev->inspector as $ik=>$iv){
-                                                ?>
-                                                <tr style="border-bottom: 1px solid #d2d2d2">
-                                                    <td style="text-align: center!important;">
-                                                        <input type="hidden" name="AssignId" value="<?php echo $ev->id; ?>" />
-                                                        <input type="radio" name="UserID[<?php echo $ev->id;?>]" value="<?php echo $iv->ID;?>" style="width: 20px;" <?php echo $ref == 0 ? 'checked="checked"' : ''; ?>>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $iv->FName.' '.$iv->LName.' (<strong>'.$ev->jobs.' jobs</strong>)';?>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                $ref++;
-                                            }
-                                        }
-                                        ?>
-                                        <tr>
-                                            <td colspan="2">
-                                                <input type="submit" name="submit" value="Submit" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;">
-                                                <input type="button" name="inspector" value="Close" class="m-btn green hideButton" style="padding: 5px!important;width: 100px;" id="<?php echo $ev->id;?>">
-                                            </td>
-                                        </tr>
-                                    </table>
                                 </li>
                             <?php }
                             $ref = 0;
