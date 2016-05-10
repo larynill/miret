@@ -335,9 +335,4 @@ class Admin_Extends_Controller extends Admin_Controller{
             $this->load->view('main_view',$this->data);
         }
     }
-
-    function postalCodes(){
-        $this->data['_pageLoad'] = 'postal_code/postal_code_view';
-        $this->load->view('main_view',$this->data);
-    }
 }

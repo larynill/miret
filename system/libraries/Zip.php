@@ -388,7 +388,7 @@ class CI_Zip  {
 		}
 
 		$CI =& get_instance();
-		$CI->load->helper('download');
+		$CI->load->helper('excel_reader');
 
 		$get_zip = $this->get_zip();
 

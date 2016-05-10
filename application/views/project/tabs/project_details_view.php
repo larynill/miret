@@ -70,7 +70,7 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 <label for="exampleInputEmail1">Contact Number:</label>
                 <div class="form-horizontal">
                     <div class="col-sm-6" style="padding: 5px 0 10px;">
-                        <input type="text" class="form-control input-sm" name="owner_phone" placeholder="Phone" value="<?php echo @$job->owner_phone;?>">
+                        <input type="text" class="form-control input-sm" name="owner_phone" placeholder="Landline" value="<?php echo @$job->owner_phone;?>">
                     </div>
                     <div class="col-sm-6" style="padding: 5px 2px 10px;">
                         <input type="text" class="form-control input-sm" name="owner_mobile" placeholder="Mobile" value="<?php echo @$job->owner_mobile;?>">
@@ -190,9 +190,22 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
 </div>
 <script>
     $(function(e){
-        $('.datetimepicker').datetimepicker({
-            format: "DD-MM-YYYY HH:mm A",
-            useCurrent: false
+        var datetimepicker = $('.datetimepicker');
+        var date_initial_val = '';
+        datetimepicker
+            .datetimepicker({
+                format: "ddd DD-MM-YYYY hh:mm A",
+                useCurrent: false
+            })
+            .on('dp.show',function(e){
+                date_initial_val = $(this).find('.date-class').val();
+            })
+            .on('dp.change', function(e) {
+            var d = new Date(e.date);
+                if(!date_initial_val){
+                    date_initial_val = d;
+                    $(this).data('DateTimePicker').setValue(moment(d.setHours(9, 0)));
+                }
         });
 
         $('.datetimepicker1').datetimepicker({

@@ -68,6 +68,9 @@
     input[type=checkbox],input[type=radio]{
         height: 20px;
     }
+    .hide{
+        display: none;
+    }
 </style>
 <?php
 echo form_open('');
@@ -395,7 +398,7 @@ if(count($menu) > 0){
                             echo "</div>";
 
                             if(in_array($m->id, array(4, 5))){
-                                defectArea($m, $defects);
+                                defectArea($m, $defects,'',array(),'',false);
                             }
                         }
                     }
@@ -431,6 +434,7 @@ if(count($menu) > 0){
                                 if(array_key_exists($m->id, $fields)){
                                     echo '<div class="row">';
                                     $f = $fields[$m->id];
+                                    $_ref = count($f);
                                     foreach($f as $v){
                                         $rooms_id_json = json_decode($v->rooms_id_json);
                                         if(in_array($key, $rooms_id_json)){
@@ -443,8 +447,7 @@ if(count($menu) > 0){
                                             //echo "<div class='col-md-4'>";
                                             //echo generateInputs($v, $v->per_option, $default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, $v->field_label, $v->field_dynamic, $v->label_header, $v->field_style);
                                             //echo "</div>";
-
-                                            hasMultiple($m, $v, 0, $default_value, $room_menu_info, $menu, $option, $field_name);
+                                            hasMultiple($m, $v, 0, $default_value, $room_menu_info, $menu, $option, $field_name,$key);
 
                                             if($v->next_break){
                                                 echo '</div>' . (!$v->field_group ? '<div class="col-md-12"><hr /></div>' : '') . '<div class="row">';
@@ -453,8 +456,7 @@ if(count($menu) > 0){
                                     }
                                     echo "</div>";
                                 }
-
-                                defectArea($m, $defects, $key);
+                                defectArea($m, $defects, $key, array(),'',false);
 
                                 echo '</div>';
                                 $ref ++;
@@ -486,6 +488,29 @@ if(count($menu) > 0){
                                                                 $menu_info_empty ? '' :
                                                                     (array_key_exists($field_name, $menu_info) ? $menu_info->$field_name : '');
                                                             echo generateInputs($v, $v->per_option, $default_value, $menu_info, '', $m->id, $v->data_type_id, $v->option_id, $option, $field_name, $v->field_label, $v->field_dynamic, $v->label_header, $v->field_style);
+                                                            if($v->has_defect_button){
+                                                                ?>
+                                                                <div class='col-md-1'>
+                                                                    <label class='control-label'>&nbsp;</label>
+                                                                    <div class="form-group">
+                                                                        <input type="button" class="btn btn-danger defect-btn is-hide" disabled id="<?php echo $v->id . '-' . $m->id?>" value="D" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="defect-container" style="display: none;" id="defect-<?php echo $v->id . '-' . $m->id?>">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="form-group">
+                                                                                <?php defectArea($m,array(),'', array(
+                                                                                    'name' => 'exterior_category_id',
+                                                                                    'value' => $exteriors,
+                                                                                    'title' => 'Exterior Type'
+                                                                                ), $v->id);?>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <?php
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -498,12 +523,13 @@ if(count($menu) > 0){
                             }
                             echo '</div>';
                         }
-
-                        defectArea($m, $defects, '', array(
-                            'name' => 'exterior_category_id',
-                            'value' => $exteriors,
-                            'title' => 'Exterior Type'
-                        ));
+                        defectArea($m, $defects, 0,
+                            array(
+                                'name' => 'exterior_category_id',
+                                'value' => $exteriors,
+                                'title' => 'Exterior Type'
+                            ),'',false
+                        );
                     }
                     ?>
                 </div>
@@ -525,13 +551,13 @@ if(count($menu) > 0){
 echo form_close();
 
 $field_group = array();
-function generateInputs($field_value, $per_option, $default_value, $menu_info, $menu, $menu_id, $data_type_id, $option_id, $option, $fName, $field_label, $field_dynamic = '', $label_header = '', $field_style = '', $loop = NULL){
+function generateInputs($field_value, $per_option, $default_value, $menu_info, $menu, $menu_id, $data_type_id, $option_id, $option, $fName, $field_label, $field_dynamic = '', $label_header = '', $field_style = '' ,$loop = NULL){
     $field_name = 'data[' . $menu_id . ']' . $menu . '[' . $fName . ']';
     $str = '';
     $genStr = '';
     $genStr .= '<div class="form-' . ($data_type_id == 3 ? 'inline' : 'group') . '">';
     $genStr .= $label_header ? '<label style="margin-top: 10px!important;">' . $label_header . '</label><hr style="margin: 10px!important;" />' : '';
-    $genStr .= $field_label ? ('<label class="control-label">' . $field_label . ': &nbsp;</label>') : '';
+    $genStr .= $field_label ? ('<label class="control-label">' . $field_label . ': &nbsp;' . '</label>') : '';
 
     if($option_id){
         if(array_key_exists($menu_id, $option)){
@@ -565,7 +591,7 @@ function generateInputs($field_value, $per_option, $default_value, $menu_info, $
                                 ($keyExist  ? count($is_val['_count']) : 0) .
                                 '" style="width: 120px;">&nbsp;' : '';
                             $str .= '</div>';
-                            $str .= $per_option ? '' : '<div class="form-inline"><input type="checkbox" class="form-control input-sm checkBoxOption" ' . ($is_checked ? 'checked' : '') . '> ';
+                            $str .= $per_option ? '' : '<div class="form-inline"><input type="checkbox" class="checkbox input-sm checkBoxOption" ' . ($is_checked ? 'checked' : '') . '> ';
 
                             if($field_dynamic && $per_option){
                                 $str .= '<div class="textOption hidden">';
@@ -581,7 +607,7 @@ function generateInputs($field_value, $per_option, $default_value, $menu_info, $
                                             '_height' => $thisInfo['_height'][$count_key],
                                             '_option' => array_key_exists('_option', $is_val) ? $is_val['_option'][$count_key] : 1
                                         );
-                                        $str .= '<div class="form-inline fieldDynamicAreaExtra" style="margin-bottom: 5px;">';
+                                        $str .= '<div class="form-inline workin fieldDynamicAreaExtra" style="margin-bottom: 5px;">';
                                         $str .= generateFieldDynamic($field_value, 0, $per_option, $field_dynamic, $menu_id, $menu, $fName, $menu_info, $default_value, $key, $count_key);
                                         $str .= '</div>';
                                     }
@@ -692,15 +718,9 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
                 }
                 else{
                     $str .=
-                        '<div class="row">
-                             <div class="col-md-' . $rowCount . '">
-                                <div class="form-group">
-                                    <div class="col-sm-12">
-                                        <input type="' . $v . '" class="form-control input-sm" name="' . $fn . '" placeholder="' . $placeholder . '" value="' . $input_field_value . '"' . ($is_test ? ' disabled' : '') . '>
-                                    </div>
-                                </div>
-                             </div>
-                        </div>';
+                        '<div class="col-md-' . $rowCount . '">
+                            <input type="' . $v . '" class="form-control input-sm" name="' . $fn . '" placeholder="' . $placeholder . '" value="' . $input_field_value . '"' . ($is_test ? ' disabled' : '') . '>
+                         </div>';
                 }
             }
         }
@@ -710,14 +730,14 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
     return $str;
 }
 
-function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu, $option, $field_name){
+function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '', $menu_info = array(), $menu = '', $option = array(), $field_name = '',$room_id = 0){
     $loop = 1;
     if($v->field_dynamic){
         $fd = json_decode($v->field_dynamic);
         reset($fd);
         $first_key = key($fd);
         $dynamicFn = $v->field_name . $first_key;
-        $default_value = array_key_exists($dynamicFn, $menu_info) ? $menu_info->$dynamicFn : $default_value;
+        $default_value = @array_key_exists($dynamicFn, $menu_info) ? $menu_info->$dynamicFn : $default_value;
     }
     if($v->field_group || $v->is_multiple){
         $dvArray = json_decode($default_value);
@@ -725,7 +745,6 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
         $loop += $mLoop;
     }
     $loop = $loop < 1 ? 1 : $loop;
-
     for($i = 0; $i < $loop; $i ++){
         $str = '';
         $jsonValue = $default_value ? json_decode($default_value) : array();
@@ -733,7 +752,7 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
             (array_key_exists($i, $jsonValue) ? $jsonValue[$i] : '') :
             $default_value;
         $field_name = $v->field_name . (!$v->field_dynamic && ($v->field_group || $v->is_multiple) ? '][' : '');
-        $str .= "<div class='col-md-3'>";
+        $str .= "<div class='col-md-" . ( $menu && $v->is_resize ? 2 : ( $menu ? 3 : 3) ). "'>";
         $genStr = generateInputs($v, $v->per_option, $inpt_default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, ($i == 0 ? $v->field_label : ''), $v->field_dynamic, $v->label_header, $v->field_style, $i);
         $str .= $genStr;
         if($v->has_room_dropdown){
@@ -755,6 +774,10 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
                 'class="form-control input-sm" title="Select Room"'
             );
         }
+        if($v->has_defect_button){
+            $str .= "</div><div class='col-md-1'><label class='control-label'>&nbsp;</label>";
+            $str .= '<div class="form-group"><input type="button" class="btn btn-danger defect-btn is-hide" disabled id="'. $v->id .'-' . $room_id . '" value="D" /></div>';
+        }
         if($v->is_multiple){
             $str .= "</div><div class='col-md-4'>" . ($i == 0 ? "<label class='control-label'>&nbsp;</label>" : "");
             if($i == 0){
@@ -775,6 +798,15 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
             echo $str;
             echo "</div>";
         }
+        if($v->has_defect_button){
+            echo '<div class="defect-container" style="display: none;" id="defect-' . $v->id . '-' . $room_id . '">';
+                echo '<div class="col-sm-4">';
+                    echo '<div class="form-group">';
+                        defectArea($m,array(),$room_id, array(), $v->id);
+                    echo '</div>';
+                echo '</div>';
+            echo '</div>';
+        }
     }
 
     if($v->next_break && ($v->field_group || $v->is_multiple) && $field_group){
@@ -788,119 +820,133 @@ function hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, $menu
     }
 }
 
-function defectArea($m, $defects, $room_id = '', $dropdown = array()){
+function defectArea($m, $defects, $room_id = '', $dropdown = array(),$field_id = '',$show_form_input = true){
     //region Defects Area
     ?>
-    <div class="defect-panel panel panel-primary">
-        <div class="panel-heading form-inline"> <!-- data-toggle="collapse" data-target="#defect_room<?php echo $room_id ? '_' . $room_id : '' ?>"> -->
-            <span style="font-size: 13px">Defects</span>
+    <div class="<?php echo $show_form_input ? 'defect-panel' : 'defect-panel-list'?> panel panel-primary" id="<?php echo $m->id.'-'.$field_id . '-' . $room_id ?>">
+        <div class="panel-heading form-inline">
+            <span style="font-size: 13px">Defects <?php echo $show_form_input ? '' : ' List'?> </span>
         </div>
-        <div class="panel-body"><!--  panel-collapse collapse in" id="defect_room<?php echo $room_id ? '_' . $room_id : '' ?>"> -->
-            <input type="hidden" name="jobDefectsMenuId" class="jobDefectsMenuId" value="<?php echo $m->id ?>" />
-            <input type="hidden" name="jobDefectsRoomId" class="jobDefectsRoomId" value="<?php echo $room_id ?>" />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <input type="file" name="jobDefects[]" class="file jobDefects" multiple />
-                    </div>
-                    <?php
-                    if(count($dropdown) > 0){
-                        echo '<div class="form-group">';
-                        echo form_dropdown(
-                            $dropdown['name'], $dropdown['value'], null,
-                            'class="jobDefectDropdown form-control input-sm" id="' . $dropdown['name'] . '" title="'. $dropdown['title'] .'"'
-                        );
-                        echo '</div>';
-                    }
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-sm-6">
-                        <input type="text" name="title" class="jobDefectTitle form-control input-sm" placeholder="Defect Title" />
-                    </div>
-                </div>
-            </div><br/>
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <textarea name="details" class="jobDefectDescription form-control input-sm" rows="5" style="resize: none;" placeholder="Defect Information"></textarea>
-                    </div>
-                </div>
-            </div><br/>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group text-right">
-                        <div class="alert alert-warning hidden" role="alert">Failed to upload a file</div>
-                        <input type="button" name="upload" class="btn btn-primary jobUploadBtn" value="Upload" disabled/>
-                    </div>
-                </div>
-            </div>
-            <br />
-
+        <div class="panel-body">
             <?php
-            if(count($defects) > 0){
-                echo '<div class="row">';
-                foreach($defects as $d){
-                    if($d->menu_id == $m->id && $d->room_id == $room_id){
+            if($show_form_input){
+                echo form_open_multipart('jobDefects','class="upload-form"');
+                ?>
+                <input type="hidden" name="menu_id" class="jobDefectsMenuId" value="<?php echo $m->id ?>" />
+                <input type="hidden" name="room_id" class="jobDefectsRoomId" value="<?php echo $room_id ?>" />
+                <input type="hidden" name="field_id" class="jobDefectsFieldId" value="<?php echo $field_id ?>" />
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <input type="file" name="jobDefects[]" class="file jobDefects" id="job-defect-<?php echo $m->id . '-' . $field_id. '-' . $room_id ?>" multiple />
+                        </div>
+                        <?php
+                        if(count($dropdown) > 0){
+                            echo '<div class="form-group">';
+                            echo form_dropdown(
+                                $dropdown['name'], $dropdown['value'], null,
+                                'class="jobDefectDropdown form-control input-sm" id="' . $dropdown['name'] . '" title="'. $dropdown['title'] .'"'
+                            );
+                            echo '</div>';
+                        }
                         ?>
-                        <div class="col-md-4" style="margin-bottom: 10px;">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading form-inline" data-toggle="collapse" data-target="#defect_view_<?php echo $d->id ?>">
-                                    <span style="font-size: 13px">
-                                        <?php echo $d->title ?>
-                                        <?php
-                                        if(count($dropdown) > 0){
-                                            echo '<em>(' . $dropdown['value'][$d->$dropdown['name']] . ')</em>';
-                                        }
-                                        ?>
-                                    </span>
-                                    <span class="glyphicon glyphicon-trash pull-right deleteModalBtn" data-toggle="modal" data-target="#deleteDefect" id="<?php echo $d->id ?>" aria-hidden="true"></span>
-                                </div>
-                                <div id="defect_view_<?php echo $d->id ?>" class="panel-body panel-collapse collapse in">
-                                    <div class="row">
-                                        <?php
-                                        if(count($d->dir) > 0){
-                                            echo '<div class="col-md-5">';
-                                            foreach ($d->dir as $files) {
-                                                echo '<div class="thumbnail">';
-                                                if(exif_imagetype($files)){
-                                                    echo '<img src="' . url($files) . '" />';
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" name="title" class="jobDefectTitle form-control input-sm" placeholder="Defect Title" />
+                        </div>
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <textarea name="description" class="jobDefectDescription form-control input-sm" rows="8" style="resize: none;" placeholder="Defect Information"></textarea>
+                        </div>
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group text-right">
+                            <div class="alert alert-warning hidden" role="alert">Failed to upload a file</div>
+                            <input type="submit" name="upload" class="btn btn-primary jobUploadBtn" value="Upload" disabled/>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            <?php
+                echo form_close();
+            }
+            if(count($defects) > 0){
+                ?>
+                <div class="row">
+                    <?php
+                    foreach($defects as $d){
+                        if($d->menu_id == $m->id && $d->room_id == $room_id){
+                            ?>
+                            <div class="col-md-6" style="margin-bottom: 10px;">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading form-inline" data-toggle="collapse" data-target="#defect_view_<?php echo $d->id ?>">
+                                        <span style="font-size: 13px">
+                                            <?php echo $d->title ?>
+                                            <?php
+                                            if(count($dropdown) > 0){
+                                                echo '<em>(' . $dropdown['value'][$d->$dropdown['name']] . ')</em>';
+                                            }
+                                            ?>
+                                        </span>
+                                        <span class="glyphicon glyphicon-trash pull-right deleteModalBtn" data-toggle="modal" data-target="#deleteDefect" id="<?php echo $d->id ?>" aria-hidden="true"></span>
+                                    </div>
+                                    <div id="defect_view_<?php echo $d->id ?>" class="panel-body panel-collapse collapse in">
+                                        <div class="row">
+                                            <?php
+                                            if(count($d->dir) > 0){
+                                                echo '<div class="col-md-5">';
+                                                foreach ($d->dir as $key=>$files) {
+                                                    echo '<div class="thumbnail">';
+                                                    $size = @exif_imagetype(base_url($files));
+                                                    if($size){
+                                                        echo '<img src="' . base_url($files) . '" />';
+                                                    }
+                                                    else{
+                                                        echo '<div class="thumbnailNonImage">' . strtoupper(substr(strrchr($files, '.'), 1)) . '</div>';
+                                                    }
+                                                    echo '<div class="panel-footer" style="text-align: right;padding: 5px!important;">';
+                                                    echo $size ? '<span class="glyphicon glyphicon-eye-open showBtn" data-toggle="modal" data-target="#showDefect" style="font-size: 20px;margin-right: 5px;"></span>' : '';
+                                                    echo '<a class="downloadLink" href="' . base_url($files) . '" excel_reader="' . basename($files) . '">
+                                                                <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true" style="font-size: 20px;"></span>
+                                                            </a>';
+                                                    echo '</div>';
+                                                    echo '</div>';
                                                 }
-                                                else{
-                                                    echo '<div class="thumbnailNonImage">' . strtoupper(substr(strrchr($files, '.'), 1)) . '</div>';
-                                                }
-                                                echo '<div class="panel-footer" style="text-align: right;padding: 5px!important;">';
-                                                echo exif_imagetype($files) ? '<span class="glyphicon glyphicon-eye-open showBtn" data-toggle="modal" data-target="#showDefect" style="font-size: 20px;margin-right: 5px;"></span>' : '';
-                                                echo '<a class="downloadLink" href="' . url($files) . '" download="' . basename($files) . '">
-                                                            <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true" style="font-size: 20px;"></span>
-                                                        </a>';
-                                                echo '</div>';
                                                 echo '</div>';
                                             }
+                                            echo '<div class="col-md-7" style="text-align: justify;">';
+                                            $len = strlen($d->description);
+                                            $max = 220;
+                                            echo substr($d->description, 0, $max);
+                                            if($len > $max){
+                                                echo '<span id="descriptionReadMore" class="collapse">';
+                                                echo substr($d->description, $max, $len);
+                                                echo '</span>';
+                                                echo ' <a class="descriptionReadMoreBtn">[Read More]</a>';
+                                            }
                                             echo '</div>';
-                                        }
-                                        echo '<div class="col-md-7" style="text-align: justify;">';
-                                        $len = strlen($d->description);
-                                        $max = 220;
-                                        echo substr($d->description, 0, $max);
-                                        if($len > $max){
-                                            echo '<span id="descriptionReadMore" class="collapse">';
-                                            echo substr($d->description, $max, $len);
-                                            echo '</span>';
-                                            echo ' <a class="descriptionReadMoreBtn">[Read More]</a>';
-                                        }
-                                        echo '</div>';
-                                        ?>
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php
+                        <?php
+                        }
                     }
-                }
-                echo '</div>';
+                    ?>
+                </div>
+                <?php
+            }
+            else{
+                echo $show_form_input ? ''  : 'No data was found.';
             }
             ?>
         </div>
@@ -994,7 +1040,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
     var room_tab = $('.room_tab');
     var room_pane = $('.tab-pane');
     var tab_content = $('.tab-content');
-    var roomsSelected = <?php echo $interior_selected ? $interior_selected : '[]'; ?>;
+    var roomsSelected = '<?php echo $interior_selected ? $interior_selected : '[]'; ?>';
 
     room_name
         .selectpicker({
@@ -1114,7 +1160,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
     //endregion
 
     var jobDefects = $('.jobDefects');
-    var jobDefectTitle, jobDefectDescription, jobDefectsMenuId, jobDefectsRoomId, jobUploadBtn;
+    var jobDefectTitle, jobDefectDescription, jobDefectsMenuId, jobDefectsRoomId, jobDefectsFieldId, jobUploadBtn;
     var jobDefectDropdown;
     var hasUploadFile = 0;
 
@@ -1122,6 +1168,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         jobDefectTitle = $(this).find('.jobDefectTitle');
         jobDefectDescription = $(this).find('.jobDefectDescription');
         jobDefectsMenuId = $(this).find('.jobDefectsMenuId');
+        jobDefectsFieldId = $(this).find('.jobDefectsFieldId');
         jobDefectsRoomId = $(this).find('.jobDefectsRoomId');
         jobDefectDropdown = $(this).find('.jobDefectDropdown');
         jobUploadBtn = $(this).find('.jobUploadBtn');
@@ -1133,96 +1180,70 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         jobDefectTitle = tab_panel_active.find('.jobDefectTitle');
         jobDefectDescription = tab_panel_active.find('.jobDefectDescription');
         jobDefectsMenuId = tab_panel_active.find('.jobDefectsMenuId');
+        jobDefectsFieldId = tab_panel_active.find('.jobDefectsFieldId');
         jobDefectsRoomId = tab_panel_active.find('.jobDefectsRoomId');
         jobDefectDropdown = tab_panel_active.find('.jobDefectDropdown');
         jobUploadBtn = tab_panel_active.find('.jobUploadBtn');
         addEventAgain();
     });
 
-    <?php
-    $room_id = '';
-    echo $menu_id ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
-    echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');" : "";
-    ?>
-
     jobDefects
         .fileinput({
             uploadAsync: false,
-            uploadUrl: "<?php echo base_url('jobDefects') ?>",
             showPreview: false,
             showRemove: false,
-            maxFileCount: 1,
-            uploadExtraData: function(e){
-                var data = {
-                    menu_id: jobDefectsMenuId.val(),
-                    title: jobDefectTitle.val(),
-                    description: jobDefectDescription.val()
-                };
-                if(jobDefectsRoomId.val()){
-                    data['room_id'] = jobDefectsRoomId.val();
-                }
-                if(jobDefectDropdown.length != 0){
-                    data[jobDefectDropdown.attr('id')] = jobDefectDropdown.val();
-                }
-
-                return data;
-            }
+            showUpload: false,
+            maxFileCount: 1
         });
-    jobDefects
-        .stop()
-        .on('filebatchuploadcomplete', function(event, files, extra) {
 
-        })
-        .on('fileuploaderror', function(event, data, previewId, index) {
-            $('.alert-warning').removeClass('hidden');
-            jobDefects.fileinput('clear');
-            hasUploadFile = 0;
-        })
-        .on('fileloaded', function(event, file, previewId, index, reader) {
-            hasUploadFile = 1;
-            jobUploadBtn.attr('disabled', 'disabled');
-            if(jobDefectTitle.val() && jobDefectDescription.val()){
-                jobUploadBtn.removeAttr('disabled');
-            }
-        })
-        .on('fileuploaded', function(event, data, previewId, index) {
-            if(data.response.success){
-                var thisUrl = bu + 'jobEdit/' + id;
-                var thisExtraUrl = '';
-                var thisExpandedMenu = $('.menu-panel.in').data('menu-id');
-                var thisExpandedRoom = $('.room_tab.active').attr('id');
-                if(thisExpandedMenu){
-                    thisExtraUrl += '?menu_id=' + thisExpandedMenu;
-                }
-                if(thisExpandedRoom){
-                    thisExtraUrl += (thisExtraUrl ? '&' : '?') + 'room_id=' + thisExpandedRoom;
-                }
-                thisUrl += thisExtraUrl;
+    var defect_btn = $('.panel-group').find('.defect-btn');
 
-                location.replace(thisUrl);
-            }
-        })
-        .on('filecleared', function(event) {
-            hasUploadFile = 0;
-            jobUploadBtn.attr('disabled', 'disabled');
-        })
-        .on('filebatchuploadsuccess', function(event, data, previewId, index) {
-            if(data.response.success){
-                var thisUrl = bu + 'jobEdit/' + id;
-                var thisExtraUrl = '';
-                var thisExpandedMenu = $('.menu-panel.in').data('menu-id');
-                var thisExpandedRoom = $('.room_tab.active').attr('id');
-                if(thisExpandedMenu){
-                    thisExtraUrl += '?menu_id=' + thisExpandedMenu;
-                }
-                if(thisExpandedRoom){
-                    thisExtraUrl += (thisExtraUrl ? '&' : '?') + 'room_id=' + thisExpandedRoom;
-                }
-                thisUrl += thisExtraUrl;
+    defect_btn.click(function(){
+        var defect_ = $('#defect-' + this.id);
 
-                location.replace(thisUrl);
-            }
-        });
+        if($(this).hasClass('is-hide')){
+            $(this)
+                .addClass('is-open')
+                .val('Hide')
+                .removeClass('is-hide');
+            defect_.css({display:'inline'});
+        }
+        else{
+            $(this)
+                .addClass('is-hide')
+                .val('D')
+                .removeClass('is-open');
+            defect_.css({display:'none'});
+        }
+
+        var jobDefects = defect_.find('.jobDefects');
+        var jobDefectsMenuId = defect_.find('.jobDefectsMenuId'),
+            jobDefectTitle = defect_.find('.jobDefectTitle'),
+            jobDefectDescription = defect_.find('.jobDefectDescription'),
+            jobDefectsRoomId = defect_.find('.jobDefectsRoomId'),
+            jobDefectsFieldId = defect_.find('.jobDefectsFieldId'),
+            jobDefectDropdown = defect_.find('.jobDefectDropdown'),
+            jobUploadBtn = defect_.find('.jobUploadBtn'),
+            jobDefectForm = defect_.find('.upload-form');
+
+        form_url(jobDefectForm,job_name.val());
+        jobDefectDescription
+            .add(jobDefectTitle)
+            .on('propertychange keyup input paste', function(e) {
+                if(jobDefectTitle.val() != "" && jobDefectDescription.val() != ""){
+                    jobUploadBtn.removeAttr('disabled');
+                }
+                else{
+                    jobUploadBtn.attr('disabled', 'disabled');
+                }
+            });
+    });
+
+    <?php
+    $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : '';
+    echo $menu_id ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
+    echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');$('.room_tab#" . $room_id . "').removeClass('hidden');" : "";
+    ?>
 
     function addEventAgain(){
         jobDefectDescription
@@ -1255,7 +1276,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
                 id: deleteDefectId
             },
             success: function(e) {
-                var thisUrl = bu + 'jobEdit/' + id;
+                var thisUrl = bu + 'onSiteVisit/' + '<?php echo $this->uri->segment(2);?>';
                 var thisExtraUrl = '';
                 var thisExpandedMenu = $('.menu-panel.in').data('menu-id');
                 var thisExpandedRoom = $('.room_tab.active').attr('id');
@@ -1283,7 +1304,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         mBody.html('<img src="' + imgSrc + '" data-zoom-image="' + imgSrc + '" width="100%" />');
 
         downloadLinkModal.attr('href', imgDownload.attr('href'));
-        downloadLinkModal.attr('download', imgDownload.attr('download'));
+        downloadLinkModal.attr('excel_reader', imgDownload.attr('excel_reader'));
     });
 
     $('.descriptionReadMoreBtn').click(function(){
@@ -1336,10 +1357,43 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array()){
         });
 
     job_name.change(function(e){
-        $.post(bu + 'onSiteVisit?has_id=1&job_id=' + $(this).val() ,{id:$(this).val()},function(data){
+        var btn_defect = $('.defect-btn');
+        btn_defect.attr('disabled','disabled');
+        if($(this).val()){
+            btn_defect.removeAttr('disabled');
+        }
+        form_url('',$(this).val());
+        getJobName($(this).val());
+    });
+
+    var getJobName = function(id){
+        $.post(bu + 'onSiteVisit?has_id=1&job_id=' + id ,{id:id},function(data){
             getInfo(data);
         });
-    });
+    };
+    <?php
+    if($this->uri->segment(2) && count(@$job_detail) == 0){
+    ?>
+        job_name.val(<?php echo $this->uri->segment(2);?>);
+        getJobName('<?php echo $this->uri->segment(2);?>');
+    <?php
+    }
+    ?>
+    var form_url = function(selector,job_id,menu_id,room_id,field_id){
+        if(!selector && job_id){
+            $('.upload-form').attr('action', bu + 'jobDefects/' + job_id );
+        }
+        else if(selector && job_id){
+            selector.attr('action', bu + 'jobDefects/' + job_id);
+        }
+    };
+    var disabledDefectBtn = function(){
+        defect_btn.attr('disabled','disabled');
+        if(job_name.val()){
+            defect_btn.removeAttr('disabled');
+        }
+    };
+    disabledDefectBtn();
     var getInfo = function(data){
         data = jQuery.parseJSON(data);
         $('.job-details').each(function(e){

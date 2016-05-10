@@ -187,4 +187,7 @@ a:hover{
         padding-left: 6px!important;
         padding-right: 6px!important;
     }
+    .max-col-height{
+        min-height: 400px!important;
+    }
 }

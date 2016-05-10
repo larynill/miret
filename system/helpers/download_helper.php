@@ -30,7 +30,7 @@
 /**
  * Force Download
  *
- * Generates headers that force a download to happen
+ * Generates headers that force a excel_reader to happen
  *
  * @access	public
  * @param	string	filename

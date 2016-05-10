@@ -100,7 +100,7 @@ def("DOMPDF_FONT_CACHE", DOMPDF_FONT_DIR);
  * The location of a temporary directory.
  *
  * The directory specified must be writeable by the webserver process.
- * The temporary directory is required to download remote images and when
+ * The temporary directory is required to excel_reader remote images and when
  * using the PFDLib back end.
  */
 def("DOMPDF_TEMP_DIR", sys_get_temp_dir());
@@ -278,7 +278,7 @@ def("DOMPDF_ENABLE_JAVASCRIPT", true);
  * This can be a security risk, in particular in combination with DOMPDF_ENABLE_PHP and
  * allowing remote access to dompdf.php or on allowing remote html code to be passed to
  * $dompdf = new DOMPDF(); $dompdf->load_html(...);
- * This allows anonymous users to download legally doubtful internet content which on
+ * This allows anonymous users to excel_reader legally doubtful internet content which on
  * tracing back appears to being downloaded by your server, or allows malicious php code
  * in remote html pages to be executed by your server with your account privileges.
  *

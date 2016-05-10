@@ -6,6 +6,9 @@ class Job_Controller extends Merit{
 
     function __construct(){
         parent::__construct();
+        if($this->session->userdata('isLogged') == false){
+            redirect('login');
+        }
     }
 
     function jobRegistration(){
@@ -22,8 +25,8 @@ class Job_Controller extends Merit{
             $fld[] = 'IF(date_entered,DATE_FORMAT(date_entered,"%d-%m-%Y"),"") as date_entered';
             $fld[] = 'IF(date_completed,DATE_FORMAT(date_completed,"%d-%m-%Y"),"") as date_completed';
             $fld[] = 'IF(date_report_printed,DATE_FORMAT(date_report_printed,"%d-%m-%Y"),"") as date_report_printed';
-            $fld[] = 'IF(inspection_time,DATE_FORMAT(inspection_time,"%d-%m-%Y %h:%i %p"),"") as inspection_time';
-            $fld[] = 'IF(date_due,DATE_FORMAT(date_due,"%d-%m-%Y"),"") as date_due';
+            $fld[] = 'IF(inspection_time,DATE_FORMAT(inspection_time,"%a %d-%m-%Y %h:%i %p"),"") as inspection_time';
+            $fld[] = 'IF(date_due,DATE_FORMAT(date_due,"%a %d-%m-%Y %h:%i %p"),"") as date_due';
             $fld[] = 'IF(date_report_sent,DATE_FORMAT(date_report_sent,"%d-%m-%Y"),"") as date_report_sent';
             $this->main_model->setSelectFields($fld);
             $job = (object) $this->main_model->getinfo('tbl_job_registration',$id);
@@ -80,18 +83,9 @@ class Job_Controller extends Merit{
             }
 
             if(isset($_post['project_name'])){
-                $date_formats = 'd-m-Y';
-                $date_time_formats = 'd-m-Y H:i A';
                 if(count($_post) > 0){
                     foreach($_post as $key=>$val){
-                        $valid_date = DateTime::createFromFormat($date_formats,$val);
-                        if($valid_date){
-                            $_post[$key] = date('Y-m-d H:i:s',strtotime($val));
-                        }
-
-                        $valid_date_time = DateTime::createFromFormat($date_time_formats,$val);
-
-                        if($valid_date_time){
+                        if($val && (strpos($key, 'date') !== false || strpos($key, 'time') !== false)){
                             $_post[$key] = date('Y-m-d H:i:s',strtotime($val));
                         }
                     }

@@ -991,7 +991,7 @@ class DOMPDF {
   /**
    * Streams the PDF to the client
    *
-   * The file will open a download dialog by default.  The options
+   * The file will open a excel_reader dialog by default.  The options
    * parameter controls the output.  Accepted options are:
    *
    * 'Accept-Ranges' => 1 or 0 - if this is not set to 1, then this
@@ -1003,7 +1003,7 @@ class DOMPDF {
    *    on (1) by default
    *
    * 'Attachment' => 1 or 0 - if 1, force the browser to open a
-   *    download dialog, on (1) by default
+   *    excel_reader dialog, on (1) by default
    *
    * @param string $filename the name of the streamed file
    * @param array  $options header options (see above)
@@ -1023,7 +1023,7 @@ class DOMPDF {
   /**
    * Returns the PDF as a string
    *
-   * The file will open a download dialog by default.  The options
+   * The file will open a excel_reader dialog by default.  The options
    * parameter controls the output.  Accepted options are:
    *
    *

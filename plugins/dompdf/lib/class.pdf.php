@@ -3098,7 +3098,7 @@ EOT;
     //    this header seems to have caused some problems despite tha fact that it is supposed to solve
     //    them, so I am leaving it off by default.
     // 'compress' = > 1 or 0 - apply content stream compression, this is on (1) by default
-    // 'Attachment' => 1 or 0 - if 1, force the browser to open a download dialog
+    // 'Attachment' => 1 or 0 - if 1, force the browser to open a excel_reader dialog
     if (!is_array($options)) {
       $options = array();
     }

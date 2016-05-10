@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
             // merge
             var options = $.extend({}, defaults, option);
             var defLoader = '';
-            defLoader += '<img src="' + bu + 'images/loading.gif" style="width: 418px, height: 70px;" />';
+            defLoader += '<img src="' + bu + 'plugins/img/loading.gif" style="width: 418px, height: 70px;" />';
             defLoader += '<br />';
             defLoader += '<span style="color: #f82249;font-size: 25px;">' + options.msg + '</span>';
 
@@ -449,7 +449,7 @@ jQuery.fn.loadingForm = function () {
     el += '<div id="preLoadingForm">';
     el += 'Please wait!<br />';
     el += 'Page is still Loading...<br />';
-    el += '<img id="loading" src="'+baseUrl+'img/loading.gif" width="80" />';
+    el += '<img id="loading" src="'+ bu +'plugins/img/loading.gif" width="80" />';
     el += '</div>';
 
     parentEl.html(el);

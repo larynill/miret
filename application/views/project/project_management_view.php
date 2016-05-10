@@ -133,7 +133,9 @@ echo form_close();
         job_type_dp.change(function(){
             var hidden_job_type_id = $('.tab-content').find('.job_type_id');
             hidden_job_type_id.val($(this).val());
-            $(this).attr('disabled','disabled');
+            if ( unlock_btn.length ) {
+                $(this).attr('disabled', 'disabled');
+            }
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
