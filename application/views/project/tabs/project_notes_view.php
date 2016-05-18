@@ -111,6 +111,5 @@ if(count(@$notes) > 0) {
                 });
             });
         };
-
     });
 </script>

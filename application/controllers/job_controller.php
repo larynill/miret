@@ -30,6 +30,8 @@ class Job_Controller extends Merit{
             $fld[] = 'IF(date_report_sent,DATE_FORMAT(date_report_sent,"%d-%m-%Y"),"") as date_report_sent';
             $this->main_model->setSelectFields($fld);
             $job = (object) $this->main_model->getinfo('tbl_job_registration',$id);
+            $job->link = base_url() . 'inspectionReport/' . $job->id;
+            $job->inspection_link = base_url() . 'onSiteVisit/' . $job->id . '?menu_id=1';
             $job_history = $this->main_model->getinfo('tbl_job_history',$id,'job_id');
             $this->data['job'] = $job;
             $this->data['job_history'] = $job_history;
@@ -37,6 +39,10 @@ class Job_Controller extends Merit{
             $this->main_model->setShift();
             $job_inspection = (object) $this->main_model->getinfo('tbl_job_inspection',$id,'job_id');
             $this->data['job_inspection'] = $job_inspection;
+
+            $_job = new Job_Helper();
+            $inspection_report = array_shift($_job->jobDetails($job->id));
+            $this->data['inspection_report'] = $inspection_report;
 
             $job_photos = $this->main_model->getinfo('tbl_job_photos',$id,'job_id');
             $this->data['job_photos'] = $job_photos;
@@ -55,6 +61,56 @@ class Job_Controller extends Merit{
 
             $notes = $this->my_model->getinfo('tbl_job_history',$id,'job_id');
             $this->data['notes'] = $notes;
+
+            $site = $this->db->site;
+            $this->merit_model->setSelectFields(array('id', 'instruction_received'));
+            $this->merit_model->setNormalized('instruction_received','id');
+            $instruction_received = $this->merit_model->getInfo($site . '.tbl_instruction_received');
+            $this->data['instruction_received'] = $instruction_received;
+
+            $this->merit_model->setSelectFields(array('id', 'property_status'));
+            $instruction_received = $this->merit_model->getInfo($site . '.tbl_property_status');
+            $this->data['property_status'] = $instruction_received;
+
+            $this->merit_model->setSelectFields(array('id', 'inspection_type'));
+            $inspection_type = $this->merit_model->getInfo($site . '.tbl_inspection_type');
+            $this->data['inspection_type'] = $inspection_type;
+
+            $whatVal = '';
+            $whatFld = '';
+            if($this->uri->segment(2)){
+                $whatVal = $this->uri->segment(2);
+                $whatFld = 'job_id';
+            }
+            $defects = $this->merit_model->getInfo($site . '.tbl_defects',$whatVal,$whatFld);
+            $rooms = array();
+            if(count($defects) > 0){
+                foreach ($defects as $v) {
+                    $dir = json_decode($v->dir);
+                    $files = array();
+                    if(count($dir) > 0){
+                        foreach ($dir as $file) {
+                            $files[] = "defects/" . $v->id . "/" . $file;
+                        }
+                    }
+                    $v->dir = $files;
+                    if($v->room_id){
+                        $rooms[] =  $v->room_id;
+                    }
+                }
+            }
+            $this->data['defects'] = $defects;
+            $this->data['rooms'] = $rooms;
+            $this->merit_model->setSelectFields(array('id', 'orientation'));
+            $o = $this->merit_model->getInfo($site . '.tbl_report_orientation');
+
+            $orientation = array();
+            if(count($o) > 0){
+                foreach ($o as $v) {
+                    $orientation[$v->id] = $v->orientation;
+                }
+            }
+            $this->data['orientation'] = $orientation;
         }
 
         if($type && $history_id){
@@ -289,6 +345,19 @@ class Job_Controller extends Merit{
             }
             //endregion
 
+            //region Create Initial Inspection Report to DB
+            $has_inspection_report = $this->merit_model->getInfo('tbl_site_inspection_report',$job_id,'job_id');
+            $post = array('job_id' => $job_id);
+            if(count($has_inspection_report) > 0){
+                foreach($has_inspection_report as $val){
+                    $this->merit_model->update('tbl_site_inspection_report',$post,$val->id);
+                }
+            }
+            else{
+                $this->merit_model->insert('tbl_site_inspection_report',$post);
+            }
+
+            //endregion
             $url = 'jobRegistration';
             $url .= $id ? '?id=' . $id .'' : '';
             redirect($url);
@@ -332,14 +401,14 @@ class Job_Controller extends Merit{
             $this->data['inspector'] = @$inspector;
             $this->data['accounts'] = $accounts_array;
 
-            $this->session->set_userdata(array('_link' => $link));
-
             $file_name = 'project_' . $link . '_view.php';
             $file_name_array = get_filenames('application/views/project/tabs');
-
             if(count($_POST) == 0 && in_array($file_name,$file_name_array)){
                 $this->load->view('project/tabs/' . $file_name,$this->data);
             }
+        }
+        else if(isset($_POST['tab'])){
+            $this->session->set_userdata(array('_link' => $_POST['tab']));
         }
         else{
             $this->data['_pageLoad'] = 'project/project_management_view';
@@ -354,7 +423,6 @@ class Job_Controller extends Merit{
         $inspector_id = $account_type == 4 ? $user_id : '';
         $job_details = new Job_Helper();
         $this->data['tracking'] = $job_details->jobDetails('',$inspector_id,true);
-
         $path = realpath(APPPATH.'../pdf/inspection_report');
         if(count($this->data['tracking']) > 0){
             foreach($this->data['tracking'] as $v){
@@ -397,8 +465,19 @@ class Job_Controller extends Merit{
         }
 
         $job_details = new Job_Helper();
-        $this->data['job_details'] = $job_details->jobDetails($job_id);
-        $this->load->view('project/report/generate_report_view',$this->data);
+        $job = $job_details->jobDetails($job_id);
+        $this->data['job_details'] = $job;
+
+        if(count($job) > 0){
+            foreach($job as $val){
+                if($val->job_type_id != 64){
+                    $this->load->view('project/report/generate_report_view',$this->data);
+                }
+                else{
+                    redirect('inspectionReport?is_print=1&job=' . $job_id . '&view=1');
+                }
+            }
+        }
     }
 
     function jobNotes(){
@@ -479,6 +558,7 @@ class Job_Controller extends Merit{
     }
 
     function inspectionReport(){
+        $job_id = isset($_GET['job']) ? $_GET['job'] : $this->uri->segment(2);
         $this->load->helper('directory');
         $this->main_model->setSelectFields(array(
             'id','CONCAT(LPAD(id,5,0)," (", project_name ,")") as job_name'
@@ -513,8 +593,27 @@ class Job_Controller extends Merit{
         $this->data['site_inspection'] = $_data;
         $this->data['area_inspected'] = $area_inspected;
 
+        $this->main_model->setJoin(array(
+            'table' => array('tbl_job_registration','tbl_user'),
+            'join_field' => array('id','id'),
+            'source_field' => array('tbl_site_inspection_report.job_id','tbl_job_registration.inspector_id'),
+            'type' => 'left'
+        ));
+        $job_details = ArrayWalk($this->main_model->getFields('tbl_job_registration'),'tbl_job_registration.');
+        $site_inspection = ArrayWalk($this->main_model->getFields('tbl_site_inspection_report',array('id')),'tbl_site_inspection_report.');
+        $fld = array_merge($job_details,$site_inspection);
+        $fld[] = 'CONCAT(tbl_user.FName," ",tbl_user.LName) as inspector';
+        $fld[] = 'IF(tbl_user.Tel != "-" AND tbl_user.Tel != "",tbl_user.Mobile,tbl_user.Tel) as inspector_contact';
+        $this->main_model->setSelectFields($fld);
+        $this->main_model->setShift();
+        $this->data['inspection_report'] = (Object)$this->main_model->getInfo('tbl_site_inspection_report',$job_id,'job_id');
+        $this->data['inspection_report']->conclusion = json_decode($this->data['inspection_report']->conclusion);
+        $this->data['inspection_report']->notes = json_decode($this->data['inspection_report']->notes);
+
         if(isset($_POST['generate'])){
             unset($_POST['generate']);
+            unset($_POST['history_date']);
+            unset($_POST['history']);
             $_POST['user_id'] = $user_id;
             $_POST['conclusion'] = count($_POST['conclusion']) > 0 ? json_encode($_POST['conclusion']) : '';
             $_POST['notes'] = count($_POST['notes']) > 0 ? json_encode($_POST['notes']) : '';
@@ -549,24 +648,9 @@ class Job_Controller extends Merit{
                     $this->merit_model->insert('tbl_site_inspection_report',$_POST,false);
                 }
             }
+            redirect('jobRegistration?id=' . $this->uri->segment(2));
         }
-        if(isset($_GET['is_print']) && isset($_GET['job'])){
-            $this->main_model->setJoin(array(
-                'table' => array('tbl_job_registration','tbl_user'),
-                'join_field' => array('id','id'),
-                'source_field' => array('tbl_site_inspection_report.job_id','tbl_job_registration.inspector_id'),
-                'type' => 'left'
-            ));
-            $job_details = ArrayWalk($this->main_model->getFields('tbl_job_registration'),'tbl_job_registration.');
-            $site_inspection = ArrayWalk($this->main_model->getFields('tbl_site_inspection_report',array('id')),'tbl_site_inspection_report.');
-            $fld = array_merge($job_details,$site_inspection);
-            $fld[] = 'CONCAT(tbl_user.FName," ",tbl_user.LName) as inspector';
-            $this->main_model->setSelectFields($fld);
-            $this->main_model->setShift();
-            $this->data['inspection_report'] = (Object)$this->main_model->getInfo('tbl_site_inspection_report',$_GET['job'],'job_id');
-            $this->data['inspection_report']->conclusion = json_decode($this->data['inspection_report']->conclusion);
-            $this->data['inspection_report']->notes = json_decode($this->data['inspection_report']->notes);
-
+        else if(isset($_GET['is_print']) && isset($_GET['job'])){
             $dir = realpath(APPPATH.'../pdf/inspection_report');
 
             $this->data['save_path'] = $dir . '/' . $_GET['job'] . '/';
@@ -580,7 +664,6 @@ class Job_Controller extends Merit{
 
             $this->load->view('project/report/inspection_report_pdf',$this->data);
         }
-
         if(isset($_GET['job']) && $_GET['job']){
             $_job_id = $_GET['job'];
             $job = new Job_Helper();
@@ -618,8 +701,7 @@ class Job_Controller extends Merit{
                 $this->load->view('project/report/add_tag_view',$this->data);
             }
             else{
-                $this->data['_pageLoad'] = 'project/report/inspection_report_view';
-                $this->load->view('main_view',$this->data);
+                $this->load->view('project/report/inspection_report_view',$this->data);
             }
         }
     }

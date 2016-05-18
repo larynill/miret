@@ -76,11 +76,11 @@
 echo form_open('');
 ?>
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-primary form-horizontal">
+    <div class="panel panel-primary form-horizontal" style="display:none;" >
         <div class="panel-heading" role="tab" data-toggle="collapse" data-parent="#accordion" data-target="#job_details" aria-expanded="true">
             <h4 class="panel-title">Job Details</h4>
         </div>
-        <div id="job_details" class="panel-collapse collapse" role="tabpanel">
+        <div id="job_details" data-menu-id="0" class="menu-panel panel-collapse collapse" role="tabpanel">
             <div class="panel-body">
                 <div class="row">
                     <div class="col-sm-6">
@@ -541,11 +541,17 @@ if(count($menu) > 0){
 }
 ?>
 <br />
-    <div class="form-group pull-right">
-        <input type="hidden" name="time_start" value="<?php echo date('Y-m-d H:i:s') ?>" />
-        <input type="submit" name="submit" value="Save" class="btn btn-primary btn-sm saveBtn" />
-        <input type="reset" class="btn btn-danger btn-sm" value="Cancel" />
-    </div>
+    <?php
+    if(!isset($_GET['view'])) {
+        ?>
+        <div class="form-group pull-right">
+            <input type="hidden" name="time_start" value="<?php echo date('Y-m-d H:i:s') ?>"/>
+            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-sm saveBtn"/>
+            <input type="reset" class="btn btn-danger btn-sm" value="Cancel"/>
+        </div>
+    <?php
+    }
+    ?>
 </div>
 <?php
 echo form_close();
@@ -1241,7 +1247,7 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array(),$field_id =
 
     <?php
     $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : '';
-    echo $menu_id ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
+    echo $menu_id != '' ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
     echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');$('.room_tab#" . $room_id . "').removeClass('hidden');" : "";
     ?>
 
@@ -1359,9 +1365,6 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array(),$field_id =
     job_name.change(function(e){
         var btn_defect = $('.defect-btn');
         btn_defect.attr('disabled','disabled');
-        if($(this).val()){
-            btn_defect.removeAttr('disabled');
-        }
         form_url('',$(this).val());
         getJobName($(this).val());
     });
@@ -1378,7 +1381,24 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array(),$field_id =
         getJobName('<?php echo $this->uri->segment(2);?>');
     <?php
     }
+    if(isset($_GET['view'])){
     ?>
+        $('#inspection').prepend('<div class="alert alert-info" role="alert"><strong>For viewing purpose only!</strong></div>');
+        $('input[type=submit],input[type=button]:not(.unlock-btn)').attr('disabled','disabled');
+    <?php
+    }else{
+    ?>
+    var disabledDefectBtn = function(){
+        defect_btn.attr('disabled','disabled');
+        if(job_name.val()){
+            defect_btn.removeAttr('disabled');
+        }
+    };
+    disabledDefectBtn();
+    <?php
+    }
+    ?>
+
     var form_url = function(selector,job_id,menu_id,room_id,field_id){
         if(!selector && job_id){
             $('.upload-form').attr('action', bu + 'jobDefects/' + job_id );
@@ -1387,13 +1407,6 @@ function defectArea($m, $defects, $room_id = '', $dropdown = array(),$field_id =
             selector.attr('action', bu + 'jobDefects/' + job_id);
         }
     };
-    var disabledDefectBtn = function(){
-        defect_btn.attr('disabled','disabled');
-        if(job_name.val()){
-            defect_btn.removeAttr('disabled');
-        }
-    };
-    disabledDefectBtn();
     var getInfo = function(data){
         data = jQuery.parseJSON(data);
         $('.job-details').each(function(e){

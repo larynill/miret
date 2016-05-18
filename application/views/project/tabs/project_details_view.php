@@ -57,6 +57,43 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 </div>
             </div>
             <div class="form-group">
+                <label>Instruction Received</label>
+                <?php echo form_dropdown('instruction_received',$instruction_received,'','class="job-details form-control input-sm"');?>
+            </div>
+            <div class="form-group">
+                <label>Provide copies to</label>
+                <input type="text" class="form-control input-sm job-details" name="provide_copies_to" value="<?php echo @$job->provide_copies_to ?>" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Type of Inspection</label>
+                <div class="row">
+                    <div class="col-md-5">
+                        <select class="form-control input-sm inspection_range job-details" name="inspection_range">
+                            <option value="1" <?php echo @$job->inspection_range == 1 ? "selected" : "" ?>>Standard</option>
+                            <option value="2" <?php echo @$job->inspection_range == 2 ? "selected" : "" ?>>Detailed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-7">
+                        <select class="form-control input-sm type_inspection job-details required" data-type="job_type_id" name="type_inspection">
+                            <option></option>
+                            <?php
+                            if(count($inspection_type) > 0){
+                                foreach ($inspection_type as $v) {
+                                    echo '<option value="' . $v->id . '"' . (@$job->type_inspection == $v->id ? ' selected' : '') . '>' . $v->inspection_type . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Purpose of the inspection</label>
+                <textarea name="purpose_inspection" class="form-control job-details input-sm" rows="6" style="resize: none;"><?php echo str_replace("<br />", "", @$job->purpose_inspection) ?></textarea>
+            </div>
+        </div>
+        <div class="col-sm-5 well well-sm">
+            <div class="form-group">
                 <label for="exampleInputEmail1">Owner:</label>
                 <input type="text" class="form-control input-sm required" name="owner" placeholder="Owner" value="<?php echo @$job->owner;?>">
             </div>
@@ -64,8 +101,6 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 <label for="exampleInputEmail1">Owner Email:</label>
                 <input type="email" class="form-control input-sm required" name="owner_email" placeholder="Owner Email" value="<?php echo @$job->owner_email;?>">
             </div>
-        </div>
-        <div class="col-sm-5 well well-sm">
             <div class="form-group">
                 <label for="exampleInputEmail1">Contact Number:</label>
                 <div class="form-horizontal">
@@ -74,6 +109,19 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                     </div>
                     <div class="col-sm-6" style="padding: 5px 2px 10px;">
                         <input type="text" class="form-control input-sm" name="owner_mobile" placeholder="Mobile" value="<?php echo @$job->owner_mobile;?>">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-horizontal">
+                    <div class="col-sm-6" style="padding: 5px 0 10px;">
+                        <label for="exampleInputEmail1">Lot Number</label>
+                        <input type="text" class="form-control input-sm job-details" name="lot_number" value="<?php echo @$job->lot_number ?>" />
+                    </div>
+
+                    <div class="col-md-6" style="padding: 5px 2px 10px;">
+                        <label for="exampleInputEmail1">DP Number</label>
+                        <input type="text" class="form-control input-sm job-details" name="dp_number" value="<?php echo @$job->dp_number ?>" />
                     </div>
                 </div>
             </div>
@@ -109,7 +157,7 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 <textarea class="form-control input-sm" name="tenant_contact_details" placeholder="Tenant"><?php echo @$job->tenant_contact_details;?></textarea>
             </div>
             <div class="form-group">
-                <label for="exampleInputEmail1">Owner Present During Inspection:</label>
+                <label for="exampleInputEmail1">Owner Present During Inspection: </label>
                 <?php
                 $option = array(
                     1 => 'Yes',
@@ -127,8 +175,49 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 }
                 ?>
             </div>
+            <div class="form-group">
+                <label>Pets: </label>
+                <label class="radio-inline">
+                    <input type="radio" name="pets" class="job-details" value="1" <?php echo @$job->pets == 1 ? 'checked' : '' ?>/>&nbsp;Yes
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="pets" class="job-details" value="0" <?php echo @$job->pets == 0 ? 'checked' : '' ?>/>&nbsp;No
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Electricity:</label>
+                <label class="radio-inline">
+                    <input type="radio" name="electricity" class="job-details" value="1" <?php echo @$job->electricity == 1 ? 'checked' : '' ?>/>&nbsp;Connected
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="electricity" class="job-details" value="0" <?php echo @$job->electricity == 0 ? 'checked' : '' ?>/>&nbsp;Disconnected
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Water:</label>
+                <label class="radio-inline">
+                    <input type="radio" name="water" class="job-details" value="1" <?php echo @$job->water == 1 ? 'checked' : '' ?>/>&nbsp;Connected
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="water" class="job-details" value="0" <?php echo @$job->water == 0 ? 'checked' : '' ?>/>&nbsp;Disconnected
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Orientation:</label>
+                <div class="row">
+                    <div class="col-md-5">
+                        <?php
+                        echo form_dropdown('property_orientation', $orientation, @$job->property_orientation, 'class="form-control input-sm job-details"');
+                        ?>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-3 well well-sm">
+            <div class="form-group">
+                <label>Details of Property</label>
+                <textarea name="details_property" class="form-control input-sm job-details" rows="6" style="resize: none;"><?php echo str_replace("<br />", "", @$job->details_property) ?></textarea>
+            </div>
             <div class="form-group">
                 <label for="exampleInputEmail1">Job Status:</label>
                 <?php echo form_dropdown('job_status_id',$drop_down[11],@$job->job_status_id,'class="form-control input-sm required"');?>
@@ -143,8 +232,6 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 echo form_dropdown('account_manager_id',$accounts,@$job->account_manager_id,'class="form-control input-sm required"');
                 ?>
             </div>
-
-
             <div class="form-group">
                 <label for="exampleInputEmail1">Entered:</label>
                 <div class='input-group date datetimepicker1' id='entered'>
@@ -229,5 +316,12 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 e.preventDefault();
             }
         });
+        <?php
+        if($accountType == 4){
+        ?>
+            $('input,textarea,select').attr('disabled','disabled');
+        <?php
+        }
+        ?>
     });
 </script>
