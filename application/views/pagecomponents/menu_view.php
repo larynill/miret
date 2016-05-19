@@ -21,10 +21,10 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'Reports' => array(
                         'historyReports' => 'History Reports',
                     ),
@@ -55,10 +55,10 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'Reports' => array(
                         'historyReports' => 'History Reports',
                     ),
@@ -103,10 +103,10 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Jobs Allocation',
 
                     ),
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'Reports' => array(
                         'historyReports' => 'History Reports',
                     ),
@@ -156,10 +156,10 @@ if(count($_userData) > 0){
                 $navTitles = array(
                     'dashboard' => 'Home',
                     'trackingLog' => 'Tracking Log',
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'myDiary' => 'Diary',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
@@ -176,10 +176,10 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'Reports' => array(
                         'historyReports' => 'History Reports',
                     ),
@@ -208,10 +208,10 @@ if(count($_userData) > 0){
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
                     ),
-                    'Inspections' => array(
+                    /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
-                        'inspectionReport' => 'Inspection Report',
-                    ),
+                        //'inspectionReport' => 'Inspection Report'
+                    ),*/
                     'Reports' => array(
                         'historyReports' => 'History Reports',
                     ),

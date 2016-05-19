@@ -26,7 +26,7 @@
             </div>
         </div>
         <?php
-        if($has_edit_reg){
+        if($accountType != 4 && $has_edit_reg){
             ?>
             <div class="col-sm-1" style="margin:20px 0 0;">
                 <input type="button" class="btn btn-sm btn-primary unlock-btn is-lock" style="font-size: 11px;" value="Unlock">

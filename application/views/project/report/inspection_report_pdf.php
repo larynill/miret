@@ -161,7 +161,7 @@ ob_start();
 
 <body>
 <div class="header">
-    <img src="<?php echo base_url().'img/logo-other.gif'?>" width="300">
+    <img src="<?php echo realpath(APPPATH .'../img/logo-other.gif')?>" width="300">
 </div>
 <div class="footer">
     <div class="details">
@@ -191,10 +191,10 @@ ob_start();
                     </table>
                 </td>
                 <td>
-                    <img src="<?php echo base_url().'img/footer-logo-sitesafe.gif'?>" width="120">
+                    <img src="<?php echo realpath(APPPATH .'../img/footer-logo-sitesafe.gif')?>" width="120">
                 </td>
                 <td>
-                    <img src="<?php echo base_url().'img/footer-logo-lbp.gif'?>" width="120">
+                    <img src="<?php echo realpath(APPPATH .'../img/footer-logo-lbp.gif')?>" width="120">
                 </td>
             </tr>
             <tr>
@@ -236,7 +236,7 @@ ob_start();
             </tr>
             <tr>
                 <td>Inspection Date</td>
-                <td><?php echo $inspection_report->inspection_time ? date('d M Y',strtotime($inspection_report->inspection_time)) : ''?></td>
+                <td><?php echo $inspection_report->inspection_time != '0000-00-00 00:00:00' ? date('d M Y',strtotime($inspection_report->inspection_time)) : ''?></td>
             </tr>
             <tr>
                 <td>Building Inspector</td>
@@ -257,7 +257,7 @@ ob_start();
             </tr>
         </table>
         <div style="text-align: center;padding-top: 15px;">
-            <img src="<?php echo base_url().'uploads/job/' . $inspection_report->job_id . '/photos/' . $inspection_report->photo?>" width="600" height="350">
+            <img src="<?php echo realpath(APPPATH .'../uploads/job/' . $inspection_report->job_id . '/photos/' . $inspection_report->photo)?>" width="600" height="350">
         </div>
         <div class="title" style="page-break-before: always;">INTRODUCTION</div>
         <div>
@@ -265,14 +265,14 @@ ob_start();
             $client_name = explode(' ',$inspection_report->insured_name);
             ?>
             <p>Dear <?php echo $client_name[0];?>,</p><br/>
-            <p>Thank you so much for the opportunity to inspect and report on your new property. We appreciate the confidence
-                you placed in our team by allowing us to assist you in this way.</p><br/>
-            <p>If you have any questions about this inspection please do not hesitate to give us a call.</p><br/>
+            <p>Thank you for the opportunity to inspect and report on the property at <?php echo $inspection_report->address?>. We appreciate the confidence
+                you place in our team by allowing us to assist you in this way.</p><br/>
+            <p>If you have any questions about this inspection please do not hesitate to give me a call on <?php echo $inspection_report->inspector_contact;?>.</p><br/>
             <p>Thank you again for the confidence you have placed in Synergy Project Property Inspections.</p><br/>
             <p>Sincerely,</p><br/>
             <p><?php echo $inspection_report->inspector;?></p><br/>
             <p>Synergy Project Property Inspections</p><br/>
-            <p><img src="<?php echo base_url().'img/logo-other.gif'?>" width="150"></p><br/><br/>
+            <p><img src="<?php echo realpath(APPPATH .'../img/logo-other.gif')?>" width="150"></p><br/><br/>
             <p style="text-align: justify">
                 *** Please note what this report should be seen as a reasonable attempt to identify any significant defects at the time
                 of the visual inspection, not an all-encompassing report dealing with the property from every aspect. Minor defects
@@ -346,11 +346,11 @@ ob_start();
             facing generally <span class="dp-text"><?php echo @$conclusion->facing?></span>.
             The site is located on a <span class="dp-text"><?php echo @$conclusion->located?></span> suburban section that has
             <span class="dp-text"><?php echo @$conclusion->exposure?></span> exposure to the prevailing
-            winds.<?php echo @$notes->site ? @$notes->site : '';?><br/><br/>
+            winds.<br/><br/>
 
             The age of the house was taken into consideration when the inspection and reporting was carried out. The survey of
             the condition of the building elements and components were carried out on the basis of ‘the expected condition of
-            the materials’ considering their use, location and age.<br/><br/>
+            the materials’ considering their use, location and age.<?php echo @$notes->site ? @$notes->site : '';?><br/><br/>
 
             The house is constructed on a <span class="dp-text"><?php echo @$conclusion->constructed?></span>. At the time of inspection the foundation to the
             dwelling appeared in <span class="dp-text"><?php echo @$conclusion->house_condition?></span> condition.
@@ -361,29 +361,24 @@ ob_start();
             <?php echo @$notes->exterior ? @$notes->exterior : '';?><br/><br/>
             
             The roof to the dwelling consists of <span class="dp-text"><?php echo @$conclusion->dwelling?></span> roof,
-            which appears in <span class="dp-text"><?php echo @$conclusion->appears?></span> condition for its age and will
-            require a <span class="dp-text"><?php echo @$conclusion->level?></span> level of maintenance over the coming years.
+            which appears in <span class="dp-text"><?php echo @$conclusion->appears?></span> condition for its age <?php echo @$conclusion->level == 'low' ? 'and' : 'but'?> will
+            require a <span class="dp-text"><?php echo @$conclusion->level?></span> level of maintenance.
             <?php echo @$notes->roof_exterior ? @$notes->roof_exterior : '';?><br/><br/>
 
             The floor levels in our opinion are at <?php echo @$conclusion->floor_level?> tolerances.
-            No evidence of <?php echo @$conclusion->evidence?> settlement has been
-            identified.<br/><br/>
-
-            No access was available to view the roof space, we sighted a blocked access to the hallway cupboard but this fixed
-            shut. <?php echo @$notes->roof_space ? @$notes->roof_space : '';?><br/><br/>
-
-            Internally the house appears in good condition. Overall, the house appears structurally sound.<br/><br/>
-
-            Normal maintenance and repairs will be required over the coming years. The more significant items are detailed
-            throughout the report.<br/><br/>
+            <?php echo @$conclusion->evidence == 'acceptable' ? 'Evidence of ' . @$conclusion->evidence : 'No evidence of ' . @$conclusion->evidence?> settlement has been
+            identified.<?php echo @$notes->roof_space ? @$notes->roof_space : '';?><br/><br/>
 
             <?php echo @$notes->interior ? @$notes->interior.'<br/><br/>' : '';?>
             <?php echo @$notes->services ? @$notes->services.'<br/><br/>' : '';?>
 
+            Internally the house appears in <span class="dp-text text selected-text" id="internal_house"><?php echo @$conclusion->internal_house?></span> condition.<br/><br/>
+
+            Overall, the house appears structurally <span class="dp-text text selected-text" id="structural"><?php echo @$conclusion->structural?></span>.<br/><br/>
+
             The grounds to the property are generally in a <span class="dp-text"><?php echo @$conclusion->condition?></span> condition and
             landscaped to a <span class="dp-text"><?php echo @$conclusion->landscape?></span> condition for an existing
-            <span class="dp-text"><?php echo @$conclusion->property?></span> property. Due to the concrete patios and pathways only a low level of maintenance would be required over the
-            years. We noted some debris and old building materials stored down the southern side of the property.
+            <span class="dp-text"><?php echo @$conclusion->property?></span> property.
             <?php echo @$notes->ancillary_space ? @$notes->ancillary_space : '';?><br/><br/>
         </p>
         <div class="title" style="page-break-before: always;">STATEMENT OF POLICY FOR STANDARD HOUSE INSPECTION</div>
@@ -633,8 +628,9 @@ $pdf = $domPdf->output();
 // to the client.
 $pdfName = str_replace(' ','_',$inspection_report->project_name) . '_Inspection_Report_' . date('Ymd_Hi');
 @ $domPdf->stream($pdfName.".pdf", array("Attachment" => 0));
+if(!isset($_GET['view'])){
+    $file_to_save = $save_path . $pdfName.'.pdf';
 
-$file_to_save = $save_path . $pdfName.'.pdf';
-
-file_put_contents($file_to_save, $domPdf->output());
+    file_put_contents($file_to_save, $domPdf->output());
+}
 ?>

@@ -325,9 +325,11 @@ class On_Site_Controller extends Merit{
             $job = $this->merit_model->getInfo('tbl_job_registration',$job_id);
 
             echo json_encode((Object)$job);
-        }else{
-            $this->data['_pageLoad'] = 'on_site/on_site_view';
-            $this->load->view('main_view', $this->data);
+        }
+        else{
+            /*$this->data['_pageLoad'] = 'on_site/on_site_view';
+            $this->load->view('main_view', $this->data);*/
+            $this->load->view('on_site/on_site_view', $this->data);
         }
     }
 

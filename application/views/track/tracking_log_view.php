@@ -14,13 +14,7 @@
         <th class="data-column">Report Sent</th>
         <th style="width: 10%" >Notes</th>
         <th style="width: 3%">Report</th>
-        <?php
-        if($accountType != 4){
-            ?>
-            <th>&nbsp;</th>
-        <?php
-        }
-        ?>
+        <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
@@ -116,13 +110,7 @@
                         <?php
                     }
                     ?>
-                <?php
-                if($accountType != 4){
-                    ?>
                     <td><a href="<?php echo base_url('jobRegistration?id=' . $v->id)?>">edit</a></td>
-                    <?php
-                }
-                ?>
             </tr>
             <tr >
                 <td  id="a<?php echo $v->id;?>" class="columnHide" style="text-align: left">

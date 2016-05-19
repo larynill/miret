@@ -38,6 +38,7 @@ class Job_Helper extends CI_Controller{
         $fld[] = 'IF(date_due,DATE_FORMAT(date_due,"%d/%m/%y"),"") as date_due';
         $fld[] = 'CONCAT(account_manager.FName," ",account_manager.LName) as account_manager_name';
         $fld[] = 'CONCAT(inspector.FName," ",inspector.LName) as inspector_name';
+        $fld[] = 'IF(inspector.Tel != "-" OR inspector.Tel != "",inspector.Mobile,inspector.Tel) as inspector_contact';
         $fld[] = 'status.job_type_specs as job_status';
         $fld[] = 'status.job_type_code as job_status_code';
         $fld[] = 'job_type.job_type_specs as job_type';
@@ -70,8 +71,8 @@ class Job_Helper extends CI_Controller{
 
         if(count($job) > 0){
             foreach($job as $k=>$v){
-                $v->conclusion_[] = json_decode($v->conclusion);
-                $v->notes_[] = json_decode($v->notes);
+                $v->conclusion_[] = $v->conclusion ? json_decode($v->conclusion) : '';
+                $v->notes_[] = $v->notes ? json_decode($v->notes) : '';
                 $v->job_address = $v->address;
                 $v->job_address .= $v->suburb ? ', ' . $v->suburb : '';
                 $v->job_address .= $v->city ? ', ' . $v->city : '';
