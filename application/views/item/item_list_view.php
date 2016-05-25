@@ -22,12 +22,14 @@
             {id: "item_name", name: "Item Name", field: "item_name", width: 50, sortable: true},
             {id: "item_code", name: "Item Code", width: 20, field: "item_code", sortable: true,cssClass: "column-center"},
             {id: "default_rate", name: "Default Rate", width: 20,field: "default_rate", sortable: true,cssClass: "column-center"},
-            {id: "unit_from", name: "Unit", field: "unit_from", width: 20},
-            {id: "report_text", name: "Report Text", field: "report_text",cssClass: "column-center"}
+            {id: "unit_from", name: "Unit", field: "unit_from", width: 20,cssClass: "column-center"},
+            {id: "report_text", name: "Report Text", field: "report_text", cssClass: "column-center"},
+            {id: "auto_item_status", name: "Auto Item?", field: "auto_item_status", width: 15, cssClass: "column-center"},
+            {id: "tags", name: "Tags", field: "tags",cssClass: "column-center"}
         ];
-        var dataFull = [];
+        var dataFull = <?php echo $items_list;?>;
 
-        $(".grid").slickgrid({
+        $("#item_list").slickgrid({
             columns: columnsBasic,
             data: dataFull,
             slickGridOptions: {
@@ -83,9 +85,10 @@
                     var currentRow = args.row;
                     rowData = dataView.getItem(currentRow);
                     var link = bu + 'manageItem/edit/' + rowData.id;
-                    $('.modal-title').html('Edit Item');
-                    $('.lg-page-load').load(link);
-                    $('.largeModal').modal();
+                    $(this).modifiedModal({
+                        url: link,
+                        title: 'Edit Item'
+                    });
                 });
 
                 var sortCol = o.sortCol;
@@ -215,10 +218,28 @@
                         });
                     }else if(btn_type == 'delete'){
                         link = bu + 'manageItem/delete/' + selected_id;
+                        var ele =
+                            '<div class="modal-body">' +
+                                '<div class="row">' +
+                                    '<div class="col-sm-12">' +
+                                    'Do you want to continue deleting item?' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="modal-footer">' +
+                                '<button type="button" class="btn btn-success btn-sm yes-btn" data-dismiss="modal">Yes</button>' +
+                                '<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No</button>' +
+                            '</div>';
                         $(this).modifiedModal({
-                            url: link,
+                            html: ele,
                             title: 'Delete Item'
                         });
+                        $('.yes-btn').click(function(e){
+                            e.preventDefault();
+                            $.post(link,{id:selected_id},function(data){});
+                            location.reload();
+                        });
+
                     }
                 }
             }

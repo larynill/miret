@@ -19,6 +19,31 @@ class Job_Controller extends Merit{
         $history_id = isset($_GET['h_id']) ? $_GET['h_id'] : '';
         $job_data = array();
 
+        $site = $this->db->site;
+        $this->merit_model->setSelectFields(array('id', 'instruction_received'));
+        $this->merit_model->setNormalized('instruction_received','id');
+        $instruction_received = $this->merit_model->getInfo($site . '.tbl_instruction_received');
+        $this->data['instruction_received'] = $instruction_received;
+
+        $this->merit_model->setSelectFields(array('id', 'property_status'));
+        $property_status = $this->merit_model->getInfo($site . '.tbl_property_status');
+        $this->data['property_status'] = $property_status;
+
+        $this->merit_model->setSelectFields(array('id', 'inspection_type'));
+        $inspection_type = $this->merit_model->getInfo($site . '.tbl_inspection_type');
+        $this->data['inspection_type'] = $inspection_type;
+
+        $this->merit_model->setSelectFields(array('id', 'orientation'));
+        $o = $this->merit_model->getInfo($site . '.tbl_report_orientation');
+
+        $orientation = array();
+        if(count($o) > 0){
+            foreach ($o as $v) {
+                $orientation[$v->id] = $v->orientation;
+            }
+        }
+        $this->data['orientation'] = $orientation;
+
         if($id){
             $this->main_model->setShift();
             $fld = ArrayWalk($this->main_model->getFields('tbl_job_registration'),'tbl_job_registration.');
@@ -62,19 +87,34 @@ class Job_Controller extends Merit{
             $notes = $this->my_model->getinfo('tbl_job_history',$id,'job_id');
             $this->data['notes'] = $notes;
 
-            $site = $this->db->site;
-            $this->merit_model->setSelectFields(array('id', 'instruction_received'));
-            $this->merit_model->setNormalized('instruction_received','id');
-            $instruction_received = $this->merit_model->getInfo($site . '.tbl_instruction_received');
-            $this->data['instruction_received'] = $instruction_received;
+            $this->merit_model->setJoin(array(
+                'table' => array('tbl_items','tbl_unit_conversion'),
+                'join_field' => array('id','id'),
+                'source_field' => array('tbl_job_estimate.item_id','tbl_items.unit_id'),
+                'type' => 'left'
+            ));
+            $fields = ArrayWalk($this->merit_model->getFields('tbl_items',['id']),'tbl_items.');
+            $fields[] = 'tbl_job_estimate.id';
+            $fields[] = 'tbl_unit_conversion.unit_from';
+            $fields[] = 'tbl_job_estimate.item_id';
+            $fields[] = 'tbl_job_estimate.job_id';
+            $fields[] = 'tbl_job_estimate.quantity';
+            $fields[] = 'tbl_job_estimate.cost';
+            $this->merit_model->setSelectFields($fields);
+            $estimate = $this->merit_model->getinfo('tbl_job_estimate',$id,'job_id');
+            $this->data['estimate'] = $estimate;
 
-            $this->merit_model->setSelectFields(array('id', 'property_status'));
-            $instruction_received = $this->merit_model->getInfo($site . '.tbl_property_status');
-            $this->data['property_status'] = $instruction_received;
-
-            $this->merit_model->setSelectFields(array('id', 'inspection_type'));
-            $inspection_type = $this->merit_model->getInfo($site . '.tbl_inspection_type');
-            $this->data['inspection_type'] = $inspection_type;
+            $this->merit_model->setJoin(array(
+                'table' => array('tbl_unit_conversion'),
+                'join_field' => array('id'),
+                'source_field' => array('tbl_items.unit_id'),
+                'type' => 'left'
+            ));
+            $fields = ArrayWalk($this->merit_model->getFields('tbl_items'),'tbl_items.');
+            $fields[] = 'tbl_unit_conversion.unit_from';
+            $this->merit_model->setSelectFields($fields);
+            $estimate = $this->merit_model->getinfo('tbl_items',1,'auto_item');
+            $this->data['auto_items'] = $estimate;
 
             $whatVal = '';
             $whatFld = '';
@@ -101,16 +141,6 @@ class Job_Controller extends Merit{
             }
             $this->data['defects'] = $defects;
             $this->data['rooms'] = $rooms;
-            $this->merit_model->setSelectFields(array('id', 'orientation'));
-            $o = $this->merit_model->getInfo($site . '.tbl_report_orientation');
-
-            $orientation = array();
-            if(count($o) > 0){
-                foreach ($o as $v) {
-                    $orientation[$v->id] = $v->orientation;
-                }
-            }
-            $this->data['orientation'] = $orientation;
         }
 
         if($type && $history_id){
@@ -363,6 +393,70 @@ class Job_Controller extends Merit{
             redirect($url);
         }
         //endregion
+        //region Submit Estimates
+        if(isset($_POST['submit_estimate'])){
+            $_id = isset($_GET['id']) ? $_GET['id'] : '';
+            //new estimate to be added
+            $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : [];
+            $item_id = isset($_POST['item_id']) ? $_POST['item_id'] : [];
+            $cost = isset($_POST['cost']) ? $_POST['cost'] : [];
+            //update estimate to be added
+            $_quantity = isset($_POST['_quantity']) ? $_POST['_quantity'] : [];
+            $_item_id = isset($_POST['_item_id']) ? $_POST['_item_id'] : [];
+            $_cost = isset($_POST['_cost']) ? $_POST['_cost'] : [];
+
+            if(count($item_id) > 0){
+                foreach($item_id as $key=>$val){
+                    $post = [
+                        'item_id' => $val,
+                        'quantity' => $quantity[$key],
+                        'cost' => $cost[$key],
+                        'job_id' => $_id
+                    ];
+                    $this->merit_model->insert('tbl_job_estimate',$post);
+                }
+
+            }
+            if(count($_item_id) > 0){
+                foreach($_item_id as $key=>$val){
+                    $post = [
+                        'item_id' => $val,
+                        'quantity' => $_quantity[$key],
+                        'cost' => $_cost[$key],
+                    ];
+
+                    $this->merit_model->update('tbl_job_estimate',$post,$key);
+                }
+            }
+
+            $this->main_model->setJoin(array(
+                'table' => array('tbl_items'),
+                'join_field' => array('id'),
+                'source_field' => array('tbl_job_estimate.item_id'),
+                'type' => 'left'
+            ));
+            $fld = ArrayWalk($this->main_model->getFields('tbl_items',array('id')),'tbl_items.');
+            $fld[] = 'IF(tbl_items.auto_item, "Yes","") as auto_item_status';
+            $fld[] = 'tbl_job_estimate.id';
+            $fld[] = 'tbl_job_estimate.item_id';
+            $fld[] = 'tbl_job_estimate.quantity';
+            $fld[] = 'tbl_job_estimate.cost';
+            $fld[] = 'tbl_job_estimate.job_id';
+
+            $this->main_model->setSelectFields($fld);
+            $items_list = $this->main_model->getInfo('tbl_job_estimate',$_id,'job_id');
+
+            echo json_encode($items_list);
+            exit;
+        }
+        if(isset($_GET['delete'])){
+            $id = isset($_POST['id']) ? $_POST['id'] : '';
+            if($id){
+                $this->merit_model->delete('tbl_job_estimate',$id);
+            }
+        }
+        //endregion
+
         //endregion
         
         $array = array();
@@ -607,8 +701,8 @@ class Job_Controller extends Merit{
         $this->main_model->setSelectFields($fld);
         $this->main_model->setShift();
         $this->data['inspection_report'] = (Object)$this->main_model->getInfo('tbl_site_inspection_report',$job_id,'job_id');
-        $this->data['inspection_report']->conclusion = json_decode($this->data['inspection_report']->conclusion);
-        $this->data['inspection_report']->notes = json_decode($this->data['inspection_report']->notes);
+        @$this->data['inspection_report']->conclusion = json_decode(@$this->data['inspection_report']->conclusion);
+        @$this->data['inspection_report']->notes = json_decode(@$this->data['inspection_report']->notes);
 
         if(isset($_POST['generate'])){
             unset($_POST['generate']);

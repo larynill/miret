@@ -3,7 +3,7 @@
 <div class="option-div">
     <div class="row">
         <div class="col-sm-12">
-            <button class="btn btn-sm btn-primary add-photos"><i class="glyphicon glyphicon-plus"></i> Add Photos</button>
+            <button type="button" class="btn btn-sm btn-primary add-photos"><i class="glyphicon glyphicon-plus"></i> Add Photos</button>
         </div>
     </div>
 </div>

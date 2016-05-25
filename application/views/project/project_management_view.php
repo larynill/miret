@@ -18,7 +18,7 @@ switch($accountType){
         $_links = array(
             'inspection' => 'Inspection',
             'photos' => 'Photos',
-            /*'estimates' => 'Estimates',*/
+            'estimates' => 'Estimates',
             'job_report' => 'Report',
             'expenses' => 'Expenses',
             'invoices' => 'Invoices',
@@ -34,7 +34,7 @@ $first_key = key($links);
 $df_link = $this->session->userdata('_link');
 
 $df_link = $df_link ? (array_key_exists($df_link,$links) ? $df_link : $first_key) : $first_key;
-$_data_link = @$job->job_type_id == 64 && $df_link == 'job_report' ? 'data-url="'. @$job->link .'"' : ($df_link == 'inspection' ? 'data-url="'. @$job->inspection_link .'"' : '');
+$_data_link = @$job->job_type_id == 64 && $df_link == 'job_report' ? 'data-url="'. @$job->link .'"' : (@$job->job_type_id == 64 && $df_link == 'inspection' ? 'data-url="'. @$job->inspection_link .'"' : '');
 echo '<span class="df_link" link="' . $df_link . '" ' . $_data_link . '></span>';
 ?>
 <ul class="nav nav-tabs" role="tablist">
@@ -60,7 +60,7 @@ $job_num = str_pad(@$job->id,5,'0',STR_PAD_LEFT);
     $ref = 1;
     foreach($links as $key=>$val){
         $active = $df_link == $key ? 'active' : '';
-        $_data_link = @$job->job_type_id == 64 && $key == 'job_report' ? 'data-url="'. @$job->link .'"' : ($key == 'inspection' ? 'data-url="'. @$job->inspection_link .'"' : '');
+        $_data_link = @$job->job_type_id == 64 && $key == 'job_report' ? 'data-url="'. @$job->link .'"' : (@$job->job_type_id == 64 && $key == 'inspection' ? 'data-url="'. @$job->inspection_link .'"' : '');
         echo '<div role="tabpanel" class="tab-pane ' . $active . '" id="' . $key . '" ' . $_data_link . '></div>';
         $ref++;
     }

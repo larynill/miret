@@ -9,7 +9,6 @@
     .tagsGrid{
         height: 580px;
         border: 1px solid #000000;
-        font-size: 11px!important;
     }
 
     .slick-row, .alt_drop_div{
@@ -17,12 +16,10 @@
     }
 
     .slick-cell{
-        font-size: 11px!important;
         cursor: pointer;
         text-align: center;
     }
     .slick-header-column{
-        background: #000000!important;
         padding:5px 10px!important;
         color:#FFF!important;
         text-align: center!important;

@@ -1,1 +1,404 @@
-Estimates
+
+<?php
+$url = 'jobRegistration';
+$id = isset($_GET['id']) ? $_GET['id'] : '';
+$url .= $id ? '?id=' . $id .'' : '';
+echo form_open($url,'class="estimate-form"');
+$total = 0;
+if(count($estimate) > 0){
+    foreach($estimate as $val){
+        $total += ($val->quantity * $val->default_rate);
+    }
+}
+?>
+<span class="notify" style="display: none;">Changes saved.</span>
+<table class="table table-colored-header">
+    <thead>
+    <tr>
+        <td colspan="5">&nbsp;</td>
+        <td class="text-center"><strong>Total</strong></td>
+        <td class="bordered text-center"><strong class="over-all-total">$<?php echo number_format($total,2,'.','');?></strong></td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Quantity</td>
+        <td>Unit</td>
+        <td>Cost</td>
+        <td>Sub-Total</td>
+        <td>&nbsp;</td>
+    </tr>
+    </thead>
+    <tbody class="estimate-content">
+        <?php
+        $ref = 1;
+        if(count($estimate) > 0){
+            foreach($estimate as $val){
+                $diff = $val->cost ? $val->default_rate - $val->cost : 0;
+                $input_style =  $diff != 0 ? 'color:#ff0000;' : '';
+                $_cost = $val->cost ? $val->cost : $val->default_rate;
+                ?>
+                <tr class="item-details" id="item-<?php echo $ref?>">
+                    <td class="count">
+                        <?php echo $ref;?>
+                    </td>
+                    <td class="text-left">
+                        <input class="form-control input-sm item-code"  id="<?php echo $ref;?>" value="<?php echo $val->item_code?>">
+                        <input type="hidden" name="_item_id[<?php echo $val->id?>]" class="hidden-item" value="<?php echo $val->item_id;?>">
+                    </td>
+                    <td class="text-left">
+                        <input class="form-control input-sm item-name"  id="<?php echo $ref;?>" value="<?php echo $val->item_name?>">
+                    </td>
+                    <td style="width: 2%!important;">
+                        <input type="text" name="_quantity[<?php echo $val->id?>]" class="quantity" value="<?php echo $val->quantity ? $val->quantity : ''?>">
+                    </td>
+                    <td><?php echo $val->unit_from?></td>
+                    <td>
+                        <input type="text" name="_cost[<?php echo $val->id?>]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $_cost?>" style="display:none;<?php echo $input_style;?>">
+                        <span class="cost"><?php echo '$' . $_cost?></span><br/>
+                        <span class="df-cost"><?php echo $diff != 0 ? '$'.$diff : '';?></span>
+                    </td>
+                    <td class="total">$<?php echo $val->quantity ? number_format($val->quantity * $val->default_rate,2,'.','') : 0?></td>
+                    <td rowspan="2" class="no-border">
+                        <a href="#" style="color: #000000;" class="delete-estimate" id="<?php echo $ref?>" data-id="<?php echo $val->id?>" tabindex="-1"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                </tr>
+                <tr class="item-<?php echo $ref?>">
+                    <td colspan="7" class="text-left" id="report-item-<?php echo $ref?>">
+                        <?php echo $val->report_text?>
+                    </td>
+                </tr>
+            <?php
+                $ref++;
+            }
+        }
+        else{
+            $ref = 1;
+            if(count($auto_items) > 0){
+                foreach($auto_items as $val){
+                    ?>
+                    <tr class="item-details" id="item-<?php echo $ref?>">
+                        <td class="count">
+                            <?php echo $ref;?>
+                        </td>
+                        <td class="text-left">
+                            <input class="form-control input-sm item-code"  value="<?php echo $val->item_code?>">
+                            <input type="hidden" class="hidden-item" name="item_id[]" value="<?php echo $val->id;?>">
+                        </td>
+                        <td class="text-left">
+                            <input class="form-control input-sm item-name"  value="<?php echo $val->item_name?>">
+                        </td>
+                        <td style="width: 2%!important;">
+                            <input type="text" name="quantity[]" class="quantity">
+                        </td>
+                        <td><?php echo $val->unit_from?></td>
+                        <td>
+                            <input type="text" name="cost[]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $val->default_rate?>" style="display:none;">
+                            <span class="cost"><?php echo '$' . $val->default_rate?></span><br/>
+                            <span class="df-cost"></span>
+                        </td>
+                        <td class="total">$0</td>
+                        <td rowspan="2" class="no-border">
+                            <a href="#" style="color: #000000;" class="delete-estimate" id="<?php echo $ref?>" tabindex="-1"><i class="glyphicon glyphicon-trash"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="item-<?php echo $ref?>">
+                        <td colspan="7" class="text-left" id="report-item-<?php echo $ref?>">
+                            <?php echo $val->report_text?>
+                        </td>
+                    </tr>
+                <?php
+                    $ref++;
+                }
+            }
+        }
+        ?>
+    </tbody>
+</table>
+<div class="text-left">
+    <button type="button" class="btn btn-sm btn-primary add-estimate"><i class="glyphicon glyphicon-plus"></i> Add Estimate</button>
+    <button type="submit" class="btn btn-sm btn-success" name="submit_estimate" style="display: none">Save</button>
+</div>
+<?php
+echo form_close();
+?>
+<style>
+    .table-colored-header > thead > tr:nth-child(2) > td{
+        text-align: center;
+        border: none;
+    }
+    .count{
+        font-weight: bold;
+    }
+    .table-colored-header > thead > tr:nth-child(2) > td:nth-child(3){
+        width: 50%;
+    }
+    .table-colored-header > thead > tr:nth-child(2) > td:nth-child(2){
+        width: 15%;
+    }
+    .table-colored-header > thead > tr:nth-child(2) > td:nth-child(4){
+        width: 5%;
+    }
+    .table-colored-header > thead > tr:nth-child(2) > td:nth-child(6){
+        width: 8%;
+    }
+    .table-colored-header > thead > tr:nth-child(2) > td:nth-child(7){
+        width: 10%;
+    }
+    .ms-ctn.form-control{
+        width: 100%;
+    }
+    .text-left{
+        text-align: left!important;
+    }
+    .no-border{
+        border: none!important;
+    }
+    .bordered{
+        border: 1px solid #d2d2d2!important;
+    }
+    input[type="text"],select{
+        width: 100%;
+    }
+    .notify{
+        position: absolute;
+        background: #1caa22;
+        padding: 5px;
+        color: #ffffff;
+    }
+</style>
+<script>
+    $(function(){
+        var estimate_content = $('.estimate-content'),
+            add_estimate = $('.add-estimate');
+        var ele,
+            set_blank_element = function(count){
+                ele =
+                    '<tr class="item-details" id="item-' + count + '">' +
+                        '<td class="count">' + count + '</td>' +
+                        '<td class="text-left">' +
+                            '<input class="form-control input-sm magic-suggest item-code"  value="">' +
+                            '<input type="hidden" class="hidden-item" name="item_id[]">' +
+                        '</td>' +
+                        '<td class="text-left"><input class="form-control input-sm item-name"  value=""></td>' +
+                        '<td><input type="text" name="quantity[]" class="quantity"></td>' +
+                        '<td class="unit"></td>' +
+                        '<td>' +
+                            '<input type="text" name="cost[]" class="default-rate" style="display: none;">' +
+                            '<span class="cost"></span></br>' +
+                            '<span class="df-cost"></span>' +
+                        '</td>' +
+                        '<td class="total">$0</td>' +
+                        '<td rowspan="2" class="no-border">' +
+                            '<a href="#" style="color: #000000;" class="delete-estimate" id="' + count + '" tabindex="-1"><i class="glyphicon glyphicon-trash"></i></a>' +
+                        '</td>' +
+                    '</tr>' +
+                    '<tr class="item-' + count + '">' +
+                        '<td colspan="7" class="text-left report-text" id="report-item-' + count + '">&nbsp;</td>' +
+                    '</tr>';
+
+                return ele;
+            };
+            var _load_auto_complete = function(url,_class,type,is_action,count_id){
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    success: function( data ) {
+                        _class.autocomplete({
+                            minLength: 1,
+                            source: data,
+                            select: function( event, ui ) {
+                                var _id = (is_action ? count_id : this.id);
+                                var item_id = $(this).parents('.item-details');
+                                var report_text = $('#report-item-' + _id);
+                                item_id.find('.default-rate').val(ui.item.default_rate);
+                                item_id.find('.cost').html('$' + ui.item.default_rate);
+                                item_id.find('.unit').html(ui.item.unit_from);
+                                report_text.html(ui.item.report_text);
+                                item_id.find('.hidden-item').attr('value',ui.item.id);
+
+                                if(type == 1){
+                                    item_id.find('.item-name').val(ui.item.item_name);
+                                }
+                                else{
+                                    item_id.find('.item-code').val(ui.item.item_code);
+                                }
+                                add_estimate.removeAttr('disabled');
+                                $('button[name="submit_estimate"]').trigger('click');
+                            }
+                        });
+                    }
+                });
+            };
+
+        _load_auto_complete(bu + 'itemsJson?s=item_code',$('.item-code'),1);
+        _load_auto_complete(bu + 'itemsJson?s=item_name',$('.item-name'),2);
+
+        add_estimate.click(function(){
+            $(this).attr('disabled','disabled');
+            estimate_content
+                .append(set_blank_element(
+                    parseInt(
+                        estimate_content.find('.count').last().html()
+                            ? estimate_content.find('.count').last().html() : 0
+                    ) + 1)
+                );
+
+            var item_code_auto_complete = estimate_content.find('.item-code'),
+                item_name_auto_complete = estimate_content.find('.item-name'),
+                quantity = estimate_content.find('.quantity'),
+                count_id = parseInt(estimate_content.find('.count').last().html());
+
+            _load_auto_complete(bu + 'itemsJson?s=item_code',item_code_auto_complete,1,1,count_id);
+            _load_auto_complete(bu + 'itemsJson?s=item_name',item_name_auto_complete,2,1,count_id);
+
+        });
+        estimate_content
+            .on('keyup','.quantity',function(){
+                var _total = $(this).parents('.item-details').find('.total');
+                var _rate = $(this).parents('.item-details').find('.default-rate').val();
+                var _total_cost = _rate ? parseFloat(_rate) * $(this).val() : 0;
+                _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
+                var over_all_total = 0;
+                $('.total').each(function(e){
+                    var _val = $(this).html();
+                    over_all_total += parseFloat(_val.replace('$',''));
+                });
+                $('.over-all-total').html('$' + over_all_total.toFixed(2));
+            })
+            .on('focusout','.quantity',function(e){
+                $('button[name="submit_estimate"]').trigger('click');
+            })
+            .on('keyup','.default-rate',function(){
+                var _total = $(this).parents('.item-details').find('.total');
+                var _quantity = $(this).parents('.item-details').find('.quantity').val();
+                var _df_cost = $(this).parents('.item-details').find('.df-cost');
+                var _total_cost = _quantity ? parseFloat(_quantity) * $(this).val() : 0;
+                var diff = parseFloat($(this).data('default') - $(this).val());
+                _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
+                var over_all_total = 0;
+                $('.total').each(function(e){
+                    var _val = $(this).html();
+                    over_all_total += parseFloat(_val.replace('$',''));
+                });
+                _df_cost.html('');
+                $(this).css({color:'#000000'});
+                if(diff != 0){
+                    _df_cost.html('$' + diff);
+                    $(this).css({color:'#ff0000'});
+                }
+
+                $('.over-all-total').html('$' + over_all_total.toFixed(2));
+            })
+            .on('dblclick','.cost',function(){
+                $(this).parent().find('.default-rate').css({display:'inline'}).focus();
+                $(this).css({display:'none'});
+            })
+            .on('focusout','.default-rate',function(e){
+                $('button[name="submit_estimate"]').trigger('click');
+                $(this).css({'display':'none'});
+                $(this).parent().find('.cost').css({display:'inline'});
+            })
+            .on('click','.delete-estimate',function(){
+                var ele =
+                    '<div class="modal-body">' +
+                        '<div class="row">' +
+                            '<div class="col-sm-12">' +
+                                'Do you want to continue deleting Item?' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-success btn-sm yes-btn" data-dismiss="modal">Yes</button>' +
+                        '<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No</button>' +
+                    '</div>';
+                $(this).modifiedModal({
+                    html: ele,
+                    title: 'Delete Item',
+                    type: 'small'
+                });
+                var item_id = $('#item-' + this.id + ', .item-' + this.id);
+                var data_id = typeof $(this).data('id')  !== "undefined" ? $(this).data('id') : '';
+                $('.yes-btn').click(function(e){
+                    if(data_id){
+                        $.post(bu + 'jobRegistration?id=<?php echo $_GET['id']?>&delete=1',{id:data_id});
+                    }
+                    item_id.remove();
+                    var ref = 1;
+                    estimate_content.find('.count').each(function(e){
+                        $(this).html(ref);
+                        ref++;
+                    });
+                    add_estimate.removeAttr('disabled');
+                })
+            });
+
+        $('button[name="submit_estimate"]').click(function(e){
+            e.preventDefault();
+            var _estimate_form = $('.estimate-form'),
+                data = _estimate_form.serializeArray();
+                data.push({'name':'submit_estimate',value:1});
+            $.post(_estimate_form.attr('action'),data,function(response){
+                var data = jQuery.parseJSON(response);
+                $('.notify').css({'display':'inline'});
+                $('.hidden-item').each(function(e){
+                    $(this)
+                        .attr('name','_item_id[' + data[e].id +']')
+                        .val(data[e].item_id);
+                    e++;
+                });
+                $('.quantity').each(function(e){
+                    $(this)
+                        .attr('name','_quantity[' + data[e].id +']')
+                        .val((parseInt(data[e].quantity) ? data[e].quantity : ''));
+
+                    var _total = $(this).parents('.item-details').find('.total');
+                    var _rate = data[e].cost ? data[e].cost : data[e].default_rate;
+                    var _quantity = data[e].quantity;
+                    var _total_cost = parseFloat(_rate) * parseFloat(_quantity);
+                    _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
+
+                    e++;
+                });
+                $('.cost').each(function(e){
+                    $(this)
+                        .html('$' + (parseInt(data[e].cost) ? data[e].cost : data[e].default_rate));
+
+                    e++;
+                });
+                $('.default-rate').each(function(e){
+                    $(this)
+                        .attr('name','_cost[' + data[e].id +']')
+                        .attr('data-default',data[e].default_rate)
+                        .val((parseInt(data[e].cost) ? data[e].cost : data[e].default_rate));
+
+                    var _total = $(this).parents('.item-details').find('.total');
+                    var _df_cost = $(this).parents('.item-details').find('.df-cost');
+                    var _rate = data[e].cost ? data[e].cost : data[e].default_rate;
+                    var _quantity = data[e].quantity;
+                    var diff = (data[e].default_rate - data[e].cost);
+                    var _total_cost = parseFloat(_rate) * parseFloat(_quantity);
+                    _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
+                    _df_cost.html('');
+                    $(this).css({color:'#000000'});
+                    if(diff != 0){
+                        _df_cost.html(data[e].cost ? '$' + diff : '');
+                        $(this).css({color:'#ff0000'});
+                    }
+                    e++;
+                });
+                $('.delete-estimate').each(function(e){
+                    $(this)
+                        .attr('data-id',data[e].id);
+                    e++;
+                });
+            });
+
+        });
+        setInterval(function(){
+            $('.notify').css({'display':'none'});
+        }, 3000);
+    })
+</script>
