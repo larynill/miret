@@ -12,6 +12,7 @@ if(count($estimate) > 0){
 }
 ?>
 <span class="notify" style="display: none;">Changes saved.</span>
+<div class="list"></div>
 <table class="table table-colored-header">
     <thead>
     <tr>
@@ -45,7 +46,7 @@ if(count($estimate) > 0){
                         <?php echo $ref;?>
                     </td>
                     <td class="text-left">
-                        <input class="form-control input-sm item-code"  id="<?php echo $ref;?>" value="<?php echo $val->item_code?>">
+                        <input class="form-control input-sm item-code"  id="<?php echo $ref;?>" data-toggle="popover" value="<?php echo $val->item_code?>">
                         <input type="hidden" name="_item_id[<?php echo $val->id?>]" class="hidden-item" value="<?php echo $val->item_id;?>">
                     </td>
                     <td class="text-left">
@@ -55,10 +56,9 @@ if(count($estimate) > 0){
                         <input type="text" name="_quantity[<?php echo $val->id?>]" class="quantity" value="<?php echo $val->quantity ? $val->quantity : ''?>">
                     </td>
                     <td><?php echo $val->unit_from?></td>
-                    <td>
-                        <input type="text" name="_cost[<?php echo $val->id?>]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $_cost?>" style="display:none;<?php echo $input_style;?>">
-                        <span class="cost"><?php echo '$' . $_cost?></span><br/>
-                        <span class="df-cost"><?php echo $diff != 0 ? '$'.$diff : '';?></span>
+                    <td class="cost-col">
+                        <input type="text" name="_cost[<?php echo $val->id?>]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $_cost?>" style="display:none;">
+                        <span class="cost"><?php echo '$' . $_cost?></span>
                     </td>
                     <td class="total">$<?php echo $val->quantity ? number_format($val->quantity * $val->default_rate,2,'.','') : 0?></td>
                     <td rowspan="2" class="no-border">
@@ -66,9 +66,25 @@ if(count($estimate) > 0){
                     </td>
                 </tr>
                 <tr class="item-<?php echo $ref?>">
-                    <td colspan="7" class="text-left" id="report-item-<?php echo $ref?>">
-                        <?php echo $val->report_text?>
-                    </td>
+                    <?php
+                    if($diff){
+                        ?>
+                        <td colspan="4" class="text-left" id="report-item-<?php echo $ref?>">
+                            <?php echo $val->report_text?>
+                        </td>
+                        <td class="text-right danger">Difference:</td>
+                        <td class="danger"><span class="df-cost" style="<?php echo $input_style;?>"><?php echo $diff ? '$' . $diff : ''?></span></td>
+                        <td class="danger"><span class="df-rate"><?php echo $diff ? '$' . $val->default_rate : ''?></span></td>
+                        <?php
+                    }
+                    else{
+                        ?>
+                        <td colspan="7" class="text-left" id="report-item-<?php echo $ref?>">
+                            <?php echo $val->report_text?>
+                        </td>
+                        <?php
+                    }
+                    ?>
                 </tr>
             <?php
                 $ref++;
@@ -84,7 +100,7 @@ if(count($estimate) > 0){
                             <?php echo $ref;?>
                         </td>
                         <td class="text-left">
-                            <input class="form-control input-sm item-code"  value="<?php echo $val->item_code?>">
+                            <input class="form-control input-sm item-code" data-toggle="popover" value="<?php echo $val->item_code?>">
                             <input type="hidden" class="hidden-item" name="item_id[]" value="<?php echo $val->id;?>">
                         </td>
                         <td class="text-left">
@@ -94,10 +110,9 @@ if(count($estimate) > 0){
                             <input type="text" name="quantity[]" class="quantity">
                         </td>
                         <td><?php echo $val->unit_from?></td>
-                        <td>
+                        <td class="cost-col">
                             <input type="text" name="cost[]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $val->default_rate?>" style="display:none;">
-                            <span class="cost"><?php echo '$' . $val->default_rate?></span><br/>
-                            <span class="df-cost"></span>
+                            <span class="cost"><?php echo '$' . $val->default_rate?></span>
                         </td>
                         <td class="total">$0</td>
                         <td rowspan="2" class="no-border">
@@ -179,16 +194,20 @@ echo form_close();
                     '<tr class="item-details" id="item-' + count + '">' +
                         '<td class="count">' + count + '</td>' +
                         '<td class="text-left">' +
-                            '<input class="form-control input-sm magic-suggest item-code"  value="">' +
+                            '<input class="form-control input-sm magic-suggest item-code" value="">' +
                             '<input type="hidden" class="hidden-item" name="item_id[]">' +
+                            '<div class="popover" role="tooltip">' +
+                                '<div class="popover-arrow"></div>' +
+                                '<h3 class="popover-title"></h3>' +
+                                '<div class="popover-content"></div>' +
+                            '</div>' +
                         '</td>' +
                         '<td class="text-left"><input class="form-control input-sm item-name"  value=""></td>' +
                         '<td><input type="text" name="quantity[]" class="quantity"></td>' +
                         '<td class="unit"></td>' +
-                        '<td>' +
+                        '<td class="cost-col">' +
                             '<input type="text" name="cost[]" class="default-rate" style="display: none;">' +
-                            '<span class="cost"></span></br>' +
-                            '<span class="df-cost"></span>' +
+                            '<span class="cost"></span>' +
                         '</td>' +
                         '<td class="total">$0</td>' +
                         '<td rowspan="2" class="no-border">' +
@@ -197,6 +216,9 @@ echo form_close();
                     '</tr>' +
                     '<tr class="item-' + count + '">' +
                         '<td colspan="7" class="text-left report-text" id="report-item-' + count + '">&nbsp;</td>' +
+                        '<td class="text-right danger" style="display: none">Difference:</td>' +
+                        '<td class="danger" style="display: none"><span class="df-cost"></span></td>' +
+                        '<td class="danger" style="display: none"><span class="df-rate"></span></td>' +
                     '</tr>';
 
                 return ele;
@@ -207,7 +229,8 @@ echo form_close();
                     dataType: "json",
                     success: function( data ) {
                         _class.autocomplete({
-                            minLength: 1,
+                            minLength: 0,
+                            appendTo: '.list',
                             source: data,
                             select: function( event, ui ) {
                                 var _id = (is_action ? count_id : this.id);
@@ -227,6 +250,20 @@ echo form_close();
                                 }
                                 add_estimate.removeAttr('disabled');
                                 $('button[name="submit_estimate"]').trigger('click');
+                                $(this).popover('hide');
+                            },
+                            focus: function(event,ui){
+                                event.preventDefault();
+                                $(this)
+                                    .attr({
+                                        'data-toggle':'popover',
+                                        'data-placement':'right',
+                                        'data-content':ui.item.item_name
+                                    })
+                                    .popover('show');
+                            },
+                            close: function(event,ui){
+                                $(this).popover('hide');
                             }
                         });
                     }
@@ -255,6 +292,12 @@ echo form_close();
             _load_auto_complete(bu + 'itemsJson?s=item_name',item_name_auto_complete,2,1,count_id);
 
         });
+        $('.form-control')
+            .popover({
+                trigger: 'hover',
+                placement: 'right',
+                delay: {"show": 1500}
+            });
         estimate_content
             .on('keyup','.quantity',function(){
                 var _total = $(this).parents('.item-details').find('.total');
@@ -272,9 +315,12 @@ echo form_close();
                 $('button[name="submit_estimate"]').trigger('click');
             })
             .on('keyup','.default-rate',function(){
+                var details = $(this).parents('.item-details');
+                var _item = $('.' + details.attr('id'));
                 var _total = $(this).parents('.item-details').find('.total');
                 var _quantity = $(this).parents('.item-details').find('.quantity').val();
-                var _df_cost = $(this).parents('.item-details').find('.df-cost');
+                var _df_cost = _item.find('.df-cost');
+                var _df_rate = _item.find('.df-rate');
                 var _total_cost = _quantity ? parseFloat(_quantity) * $(this).val() : 0;
                 var diff = parseFloat($(this).data('default') - $(this).val());
                 _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
@@ -283,18 +329,24 @@ echo form_close();
                     var _val = $(this).html();
                     over_all_total += parseFloat(_val.replace('$',''));
                 });
-                _df_cost.html('');
-                $(this).css({color:'#000000'});
+                _item.find('.danger').css({'display':'none'});
+                _item.find('#report-' + details.attr('id')).attr('colspan','7');
+
                 if(diff != 0){
-                    _df_cost.html('$' + diff);
-                    $(this).css({color:'#ff0000'});
+                    _item.find('.danger').removeAttr('style');
+                    _item.find('#report-' + details.attr('id')).attr('colspan','4');
+                    _df_cost
+                        .html('$' + diff)
+                        .css({color:'#ff0000'});
+                    _df_rate
+                        .html('$' + $(this).data('default'));
                 }
 
                 $('.over-all-total').html('$' + over_all_total.toFixed(2));
             })
-            .on('dblclick','.cost',function(){
-                $(this).parent().find('.default-rate').css({display:'inline'}).focus();
-                $(this).css({display:'none'});
+            .on('dblclick','.cost-col',function(){
+                $(this).find('.default-rate').css({display:'inline'}).focus();
+                $(this).find('.cost').css({display:'none'});
             })
             .on('focusout','.default-rate',function(e){
                 $('button[name="submit_estimate"]').trigger('click');
@@ -374,18 +426,29 @@ echo form_close();
                         .attr('data-default',data[e].default_rate)
                         .val((parseInt(data[e].cost) ? data[e].cost : data[e].default_rate));
 
-                    var _total = $(this).parents('.item-details').find('.total');
-                    var _df_cost = $(this).parents('.item-details').find('.df-cost');
+                    var details = $(this).parents('.item-details');
+                    var _item = $('.' + details.attr('id'));
+                    var _total = details.find('.total');
+                    var _df_cost = _item.find('.df-cost');
+                    var _df_rate = _item.find('.df-rate');
                     var _rate = data[e].cost ? data[e].cost : data[e].default_rate;
                     var _quantity = data[e].quantity;
                     var diff = (data[e].default_rate - data[e].cost);
                     var _total_cost = parseFloat(_rate) * parseFloat(_quantity);
                     _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
                     _df_cost.html('');
-                    $(this).css({color:'#000000'});
+
+                    _item.find('.danger').css({'display':'none'});
+                    _item.find('#report-' + details.attr('id')).attr('colspan','7');
+
                     if(diff != 0){
-                        _df_cost.html(data[e].cost ? '$' + diff : '');
-                        $(this).css({color:'#ff0000'});
+                        _item.find('.danger').removeAttr('style');
+                        _item.find('#report-' + details.attr('id')).attr('colspan','4');
+                        _df_cost
+                            .html('$' + diff)
+                            .css({color:'#ff0000'});
+                        _df_rate
+                            .html('$' + $(this).data('default'));
                     }
                     e++;
                 });
@@ -400,5 +463,6 @@ echo form_close();
         setInterval(function(){
             $('.notify').css({'display':'none'});
         }, 3000);
+
     })
 </script>
