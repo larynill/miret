@@ -7,7 +7,8 @@ echo form_open($url,'class="estimate-form"');
 $total = 0;
 if(count($estimate) > 0){
     foreach($estimate as $val){
-        $total += ($val->quantity * $val->default_rate);
+        $_cost = $val->cost ? $val->cost : $val->default_rate;
+        $total += ($val->quantity * $_cost);
     }
 }
 ?>
@@ -37,9 +38,15 @@ if(count($estimate) > 0){
         $ref = 1;
         if(count($estimate) > 0){
             foreach($estimate as $val){
-                $diff = $val->cost ? $val->default_rate - $val->cost : 0;
-                $input_style =  $diff != 0 ? 'color:#ff0000;' : '';
                 $_cost = $val->cost ? $val->cost : $val->default_rate;
+                $subtotal = number_format($val->quantity * $_cost,2,'.','');
+                $diff = $val->cost ? $val->cost - $val->default_rate : 0;
+                $_diff = $diff;
+
+                $_subtotal_diff = $subtotal - number_format($val->quantity * $val->default_rate,2,'.','');
+                $input_style =  $diff != 0 ? 'color:#ff0000;' : '';
+                $diff = $diff < 0 ? '-$' . abs($diff) : '+$' . $diff;
+                $_subtotal_diff = $_subtotal_diff != 0 ?  ($_subtotal_diff < 0 ? '-$' . abs($_subtotal_diff) : '+$' . $_subtotal_diff) : '$0';
                 ?>
                 <tr class="item-details" id="item-<?php echo $ref?>">
                     <td class="count">
@@ -60,21 +67,21 @@ if(count($estimate) > 0){
                         <input type="text" name="_cost[<?php echo $val->id?>]" class="default-rate" data-default="<?php echo $val->default_rate;?>" value="<?php echo $_cost?>" style="display:none;">
                         <span class="cost"><?php echo '$' . $_cost?></span>
                     </td>
-                    <td class="total">$<?php echo $val->quantity ? number_format($val->quantity * $val->default_rate,2,'.','') : 0?></td>
+                    <td class="total">$<?php echo $val->quantity ? $subtotal : 0?></td>
                     <td rowspan="2" class="no-border">
                         <a href="#" style="color: #000000;" class="delete-estimate" id="<?php echo $ref?>" data-id="<?php echo $val->id?>" tabindex="-1"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
                 </tr>
                 <tr class="item-<?php echo $ref?>">
                     <?php
-                    if($diff){
+                    if($_diff){
                         ?>
                         <td colspan="4" class="text-left" id="report-item-<?php echo $ref?>">
                             <?php echo $val->report_text?>
                         </td>
                         <td class="text-right danger">Difference:</td>
-                        <td class="danger"><span class="df-cost" style="<?php echo $input_style;?>"><?php echo $diff ? '$' . $diff : ''?></span></td>
-                        <td class="danger"><span class="df-rate"><?php echo $diff ? '$' . $val->default_rate : ''?></span></td>
+                        <td class="danger"><span class="df-cost" style="<?php echo $input_style;?>"><?php echo $diff ? $diff : ''?></span></td>
+                        <td class="danger"><span class="df-rate" style="<?php echo $input_style;?>"><?php echo $diff ? $_subtotal_diff : ''?></span></td>
                         <?php
                     }
                     else{
@@ -82,6 +89,9 @@ if(count($estimate) > 0){
                         <td colspan="7" class="text-left" id="report-item-<?php echo $ref?>">
                             <?php echo $val->report_text?>
                         </td>
+                        <td class="text-right danger" style="display: none">Difference:</td>
+                        <td class="danger" style="display: none"><span class="df-cost"></span></td>
+                        <td class="danger" style="display: none"><span class="df-rate"></span></td>
                         <?php
                     }
                     ?>
@@ -183,6 +193,16 @@ echo form_close();
         padding: 5px;
         color: #ffffff;
     }
+    .popover{
+        white-space: nowrap;
+        max-width: 500px;
+    }
+    .popover.right > .arrow:after{
+        border-right-color: tomato;
+    }
+    .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content{
+        z-index: 9999999;
+    }
 </style>
 <script>
     $(function(){
@@ -261,17 +281,53 @@ echo form_close();
                                         'data-content':ui.item.item_name
                                     })
                                     .popover('show');
+                                $('.popover').css({'background':'tomato','color':'#ffffff','top': (event.pageY - 10) + 'px'});
                             },
                             close: function(event,ui){
-                                $(this).popover('hide');
+                                $(this).popover('destroy');
+                                $(this).removeAttr('data-toggle data-placement data-content aria-describedby data-original-title');
                             }
                         });
                     }
                 });
             };
 
-        _load_auto_complete(bu + 'itemsJson?s=item_code',$('.item-code'),1);
+        var _load_item_code = function(_class,is_action,count_id){
+            $.ajax({
+                url: bu + 'itemsJson?s=item_code',
+                dataType: "json",
+                success: function( data ) {
+                    _class.on('keyup',function(e){
+                        var search_str = $(this).val();
+                        var _this = $(this);
+                        var _this_id = this.id;
+                        $.each(data,function(index,val){
+                            if(val.item_code.toLowerCase() == search_str.toLowerCase()){
+                                var item_id = _this.parents('.item-details');
+                                var _id = (is_action ? count_id : _this_id);
+                                var report_text = $('#report-item-' + _id);
+                                item_id.find('.default-rate').val(val.default_rate);
+                                item_id.find('.cost').html('$' + val.default_rate);
+                                item_id.find('.unit').html(val.unit_from);
+                                report_text.html(val.report_text);
+                                item_id.find('.hidden-item').attr('value',val.id);
+                                item_id.find('.item-name').val(val.item_name);
+                                _this.val(val.item_code);
+                                add_estimate.removeAttr('disabled');
+                                $('button[name="submit_estimate"]').trigger('click');
+                                _this.on( "autocompleteclose", function( event, ui ) {} );
+                                _this.autocomplete( "destroy" );
+                            }
+                        })
+                    });
+                }
+            });
+        };
+
+        var item_code = $('.item-code');
+        _load_auto_complete(bu + 'itemsJson?s=item_code',item_code,1);
         _load_auto_complete(bu + 'itemsJson?s=item_name',$('.item-name'),2);
+        _load_item_code(item_code);
 
         add_estimate.click(function(){
             $(this).attr('disabled','disabled');
@@ -290,6 +346,7 @@ echo form_close();
 
             _load_auto_complete(bu + 'itemsJson?s=item_code',item_code_auto_complete,1,1,count_id);
             _load_auto_complete(bu + 'itemsJson?s=item_name',item_name_auto_complete,2,1,count_id);
+            _load_item_code(item_code_auto_complete,1,count_id);
 
         });
         $('.form-control')
@@ -300,16 +357,30 @@ echo form_close();
             });
         estimate_content
             .on('keyup','.quantity',function(){
-                var _total = $(this).parents('.item-details').find('.total');
-                var _rate = $(this).parents('.item-details').find('.default-rate').val();
+                var details = $(this).parents('.item-details');
+                var _item = $('.' + details.attr('id'));
+                var _df_rate = details.find('.default-rate').attr('data-default');
+
+                var _total = details.find('.total');
+                var _rate = details.find('.default-rate').val();
+                var _df_cost = _item.find('.df-rate');
                 var _total_cost = _rate ? parseFloat(_rate) * $(this).val() : 0;
                 _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
+
+                /*Subtotal Difference*/
+                var subtotal_diff = parseFloat(_total_cost - (parseFloat($(this).val()) * _df_rate));
+                var _str_subtotal_diff = subtotal_diff.toString();
+                subtotal_diff = subtotal_diff < 0 ? '-$' + _str_subtotal_diff.replace('-','') : '+$' + subtotal_diff;
+
                 var over_all_total = 0;
                 $('.total').each(function(e){
                     var _val = $(this).html();
                     over_all_total += parseFloat(_val.replace('$',''));
                 });
                 $('.over-all-total').html('$' + over_all_total.toFixed(2));
+                _df_cost
+                    .css({color:'#ff0000'})
+                    .html(subtotal_diff);
             })
             .on('focusout','.quantity',function(e){
                 $('button[name="submit_estimate"]').trigger('click');
@@ -319,10 +390,21 @@ echo form_close();
                 var _item = $('.' + details.attr('id'));
                 var _total = $(this).parents('.item-details').find('.total');
                 var _quantity = $(this).parents('.item-details').find('.quantity').val();
+                _quantity = _quantity ? _quantity : 0;
                 var _df_cost = _item.find('.df-cost');
                 var _df_rate = _item.find('.df-rate');
                 var _total_cost = _quantity ? parseFloat(_quantity) * $(this).val() : 0;
-                var diff = parseFloat($(this).data('default') - $(this).val());
+                /*Difference*/
+                var diff = parseFloat($(this).val() - $(this).data('default'));
+                var _diff = diff;
+                var _str_diff = diff.toString();
+                diff = diff < 0 ? '-$' + _str_diff.replace('-','') : '+$' + diff;
+
+                /*Subtotal Difference*/
+                var subtotal_diff = parseFloat(_total_cost - (parseFloat(_quantity) * $(this).data('default')));
+                var _str_subtotal_diff = subtotal_diff ? subtotal_diff.toString() : 0;
+                subtotal_diff = subtotal_diff != 0 ? (subtotal_diff < 0 ? '-$' + _str_subtotal_diff.replace('-','') : '+$' + subtotal_diff) : '$0';
+
                 _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
                 var over_all_total = 0;
                 $('.total').each(function(e){
@@ -332,14 +414,15 @@ echo form_close();
                 _item.find('.danger').css({'display':'none'});
                 _item.find('#report-' + details.attr('id')).attr('colspan','7');
 
-                if(diff != 0){
+                if(_diff != 0){
                     _item.find('.danger').removeAttr('style');
                     _item.find('#report-' + details.attr('id')).attr('colspan','4');
                     _df_cost
-                        .html('$' + diff)
+                        .html(diff)
                         .css({color:'#ff0000'});
                     _df_rate
-                        .html('$' + $(this).data('default'));
+                        .html(subtotal_diff)
+                        .css({color:'#ff0000'});
                 }
 
                 $('.over-all-total').html('$' + over_all_total.toFixed(2));
@@ -433,22 +516,35 @@ echo form_close();
                     var _df_rate = _item.find('.df-rate');
                     var _rate = data[e].cost ? data[e].cost : data[e].default_rate;
                     var _quantity = data[e].quantity;
-                    var diff = (data[e].default_rate - data[e].cost);
+
                     var _total_cost = parseFloat(_rate) * parseFloat(_quantity);
+
+                    /*Difference*/
+                    var diff = (data[e].cost - data[e].default_rate);
+                    var _diff = diff;
+                    var _str_diff = diff.toString();
+                    diff = diff < 0 ? '-$' + _str_diff.replace('-','') : '+$' + diff;
+
+                    /*Subtotal Difference*/
+                    var subtotal_diff = parseFloat(_total_cost - (parseFloat(_quantity) * data[e].default_rate));
+                    var _str_subtotal_diff = subtotal_diff.toString();
+                    subtotal_diff = subtotal_diff != 0 ? (subtotal_diff < 0 ? '-$' + _str_subtotal_diff.replace('-','') : '+$' + subtotal_diff) : '$0';
+
                     _total.html('$' + (_total_cost ? _total_cost.toFixed(2) : 0));
                     _df_cost.html('');
 
                     _item.find('.danger').css({'display':'none'});
                     _item.find('#report-' + details.attr('id')).attr('colspan','7');
 
-                    if(diff != 0){
+                    if(_diff != 0){
                         _item.find('.danger').removeAttr('style');
                         _item.find('#report-' + details.attr('id')).attr('colspan','4');
                         _df_cost
-                            .html('$' + diff)
+                            .html(diff)
                             .css({color:'#ff0000'});
                         _df_rate
-                            .html('$' + $(this).data('default'));
+                            .html(subtotal_diff)
+                            .css({color:'#ff0000'});
                     }
                     e++;
                 });

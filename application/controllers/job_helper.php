@@ -66,7 +66,7 @@ class Job_Helper extends CI_Controller{
         $this->main_model->setSelectFields(array('id','job_type_specs'));
         $job_type_specs = $this->main_model->getInfo('tbl_job_type_specs');
 
-        $excluded_fld = array('id','job_id','roof_pitch','roof_age','client_discussions','damage_sighted','repair_strategy','overview');
+        $excluded_fld = array('id','job_id','roof_pitch','roof_age','client_discussions','damage_sighted','repair_strategy','overview','report_conclusion');
         $inspection_fld = $this->main_model->getFields('tbl_job_inspection',$excluded_fld);
 
         if(count($job) > 0){
@@ -84,11 +84,27 @@ class Job_Helper extends CI_Controller{
                 $this->main_model->setSelectFields($_fld);
                 $notes = $this->main_model->getinfo('tbl_job_history',$v->id,'job_id');
                 $v->notes = $notes;
-
                 foreach($inspection_fld as $_field){
                     $_str = str_replace('_id','',$_field);
                     $v->$_str = array_key_exists($v->$_field,$job_type_specs) ? $job_type_specs[$v->$_field] : '';
                 }
+
+                $this->merit_model->setJoin([
+                    'table' => ['tbl_items','tbl_unit_conversion'],
+                    'join_field' => ['id','id'],
+                    'source_field' => ['tbl_job_estimate.item_id','tbl_items.unit_id'],
+                    'type' => 'left'
+                ]);
+                $_fld = ArrayWalk($this->main_model->getFields('tbl_job_estimate'),'tbl_job_estimate.');
+                $_fld[] = 'tbl_items.item_name';
+                $_fld[] = 'tbl_items.item_code';
+                $_fld[] = 'tbl_items.report_text';
+                $_fld[] = 'tbl_items.default_rate';
+                $_fld[] = 'tbl_unit_conversion.unit_from';
+                $this->merit_model->setSelectFields($_fld);
+                $v->estimate = $this->merit_model->getInfo('tbl_job_estimate',$v->id,'job_id');
+
+                $v->photos = $this->merit_model->getInfo('tbl_job_photos',$v->id,'job_id');
             }
         }
         return $job;

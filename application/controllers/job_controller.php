@@ -148,6 +148,9 @@ class Job_Controller extends Merit{
         }
 
         $registration_fld = $this->main_model->getFields('tbl_job_registration',array('id'));
+
+        $this->merit_model->setShift();
+        $this->data['conclusion'] = (object)$this->merit_model->getInfo('tbl_job_inspection',$id,'job_id');
         //region POST
         //region Submit Job Details
         if(isset($_POST['submit_details'])){
@@ -276,12 +279,28 @@ class Job_Controller extends Merit{
 
             //region Submit Job Inspection
             if(isset($_POST['roof_type_id']) && $id){
-                $_POST['job_id'] = $id;
+                $post = [
+                    'job_id' => $id,
+                    'roof_type_id' => $_POST['roof_type_id'],
+                    'roof_design_id' => $_POST['roof_design_id'],
+                    'roof_pitch' => $_POST['roof_pitch'],
+                    'roof_age' => $_POST['roof_age'],
+                    'roof_cladding_finish_id' => $_POST['roof_cladding_finish_id'],
+                    'roof_cladding_condition_id' => $_POST['roof_cladding_condition_id'],
+                    'fascia_type_id' => $_POST['fascia_type_id'],
+                    'flashing_type_id' => $_POST['flashing_type_id'],
+                    'spouting_type_id' => $_POST['spouting_type_id'],
+                    'insulation_id' => $_POST['insulation_id'],
+                    'client_discussions' => $_POST['client_discussions'],
+                    'damage_sighted' => $_POST['damage_sighted'],
+                    'repair_strategy' => $_POST['repair_strategy'],
+                    'overview' => $_POST['overview'],
+                ];
                 $has_job_inspection = $this->main_model->getinfo('tbl_job_inspection',$id,'job_id');
                 if(count($has_job_inspection) > 0){
                     foreach($has_job_inspection as $k=>$v){
-                        $this->main_model->update('tbl_job_inspection',$_POST,$v->id,'id',false);
-                        $p = array_merge($job_data,$_POST);
+                        $this->main_model->update('tbl_job_inspection',$post,$v->id,'id',false);
+                        $p = array_merge($job_data,$post);
                         $l = new Controller_Logger();
                         $l->tracking_change_logger($p, 'tbl_job_inspection', $id, 2);
 
@@ -290,8 +309,8 @@ class Job_Controller extends Merit{
                     }
                 }
                 else{
-                    $this->main_model->insert('tbl_job_inspection',$_POST,false);
-                    $p = array_merge($job_data,$_POST);
+                    $this->main_model->insert('tbl_job_inspection',$post,false);
+                    $p = array_merge($job_data,$post);
                     $l = new Controller_Logger();
                     $l->tracking_change_logger($p, 'tbl_job_inspection', $id, 1);
 
@@ -562,10 +581,28 @@ class Job_Controller extends Merit{
         $job = $job_details->jobDetails($job_id);
         $this->data['job_details'] = $job;
 
+        if(isset($_POST['submit'])){
+            $report = $this->merit_model->getInfo('tbl_job_inspection',$job_id,'job_id');
+            $post = ['report_conclusion' => $_POST['report_conclusion'],'job_id' => $job_id];
+            if(count($report) > 0){
+                foreach($report as $val){
+                    $this->merit_model->update('tbl_job_inspection',$post,$val->id);
+                }
+            }
+            else{
+                $this->merit_model->insert('tbl_job_inspection',$post);
+            }
+        }
+
         if(count($job) > 0){
             foreach($job as $val){
                 if($val->job_type_id != 64){
-                    $this->load->view('project/report/generate_report_view',$this->data);
+                    if(isset($_GET['v']) && $_GET['v'] == 1){
+                        $this->load->view('project/report/generate_report_pdf_view',$this->data);
+                    }
+                    else {
+                        $this->load->view('project/report/generate_report_view', $this->data);
+                    }
                 }
                 else{
                     redirect('inspectionReport?is_print=1&job=' . $job_id . '&view=1');

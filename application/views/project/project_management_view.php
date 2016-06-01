@@ -139,6 +139,9 @@ echo form_close();
             if(_df_link.text().length == 0){
                 _df_link.load(url);
             }
+            if(job_type_dp.val() != 64){
+                has_btn_tab.push('inspection');
+            }
             btn_content.css({'display':'none'});
             if($.inArray( df_link, has_btn_tab) != -1){
                 btn_content.css({'display':'inline'});
