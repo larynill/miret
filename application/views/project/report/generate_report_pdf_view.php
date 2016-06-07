@@ -1,4 +1,3 @@
-<script src="<?php echo base_url(); ?>plugins/js/libs/jquery-1.10.2.min.js"></script>
 <style>
     .preview{
         font-family: helvetica, sans-serif;
@@ -12,6 +11,10 @@
         font-size: 35px;
         font-weight: normal;
         padding: 0 10px;
+    }
+    .table tr td{
+        border: none!important;
+        background: none!important;
     }
     .table > thead > tr > th.text-right,
     .table > tbody > tr > td.text-right,
@@ -103,6 +106,7 @@
     }
     .content-div ul.text-list{
         counter-reset: myCounter;
+        margin-left: 50px;
     }
     .content-div ul.text-list > li{
         counter-increment:myCounter;
@@ -319,7 +323,7 @@
                     </div><br/><br/>
                     <div class="title">Conclusion</div>
                     <div class="content-div" style="min-height: 250px;">
-                        <p>
+                        <p class="conclusion">
                             <?php echo str_replace("\n",'<br/>',$val->report_conclusion);?>
                         </p><br/><br/><br/><br/>
                     </div>
@@ -461,27 +465,4 @@
         }
         ?>
     </div>
-    <!--<div class="footer">
-        <div class="details">
-            <table class="table table-details">
-                <tr>
-                    <td class="text-left info">PO Box</td>
-                    <td class="text-left">76237 – Northwood – Christchurch 8548</td>
-                </tr>
-                <tr>
-                    <td class="text-left info">Email</td>
-                    <td class="text-left">info@Synergy Projectbc.co.nz</td>
-                </tr>
-                <tr>
-                    <td class="text-left info">Web</td>
-                    <td class="text-left">www.Synergy Projectbuildingconsultants.co.nz</td>
-                </tr>
-                <tr>
-                    <td class="text-left info">Phone</td>
-                    <td class="text-left">0800 Synergy Project – (0800 796374)</td>
-                </tr>
-            </table>
-            <strong>Page <span class="pagenum"></span></strong>
-        </div>
-    </div>-->
 </div>

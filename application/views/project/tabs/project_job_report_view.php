@@ -16,7 +16,7 @@ echo form_open($url)
     </div>
     <div class="col-sm-8">
         <div class="form-group">
-            <iframe src="<?php echo base_url().'generateJobReport/'.$id.'?v=1'?>" style="width: 100%;height: 800px;border: 1px solid #000000">No data </iframe>
+            <div class="pdf-view" style="overflow-y:auto;padding:5px;width: 100%;height: 800px;border: 1px solid #000000"></div>
         </div>
     </div>
 </div>
@@ -25,13 +25,27 @@ echo form_close();
 ?>
 <script>
     $(function(e){
+        var url = '<?php echo base_url().'generateJobReport/'.$id.'?v=1'?>';
+        $('.pdf-view').load(url);
         $('.generate-report').click(function(e){
             e.preventDefault();
+            $(this).newForm.addLoadingForm();
             $.post(bu + 'generateJobReport/<?php echo $id;?>',{submit:1,report_conclusion:$('textarea[name="report_conclusion"]').val()},function(res){
                 window.open(
                     bu + 'generateJobReport/<?php echo $id;?>'
                 );
+                $(this).newForm.removeLoadingForm();
             });
         });
+        $('textarea[name="report_conclusion"]')
+            .on('keyup',function(e){
+                var pdf_view = $('.pdf-view');
+                var _value = $(this).val();
+                pdf_view.find('.conclusion').html(_value.replace(/\n/g, "<br />"));
+            })
+            .on('focusout',function(e){
+                $.post(bu + 'generateJobReport/<?php echo $id;?>',{submit:1,report_conclusion:$(this).val()},function(res){});
+            })
+
     });
 </script>

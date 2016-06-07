@@ -341,12 +341,14 @@ class On_Site_Controller extends Merit{
         if (!empty($_FILES)) {
             $menu_id = isset($_POST['menu_id']) ? $_POST['menu_id'] : NULL;
             $room_id = isset($_POST['room_id']) ? $_POST['room_id'] : NULL;
+            $job_id = isset($_POST['job_id']) ? $_POST['job_id'] : NULL;
+            $field_id = isset($_POST['field_id']) ? $_POST['field_id'] : NULL;
             $post = array(
                 'date' => date('Y-m-d H:i:s'),
                 'menu_id' => $menu_id,
-                'job_id' => $this->uri->segment(2),
+                'job_id' => $job_id,
                 'room_id' => $room_id,
-                'field_id' => $room_id,
+                'field_id' => $field_id,
                 'title' => isset($_POST['title']) ? $_POST['title'] : '',
                 'description' => isset($_POST['description']) ? nl2br($_POST['description']) : ''
             );
@@ -386,11 +388,11 @@ class On_Site_Controller extends Merit{
             }
         }
         if($r['success'] == 1){
-            redirect('onSiteVisit/' . $return['job_id'] . '?menu_id=' . $return['menu_id'] . '&field_id=' . $return['field_id']
-                . ($return['room_id'] ? '&room_id=' . $return['room_id'] : ''));
+            echo json_encode($return);
+            //redirect('jobRegistration?id=' . $return['job_id']);
         }
         else{
-            redirect('onSiteVisit/' . $this->uri->segment(2));
+            redirect('jobRegistration?id=' . $return['job_id']);
         }
         //echo json_encode($r);
     }
@@ -411,6 +413,50 @@ class On_Site_Controller extends Merit{
             }
             rmdir($directory);
         }
+    }
+
+    public function jobDefectsLoad(){
+        $site = $this->db->site;
+        $job_id = isset($_GET['job_id']) ? $_GET['job_id'] : '';
+        $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : '';
+        $menu_id = isset($_GET['menu_id']) ? $_GET['menu_id'] : '';
+
+        $whatVal = [$job_id,$menu_id];
+        $whatFld = ['job_id','menu_id'];
+
+        if($room_id){
+            $whatVal[] = $room_id;
+            $whatFld[] = 'room_id';
+        }
+
+        $this->data['dropdown'] = [];
+        if($menu_id == 3){
+            $this->merit_model->setNormalized('value','id');
+            $this->merit_model->setSelectFields(['id','value']);
+            $exteriors = $this->merit_model->getInfo($site . '.tbl_option',[3,17],['menu_id','type_id']);
+            $this->data['dropdown'] = array(
+                'name' => 'exterior_category_id',
+                'value' => $exteriors,
+                'title' => 'Exterior Type'
+            );
+        }
+
+        $defects = $this->merit_model->getInfo($site . '.tbl_defects',$whatVal,$whatFld);
+        if(count($defects) > 0){
+            foreach($defects as $k=>$v){
+                $dir = json_decode($v->dir);
+                $files = array();
+                if(count($dir) > 0){
+                    foreach ($dir as $file) {
+                        $files[] = "defects/" . $v->id . "/" . $file;
+                    }
+                }
+                $v->dir = $files;
+            }
+        }
+
+        $this->data['defects'] = $defects;
+        $this->load->view('on_site/load_defects_list_view',$this->data);
     }
     //endregion
 

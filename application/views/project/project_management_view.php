@@ -1,3 +1,8 @@
+<link href="<?php echo base_url('plugins/css/bootstrap-select.css')?>" rel="stylesheet">
+<script src="<?php echo base_url('plugins/js/bootstrap-select.js');?>"></script>
+<script src="<?php echo base_url('plugins/js/bootstrap-waitingfor.min.js');?>"></script>
+<link href="<?php echo base_url().'plugins/css/fileinput.min.css';?>" rel="stylesheet">
+<script src="<?php echo base_url() . "plugins/js/fileinput.min.js" ?>"></script>
 <!-- Nav tabs -->
 <?php
 $reg_links = array(
