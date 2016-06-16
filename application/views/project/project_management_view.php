@@ -3,6 +3,7 @@
 <script src="<?php echo base_url('plugins/js/bootstrap-waitingfor.min.js');?>"></script>
 <link href="<?php echo base_url().'plugins/css/fileinput.min.css';?>" rel="stylesheet">
 <script src="<?php echo base_url() . "plugins/js/fileinput.min.js" ?>"></script>
+<script src="<?php echo base_url() . "plugins/js/jquery.elevatezoom.js" ?>"></script>
 <!-- Nav tabs -->
 <?php
 $reg_links = array(
@@ -125,6 +126,9 @@ echo form_close();
         background: #b4b9bc;
         color: #ffffff;
     }
+    .thumbnail{
+        margin-bottom: 0!important;
+    }
 </style>
 <script>
     $(function(e){
@@ -185,7 +189,6 @@ echo form_close();
             $.post( bu + 'jobRegistration',{tab:link})
 
         });
-
         var disableFormChanges = function(){
 
         };

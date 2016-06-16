@@ -111,6 +111,9 @@
 <script src='<?php echo base_url(); ?>plugins/email_validate/jquery.validate.js'></script>
 
 <link href="<?php echo base_url();?>plugins/css/addForm.css" rel="stylesheet"/>
+<script>
+    var bu = '<?php echo base_url()?>';
+</script>
 <script src="<?php echo base_url();?>plugins/js/addForm.js" language="JavaScript"></script>
 
 <div class="wrap">

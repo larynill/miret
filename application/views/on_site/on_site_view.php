@@ -70,6 +70,9 @@
     .hide{
         display: none;
     }
+    .modal{
+        z-index: 99999999!important;
+    }
 </style>
 <?php
 echo form_open('');
@@ -387,8 +390,13 @@ if(count($menu) > 0){
                                 $default_value =
                                     $menu_info_empty ? '' :
                                         (array_key_exists($field_name, $menu_info) ? $menu_info->$field_name : '');
-
-                                hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, '', $option, $field_name);
+                                $_field = [];
+                                if(count($defects) > 0){
+                                    foreach($defects as $defect){
+                                        $_field[] = $defect->field_id . '-' . $defect->room_id;
+                                    }
+                                }
+                                hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, '', $option, $field_name,0,$_field);
 
                                 if($v->next_break){
                                     echo '</div><div class="row">';
@@ -446,7 +454,13 @@ if(count($menu) > 0){
                                             //echo "<div class='col-md-4'>";
                                             //echo generateInputs($v, $v->per_option, $default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, $v->field_label, $v->field_dynamic, $v->label_header, $v->field_style);
                                             //echo "</div>";
-                                            hasMultiple($m, $v, 0, $default_value, $room_menu_info, $menu, $option, $field_name,$key);
+                                            $_field = [];
+                                            if(count($defects) > 0){
+                                                foreach($defects as $defect){
+                                                    $_field[] = $defect->field_id . '-' . $defect->room_id;
+                                                }
+                                            }
+                                            hasMultiple($m, $v, 0, $default_value, $room_menu_info, $menu, $option, $field_name,$key,$_field);
 
                                             if($v->next_break){
                                                 echo '</div>' . (!$v->field_group ? '<div class="col-md-12"><hr /></div>' : '') . '<div class="row">';
@@ -478,6 +492,12 @@ if(count($menu) > 0){
                                         <div id="<?php echo str_replace(" ", "_", $xtr); ?>" class="panel-collapse collapse in">
                                             <div class="panel-body">
                                                 <?php
+                                                $_field = [];
+                                                if(count($defects) > 0){
+                                                    foreach($defects as $defect){
+                                                        $_field[] = $defect->field_id . '-' . $defect->menu_id;
+                                                    }
+                                                }
                                                 if(array_key_exists($m->id, $fields)){
                                                     $f = $fields[$m->id];
                                                     foreach($f as $v){
@@ -488,11 +508,12 @@ if(count($menu) > 0){
                                                                     (array_key_exists($field_name, $menu_info) ? $menu_info->$field_name : '');
                                                             echo generateInputs($v, $v->per_option, $default_value, $menu_info, '', $m->id, $v->data_type_id, $v->option_id, $option, $field_name, $v->field_label, $v->field_dynamic, $v->label_header, $v->field_style);
                                                             if($v->has_defect_button){
+                                                                $has_defect_noted = in_array($v->id . '-' . $m->id,$_field) ? '<span style="font-size: 10px;">[Y]</span>' : '';
                                                                 ?>
                                                                 <div class='col-md-1'>
                                                                     <label class='control-label'>&nbsp;</label>
                                                                     <div class="form-group">
-                                                                        <input type="button" class="btn btn-danger defect-btn is-hide" disabled id="<?php echo $v->id . '-' . $m->id?>" data-value="<?php echo $m->id . '--0'?>" value="D" />
+                                                                        <button type="button" class="btn btn-danger defect-btn is-hide" disabled id="<?php echo $v->id . '-' . $m->id?>" data-value="<?php echo $m->id . '--0'?>"><span class="button-text">D</span><?php echo $has_defect_noted;?></button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -735,7 +756,7 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
     return $str;
 }
 
-function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '', $menu_info = array(), $menu = '', $option = array(), $field_name = '',$room_id = 0){
+function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '', $menu_info = array(), $menu = '', $option = array(), $field_name = '',$room_id = 0,$_field = []){
     $loop = 1;
     if($v->field_dynamic){
         $fd = json_decode($v->field_dynamic);
@@ -780,8 +801,10 @@ function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '
             );
         }
         if($v->has_defect_button){
+            $_id = $v->id .'-' . $room_id;
+            $_has_defect_noted = in_array($_id,$_field) ? '<span style="font-size: 10px;">[Y]</span>' : '';
             $str .= "</div><div class='col-md-1'><label class='control-label'>&nbsp;</label>";
-            $str .= '<div class="form-group"><input type="button" class="btn btn-danger defect-btn is-hide" disabled id="'. $v->id .'-' . $room_id . '" data-value="' . $m->id . '--' . $room_id .'" value="D"/></div>';
+            $str .= '<div class="form-group"><button type="button" class="btn btn-danger defect-btn is-hide" disabled id="'. $_id . '" data-value="' . $m->id . '--' . $room_id .'"><span class="button-text">D</span>' . $_has_defect_noted . '</button></div>';
         }
         if($v->is_multiple){
             $str .= "</div><div class='col-md-4'>" . ($i == 0 ? "<label class='control-label'>&nbsp;</label>" : "");
@@ -789,7 +812,7 @@ function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '
                 $str .= '<div class="form-group"><input type="button" class="btn btn-primary addAnotherGenerateInputs" data-group="' . $v->field_group . '" value="Add Another" /></div>';
             }
             else{
-                $str .= '<div class="form-group"><input type="button" class="btn btn-danger removeAnotherGenerateInputs" value="Remove" /></div>';
+                $str .= '<div class="form-group"><input type="button" class="btn btn-danger removeAnotherGenerateInputs" value="Remove" data-toggle="modal" data-target="#removeField" aria-hidden="true"/></div>';
             }
         }
 
@@ -842,8 +865,8 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                 <input type="hidden" name="field_id" class="jobDefectsFieldId" value="<?php echo $field_id ?>" />
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group">
-                            <input type="file" name="jobDefects[]" class="file jobDefects" id="job-defect-<?php echo $m->id . '-' . $field_id. '-' . $room_id ?>" multiple />
+                        <div class="form-group file-input-content">
+                            <input type="file" name="jobDefects[]" class="file jobDefects" id="job-defect-<?php echo $m->id . '-' . $field_id. '-' . $room_id ?>" multiple/>
                         </div>
                         <?php
                         if(count($dropdown) > 0){
@@ -874,7 +897,7 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group text-right">
-                            <div class="alert alert-warning hidden" role="alert">Failed to upload a file</div>
+                            <div class="alert alert-danger hidden" role="alert">Failed to upload a file</div>
                             <input type="button" name="upload" class="btn btn-primary jobUploadBtn" value="Upload" disabled/>
                         </div>
                     </div>
@@ -888,20 +911,48 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                 <div class="row">
                     <?php
                     foreach($defects as $d){
+                        echo form_open('jobDefectsUpdate/' . $d->id,'class="form-horizontal" id="form-'. $d->id . '"');
                         if($d->menu_id == $m->id && $d->room_id == $room_id){
                             ?>
-                            <div class="col-md-6" id="defect-data-<?php echo $d->id;?>" style="margin-bottom: 10px;">
+                            <div class="col-md-6 defect-content" id="defect-data-<?php echo $d->id;?>" style="margin-bottom: 10px;">
                                 <div class="panel panel-primary">
-                                    <div class="panel-heading form-inline" data-toggle="collapse" data-target="#defect_view_<?php echo $d->id ?>">
-                                        <span style="font-size: 13px">
-                                            <?php echo $d->title ?>
-                                            <?php
-                                            if(count($dropdown) > 0){
-                                                echo '<em>(' . $dropdown['value'][$d->$dropdown['name']] . ')</em>';
-                                            }
-                                            ?>
-                                        </span>
-                                        <span class="glyphicon glyphicon-trash pull-right deleteModalBtn" data-toggle="modal" data-target="#deleteDefect" id="<?php echo $d->id ?>" aria-hidden="true"></span>
+                                    <div class="panel-heading form-inline">
+                                        <div class="row">
+                                            <div class="col-sm-9" data-toggle="collapse" data-target="#defect_view_<?php echo $d->id ?>">
+                                                <span class="text-view" style="font-size: 13px;">
+                                                    <?php echo '<span class="title">' . $d->title .'</span>' ?>
+                                                    <?php
+                                                    if(count($dropdown) > 0){
+                                                        echo '<em>(<span class="drop-down">' . $dropdown['value'][$d->$dropdown['name']] . '</span>)</em>';
+                                                    }
+                                                    ?>
+                                                </span>
+                                            </div>
+                                            <div class="input-view" style="display: none">
+                                                <div class="<?php echo count($dropdown) > 0 ? 'col-sm-5' : 'col-sm-9'?>">
+                                                    <input type="text" name="title" class="form-control input-sm title-input for-edit" value="<?php echo $d->title ?>">
+                                                </div>
+                                                <?php
+                                                if(count($dropdown) > 0){
+                                                    ?>
+                                                    <div class="col-sm-4">
+                                                        <?php echo form_dropdown(
+                                                            $dropdown['name'], $dropdown['value'], $d->$dropdown['name'],
+                                                            'class="jobDefectDropdown form-control input-sm dp-input for-edit" id="' . $dropdown['name'] . '" title="'. $dropdown['title'] .'"'
+                                                        );?>
+                                                    </div>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="pull-right">
+                                                    <span class="glyphicon glyphicon-pencil icon editDefectsBtn" style="font-size: 18px;" id="<?php echo $d->id ?>"></span>&nbsp;
+                                                    <span class="glyphicon glyphicon-trash icon deleteModalBtn" style="font-size: 18px;" data-toggle="modal" data-target="#deleteDefect" id="<?php echo $d->id ?>" aria-hidden="true"></span>&nbsp;
+                                                    <span class="glyphicon glyphicon-upload icon uploadModalBtn" style="font-size: 18px;<?php echo count($d->dir) > 0 ? 'display:none' : ''?>" data-toggle="modal" data-target="#uploadImage" id="<?php echo $d->id ?>" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div id="defect_view_<?php echo $d->id ?>" class="panel-body panel-collapse collapse in">
                                         <div class="row">
@@ -910,25 +961,39 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                                                 echo '<div class="col-md-5">';
                                                 foreach ($d->dir as $key=>$files) {
                                                     echo '<div class="thumbnail">';
-                                                    $size = @exif_imagetype(base_url($files));
+                                                    $path = realpath(APPPATH.'../');
+                                                    $size = @file_exists($path .'/' . $files);
                                                     if($size){
                                                         echo '<img src="' . base_url($files) . '" />';
                                                     }
                                                     else{
-                                                        echo '<div class="thumbnailNonImage">' . strtoupper(substr(strrchr($files, '.'), 1)) . '</div>';
+                                                        echo '<div class="thumbnailNonImage" >' . strtoupper(substr(strrchr($files, '.'), 1)) . '</div>';
                                                     }
-                                                    echo '<div class="panel-footer" style="text-align: right;padding: 5px!important;">';
-                                                    echo $size ? '<span class="glyphicon glyphicon-eye-open showBtn" data-toggle="modal" data-target="#showDefect" style="font-size: 20px;margin-right: 5px;"></span>' : '';
-                                                    echo '<a class="downloadLink" href="' . base_url($files) . '" excel_reader="' . basename($files) . '">
-                                                                <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true" style="font-size: 20px;"></span>
+                                                    echo '<div class="panel-footer" style="text-align: center;padding: 5px!important;">';
+                                                    echo $size ? '<span class="glyphicon glyphicon-eye-open icon showBtn" data-toggle="modal" data-target="#showDefect" style="font-size: 23px;margin-right: 5px;"></span>' : '';
+                                                    echo '<a class="downloadLink icon for-edit" href="' . base_url($files) . '" excel_reader="' . basename($files) . '">
+                                                                <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true" style="font-size: 23px;"></span>
+                                                            </a>';
+                                                    echo '<a class="uploadImageBtn icon for-edit" style="display:none;" href="#" id="' . $d->id . '" data-toggle="modal" data-target="#changePhoto" aria-hidden="true">
+                                                                <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true" style="font-size: 23px;"></span>
+                                                            </a>';
+                                                    echo '<a class="deleteImage icon pull-right" href="#" id="' . $d->id . '" data-toggle="modal" data-target="#deletePhoto" aria-hidden="true">
+                                                                <span class="glyphicon glyphicon-trash" aria-hidden="true" style="font-size: 20px;"></span>
                                                             </a>';
                                                     echo '</div>';
                                                     echo '</div>';
                                                 }
                                                 echo '</div>';
                                             }
-                                            echo '<div class="col-md-7" style="text-align: justify;">';
-                                            $len = strlen($d->description);
+                                            else{
+                                                echo '<div class="col-md-5">';
+                                                echo '<div class="thumbnail">';
+                                                echo '<div class="thumbnailNonImage">No image</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                            }
+                                            echo '<div class="col-md-7">';
+                                            /*$len = strlen($d->description);
                                             $max = 220;
                                             echo substr($d->description, 0, $max);
                                             if($len > $max){
@@ -936,15 +1001,32 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                                                 echo substr($d->description, $max, $len);
                                                 echo '</span>';
                                                 echo ' <a class="descriptionReadMoreBtn">[Read More]</a>';
-                                            }
+                                            }*/
+                                            echo '<div class="text-view">';
+                                            echo '<div style="border: 1px solid #d2d2d2;border-radius: 4px;padding: 10px;height: 130px;">';
+                                            echo '<span class="description">' . $d->description .'</span>';
+                                            echo '</div>';
+                                            echo '</div>';
+                                            echo '<div class="input-view" style="display: none;">';
+                                            echo form_textarea(['name'=>'description','value'=>$d->description,'rows'=>7,'class'=>'form-control input-sm desc-input for-edit']);
+                                            echo '</div>';
                                             echo '</div>';
                                             ?>
+                                        </div>
+                                    </div>
+                                    <div class="input-view" style="display: none">
+                                        <div class="panel-footer">
+                                            <div class="text-right">
+                                                <button type="button" class="btn btn-sm btn-success for-edit">Update</button>
+                                                <button type="button" class="btn btn-sm btn-danger for-edit">Cancel</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         <?php
                         }
+                        echo form_close();
                     }
                     ?>
                 </div>
@@ -995,18 +1077,106 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="uploadImage">
+    <div class="modal-dialog modal-df">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Photo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="file" name="dir[]" class="file defectPhoto" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="upload-photo btn btn-primary" disabled>
+                    <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span> Upload
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Exit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deletePhoto">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Photo</h4>
+            </div>
+            <div class="modal-body">Are you sure you want to delete this photo?</div>
+            <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-danger yesDeletePhotoBtn" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="removeField">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Remove Field</h4>
+            </div>
+            <div class="modal-body">Are you sure you want to remove this field?</div>
+            <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-danger yesRemoveFieldBtn" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="changePhoto">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Change Photo</h4>
+            </div>
+            <div class="modal-body">Do you need to change the photo for this defect?</div>
+            <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-danger yesBtn" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-primary noBtn" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteTab">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Remove Tab</h4>
+            </div>
+            <div class="modal-body">The <strong class="tab-name"></strong> tab cannot be removed until all its data has been cleared.</div>
+            <div class="modal-footer" style="text-align: center;">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 (function (e){
-    //region
+    //region Declare variable
     var body = $('body');
     var date = body.find('.date');
     var job_name = body.find('.job_name');
     var id = job_name.val();
+    var defect_list = $('.defect-panel-list');
+    var _thisid = '<?php echo $this->uri->segment(2);?>';
     date.datetimepicker({
         format: 'DD/MM/YYYY H:m'
     });
-
+    defect_list.on('mouseover','img',function(){
+        $(this).elevateZoom({
+            zoomWindowWidth: 400,
+            zoomWindowHeight: 200
+        });
+    });
     var property_status = $('.property_status');
     var property_status_other = $('.property_status_other');
     property_status.change(function(e){
@@ -1046,8 +1216,8 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
     var room_tab = body.find('.room_tab');
     var room_pane = body.find('.tab-pane');
     var tab_content = body.find('.tab-content');
-    var roomsSelected = '<?php echo $interior_selected ? $interior_selected : '[]'; ?>';
-
+    var roomsSelected = '<?php echo count(json_decode($interior_selected)) > 0 ? $interior_selected : (count($session_rooms) > 0 ? json_encode($session_rooms) : '[]'); ?>';
+    var _tab = $('#deleteTab');
     room_name
         .selectpicker({
             width: '100%',
@@ -1055,20 +1225,55 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         })
         .on('change', function(e){
             var thisVal = room_name.val();
+            thisVal = thisVal != null ? thisVal : [];
             room_tab.each(function(e){
+                var _room = tab_content.find('#room_' + this.id);
+                var _tab_name = $('.nav-tabs').find('.room_tab#' + this.id);
                 if($.inArray(this.id, thisVal) != -1){
                     $(this).removeClass('hidden');
                 }
                 else{
-                    tab_content.find('#room_' + this.id).removeClass('active');
-                    $(this).addClass('hidden');
+                    if(_room.find('.defect-content').length){
+                        thisVal.push(this.id);
+                        room_name.selectpicker('val', thisVal);
+                        _tab.find('.tab-name').html(_tab_name.find('a').html());
+                        _tab.modal('show');
+                    }
+                    else{
+                        tab_content.find('#room_' + this.id).removeClass('active');
+                        $(this).addClass('hidden');
+                    }
                 }
             });
+            $.post(bu + 'selectedRooms/' + _thisid,{rooms: thisVal},function(res){});
             room_pane.each(function(e){
                 $(this).tab('show');
             });
         });
-    room_name.selectpicker('val', roomsSelected);
+    var _has_defect_list = function(){
+        var _this_val = [];
+        var _id = '';
+        room_tab.each(function(e){
+            var _room = tab_content.find('#room_' + this.id);
+            var _tab_name = $('.nav-tabs').find('.room_tab#' + this.id);
+            if(_room.find('.defect-content').length){
+                _this_val.push(this.id);
+                $(this).removeClass('hidden');
+                _id = this.id;
+            }
+            else{
+                tab_content.find('#room_' + this.id).removeClass('active');
+                $(this).addClass('hidden');
+            }
+        });
+        if(_id){
+            $('.room_tab#' + _id + ' a').tab('show');
+        }
+
+        room_name.selectpicker('val', _this_val);
+    };
+    room_name.selectpicker('val', jQuery.parseJSON(roomsSelected));
+    _has_defect_list();
 
     var checkBoxOption = $('.checkBoxOption');
     var howMany = $('.howMany');
@@ -1114,7 +1319,6 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
     addAnotherGenerateInputs.click(function(e){
         var thisEle = $(this).parent().parent().parent();
         var thisGroup = $(this).data('group');
-        console.log($(this).data('group'));
         if($(this).closest('.row').nextAll('.addAnotherGenerateRow[data-group="' + thisGroup + '"]').length == 0){
             thisEle.after('<div class="row addAnotherGenerateRow" data-group="' + thisGroup + '"><div class="col-md-12"><hr /></div>' + thisEle.html() + '</div>');
         }
@@ -1132,6 +1336,7 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             .find('.addAnotherGenerateInputs')
             .removeClass('btn-primary addAnotherGenerateInputs')
             .addClass('btn-danger removeAnotherGenerateInputs')
+            .attr({'data-toggle':'modal','data-target':'#removeField','aria-hidden':'true'})
             .val('Remove');
         addAnotherGenerateRow
             .find('.form-control input-sm')
@@ -1139,9 +1344,38 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         addAnotherGenerateRow
             .find('.removeAnotherGenerateInputs')
             .on('click', function(e){
-                $(this).parent().parent().parent().remove();
+                var _remove_this = $(this).parent().parent().parent();
+                $('.yesRemoveFieldBtn').on('click',function(e) {
+                    _remove_this.remove();
+                });
             });
         addBorderBottom();
+        var _defect_btn = thisEle.siblings('.addAnotherGenerateRow').find('.defect-btn');
+        var _defect_container = thisEle.siblings('.addAnotherGenerateRow').find('.defect-container');
+        var _job_defect = thisEle.siblings('.addAnotherGenerateRow').find('.jobDefects');
+        var _defect_panel = thisEle.siblings('.addAnotherGenerateRow').find('.defect-panel');
+        _defect_btn.find('span:nth-child(2)').remove();
+        if(_defect_btn.length > 0){
+            var job_defect_id = _job_defect.attr('id');
+            _defect_panel.find('.file-input.file-input-new').remove();
+            _defect_panel.find('.file-input-content').html('<input type="file" name="jobDefects[]" class="file jobDefects" id="'+ job_defect_id +'">');
+            _defect_btn.each(function(e){
+                var _id = this.id + '-' + (e + 1);
+                $(this).attr('id',_id);
+            });
+            _defect_container.each(function(e){
+                var _id = this.id + '-' + (e + 1);
+                $(this).attr('id',_id);
+            });
+            _job_defect.each(function(e){
+                var _id = this.id + '-' + (e + 1);
+                $(this).attr('id',_id);
+            });
+            _defect_panel.each(function(e){
+                var _id = this.id + '-' + (e + 1);
+                $(this).attr('id',_id);
+            });
+        }
     });
 
     function addBorderBottom(){
@@ -1160,8 +1394,11 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
 
     $('.removeAnotherGenerateInputs')
         .on('click', function(e){
-            $(this).parent().parent().parent().remove();
-            addBorderBottom();
+            var _remove_this = $(this).parent().parent().parent();
+            $('.yesRemoveFieldBtn').on('click',function(e){
+                _remove_this.remove();
+                addBorderBottom();
+            });
         });
     //endregion
 
@@ -1178,7 +1415,7 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         jobDefectsRoomId = $(this).find('.jobDefectsRoomId');
         jobDefectDropdown = $(this).find('.jobDefectDropdown');
         jobUploadBtn = $(this).find('.jobUploadBtn');
-
+        setTabIndex();
         addEventAgain();
     });
     room_tab.on('shown.bs.tab', function () {
@@ -1194,23 +1431,37 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
     });
 
     var defect_btn = $('.panel-group').find('.defect-btn');
+    function setTabIndex(edit,_class){
+        if(edit){
+            _class.each(function(e){
+                $(this).attr('tabindex',(e + 1));
+            });
+        }
+        else{
+            $('.icon').each(function(e){
+                $(this).attr('tabindex',(e + 1));
+            });
+        }
 
-    defect_btn.click(function(){
+    }
+
+    body.on('click','.defect-btn',function(){
         var defect_ = $('#defect-' + this.id);
         var _this = $(this);
         var _defect_list_id = $(this).data('value');
+        var _has_file_input = defect_.find('.file-input.file-input-new').length;
         if(_this.hasClass('is-hide')){
             _this
                 .addClass('is-open')
-                .val('Hide')
                 .removeClass('is-hide');
+            _this.find('.button-text').html('Hide');
             defect_.css({display:'inline'});
         }
         else{
             _this
                 .addClass('is-hide')
-                .val('D')
                 .removeClass('is-open');
+            _this.find('.button-text').html('D');
             defect_.css({display:'none'});
         }
 
@@ -1222,8 +1473,8 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             jobDefectsFieldId = defect_.find('.jobDefectsFieldId'),
             jobDefectDropdown = defect_.find('.jobDefectDropdown'),
             _jobUploadBtn = defect_.find('.jobUploadBtn'),
-            jobDefectForm = defect_.find('.upload-form');
-
+            jobDefectForm = defect_.find('.upload-form'),
+            jobUploadBtn = defect_.find('.jobUploadBtn');
         form_url(jobDefectForm,job_name.val());
 
         jobDefectDescription
@@ -1237,83 +1488,260 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                     _jobUploadBtn.attr('disabled','disabled');
                 }
             });
-        _jobDefects
-            .fileinput({
-                uploadAsync: false,
-                uploadUrl: bu + "jobDefects",
-                allowedFileExtensions: ['jpg', 'png', 'gif'],
-                showRemove: false,
-                showUpload: true,
-                showPreview: false,
-                uploadClass: "btn btn-info hide-btn",
-                maxFileCount: 1,
-                uploadExtraData: function(e){
-                    var data = {
-                        menu_id: jobDefectsMenuId.val(),
-                        title: jobDefectTitle.val(),
-                        description: jobDefectDescription.val(),
-                        field_id: jobDefectsFieldId.val(),
-                        job_id: job_name.val()
-                    };
-                    if(jobDefectsRoomId.val()){
-                        data['room_id'] = jobDefectsRoomId.val();
+            _jobDefects
+                .fileinput({
+                    uploadAsync: false,
+                    uploadUrl: bu + "jobDefects",
+                    allowedFileExtensions: ['jpg', 'png', 'gif'],
+                    showRemove: false,
+                    showUpload: true,
+                    autoReplace: true,
+                    showPreview: false,
+                    uploadClass: "btn btn-info hide-btn",
+                    maxFileCount: 1,
+                    maxFileSize: 10000,
+                    uploadExtraData: function(e){
+                        var data = {
+                            menu_id: jobDefectsMenuId.val(),
+                            title: jobDefectTitle.val(),
+                            description: jobDefectDescription.val(),
+                            field_id: jobDefectsFieldId.val(),
+                            job_id: job_name.val()
+                        };
+                        if(jobDefectsRoomId.val()){
+                            data['room_id'] = jobDefectsRoomId.val();
+                        }
+                        if(jobDefectDropdown.length != 0){
+                            data[jobDefectDropdown.attr('id')] = jobDefectDropdown.val();
+                        }
+
+                        return data;
                     }
-                    if(jobDefectDropdown.length != 0){
-                        data[jobDefectDropdown.attr('id')] = jobDefectDropdown.val();
+                })
+                .on('filebatchuploadcomplete', function(event, files, extra) {
+                })
+                .on('fileuploaderror', function(event, data, previewId, index) {
+                    var _this = this;
+                    var size = 0;
+                    var alert_warning = $('.alert-danger');
+                    var msg = '';
+                    if(this.files.length > 1){
+                        msg = '<strong>Error!</strong> Please select only one image.'
+                    }
+                    else{
+                        $.each(this.files,function(k,v){
+                            size += _this.files[k].size;
+                        });
+                        if(size > 2000){
+                            msg = '<strong>Error!</strong> Please enter a file with a valid file size no larger than 10Mb.'
+                        }
+                        else{
+                            msg = '<strong>Error!</strong> Uploading file to server.'
+                        }
                     }
 
-                    return data;
-                }
-            })
-            .on('filebatchuploadcomplete', function(event, files, extra) {
-            })
-            .on('fileuploaderror', function(event, data, previewId, index) {
-                $('.alert-warning').removeClass('hidden');
-                jobDefects.fileinput('clear');
-                hasUploadFile = 0;
-            })
-            .on('fileloaded', function(event, file, previewId, index, reader) {
-                hasUploadFile = 1;
-                jobUploadBtn.attr('disabled','disabled');
-                if(jobDefectTitle.val() && jobDefectDescription.val()){
-                    jobUploadBtn.removeAttr('disabled');
-                }
-            })
-            .on('filebatchpreupload', function(event, data, id, index){
-            })
-            .on('filecleared', function(event) {
-                hasUploadFile = 0;
-                jobUploadBtn.attr('disabled', 'disabled');
-                console.log(event);
-            })
-            .on('filebatchuploadsuccess', function(event, data) {
-                var job_id = data.response.job_id;
-                var room_id = data.response.room_id;
-                var menu_id = data.response.menu_id;
-                var url = '?job_id=' + job_id + '&menu_id=' + menu_id;
-                url += room_id ? '&room_id=' + room_id : '';
-                jobUploadBtn.attr('disabled', 'disabled');
-                jobDefectTitle.val('');
-                jobDefectDescription.val('');
-                console.log(_defect_list_id);
-                console.log(bu + 'jobDefectsLoad' + url);
-                _this
-                    .addClass('is-hide')
-                    .val('D')
-                    .removeClass('is-open');
-                defect_.css({display:'none'});
-                $('.defect-panel-list#' + _defect_list_id + ' .panel-body').load(bu + 'jobDefectsLoad' + url);
-            });
+                    alert_warning.html(msg);
+                    alert_warning.css({'text-align':'left'});
+                    alert_warning.removeClass('hidden');
+                    jobDefects.fileinput('clear');
+                    hasUploadFile = 0;
+                })
+                .on('fileloaded', function(event, file, previewId, index, reader) {
+                    hasUploadFile = 1;
+                    _jobUploadBtn.attr('disabled','disabled');
+                    if(jobDefectTitle.val() && jobDefectDescription.val()){
+                        _jobUploadBtn.removeAttr('disabled');
+                    }
+
+                    jobDefectDescription
+                        .add(jobDefectTitle)
+                        .on('propertychange keyup input paste', function(e) {
+                            if(hasUploadFile && jobDefectTitle.val() != "" && jobDefectDescription.val() != ""){
+                                _jobUploadBtn.removeAttr('disabled');
+                            }
+                            else{
+                                _jobUploadBtn.attr('disabled','disabled');
+                            }
+                        });
+                })
+                .on('filebatchpreupload',function(event, data, previewId, index, jqXHR){
+                })
+                .on('fileuploaded', function(event, data, previewId, index) {
+                    var job_id = data.response.job_id;
+                    var room_id = data.response.room_id;
+                    var menu_id = data.response.menu_id;
+                    var url = '?job_id=' + job_id + '&menu_id=' + menu_id;
+                    var _defect_panel_list = $('.defect-panel-list#' + _defect_list_id + ' .panel-body');
+
+                    url += room_id ? '&room_id=' + room_id : '';
+                    _jobUploadBtn.attr('disabled', 'disabled');
+                    jobDefectTitle.val('');
+                    jobDefectDescription.val('');
+                    _this
+                        .addClass('is-hide')
+                        .val('D')
+                        .removeClass('is-open');
+                    defect_.css({display:'none'});
+
+                    _defect_panel_list.load(bu + 'jobDefectsLoad' + url);
+                })
+                .on('filecleared', function(event) {
+                    hasUploadFile = 0;
+                    _jobUploadBtn.attr('disabled', 'disabled');
+                })
+                .on('filebatchuploadsuccess', function(event, data) {
+                    var job_id = data.response.job_id;
+                    var room_id = data.response.room_id;
+                    var menu_id = data.response.menu_id;
+                    var url = '?job_id=' + job_id + '&menu_id=' + menu_id;
+                    var _defect_panel_list = $('.defect-panel-list#' + _defect_list_id + ' .panel-body');
+
+                    url += room_id ? '&room_id=' + room_id : '';
+                    _jobUploadBtn.attr('disabled', 'disabled');
+                    jobDefectTitle.val('');
+                    jobDefectDescription.val('');
+                    _this
+                        .addClass('is-hide')
+                        .removeClass('is-open');
+                    _this.html('<span class="button-text">D</span><span style="font-size: 10px">[Y]</span>');
+                    defect_.css({display:'none'});
+
+                    _defect_panel_list.load(bu + 'jobDefectsLoad' + url);
+
+                    $('img').elevateZoom({
+                        zoomWindowWidth: 400,
+                        zoomWindowHeight: 200
+                    });
+                });
         _jobUploadBtn.click(function(e){
-            $('.fileinput-upload.fileinput-upload-button').trigger('click');
+            defect_.find('.fileinput-upload.fileinput-upload-button').trigger('click');
         });
     });
+    body.on('click','.editDefectsBtn',function(){
+        var _defect_panel = $('#defect-data-' + this.id);
+        var _input_view = _defect_panel.find('.input-view');
+        var _text_view = _defect_panel.find('.text-view');
+        var _btn_submit = _defect_panel.find('.btn-success');
+        var _btn_cancel = _defect_panel.find('.btn-danger');
+        var _form = _defect_panel.parents('#form-' + this.id);
+        var _title_df = _defect_panel.find('.title');
+        var _drop_down_df = _defect_panel.find('.drop-down');
+        var _description_df = _defect_panel.find('.description');
+        var _title = _defect_panel.find('.title-input');
+        var _drop_down = _defect_panel.find('.dp-input');
+        var _description = _defect_panel.find('.desc-input');
+        var _dp_option = _defect_panel.find('.dp-input option:selected');
+        var _upload_btn = _defect_panel.find('.uploadImageBtn');
+        var _download_link = _defect_panel.find('.downloadLink');
 
+        var _this = $(this);
+        _text_view.css({'display':'none'});
+        _input_view.css({'display':'inline'});
+        _this.css({'display':'none'});
+        _upload_btn.css({'display':'inline'});
+        setTabIndex(true,_defect_panel.find('.for-edit'));
+        _title.focus();
+        var _has_dp = _drop_down.length ? _drop_down_df.html() != _dp_option.html() : false;
+        _btn_cancel.on('click',function(){
+            if(_title_df.html() != _title.val() ||
+                _has_dp ||
+                _description_df.html() != _description.val()){
+                var ele =
+                    '<div class="modal-body">' +
+                        '<div class="row">' +
+                            '<div class="col-sm-12">' +
+                            'Would you like to save your changes?' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-success btn-sm yes-btn" data-dismiss="modal">Yes</button>' +
+                        '<button type="button" class="btn btn-default btn-sm no-btn" data-dismiss="modal">No</button>' +
+                    '</div>';
+                $(this).modifiedModal({
+                    html: ele,
+                    type: 'small',
+                    title: 'Cancel Edit'
+                });
+                $('.yes-btn').on('click',function(e){
+                    e.preventDefault();
+                    var data = _form.serializeArray();
+                    var url = _form.attr('action');
+                    data.push({name:'submit',value:'1'});
+                    $.post(url,data,function(res){
+                        _title_df.html(_title.val());
+                        _drop_down_df.html(_dp_option.html());
+                        _description_df.html(_description.val());
+                        _text_view.css({'display':'inline'});
+                        _input_view.css({'display':'none'});
+                        _this.css({'display':'inline'});
+                        _upload_btn
+                            .css({'display':'none'});
+                        _defect_panel.find('.for-edit').removeAttr('tabindex');
+                        setTabIndex();
+                    });
+                });
+                $('.no-btn').on('click',function(e){
+                    e.preventDefault();
+                    _text_view.css({'display':'inline'});
+                    _input_view.css({'display':'none'});
+                    _this.css({'display':'inline'});
+                    _upload_btn
+                        .css({'display':'none'});
+                    _defect_panel.find('.for-edit').removeAttr('tabindex');
+                    setTabIndex();
+                });
+            }
+            else{
+                _text_view.css({'display':'inline'});
+                _input_view.css({'display':'none'});
+                _this.css({'display':'inline'});
+                _upload_btn
+                    .css({'display':'none'});
+                _defect_panel.find('.for-edit').removeAttr('tabindex');
+                setTabIndex();
+            }
+        });
+        _btn_submit.on('click',function(){
+            var data = _form.serializeArray();
+            var url = _form.attr('action');
+            data.push({name:'submit',value:'1'});
+            $.post(url,data,function(res){
+                _title_df.html(_title.val());
+                _drop_down_df.html($('.dp-input option:selected').html());
+                _description_df.html(_description.val());
+                _text_view.css({'display':'inline'});
+                _input_view.css({'display':'none'});
+                _this.css({'display':'inline'});
+                _upload_btn
+                    .css({'display':'none'});
+                _defect_panel.find('.for-edit').removeAttr('tabindex');
+                setTabIndex();
+            });
+        });
+    });
+    body.on('click','.uploadImageBtn',function(){
+        var _id = this.id;
+
+        $('.yesBtn').on('click',function(e){
+            e.preventDefault();
+            $('#defect-data-' + _id).find('.uploadModalBtn').trigger('click');
+        });
+    });
     <?php
     $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : '';
     echo $menu_id != '' ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
     echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');$('.room_tab#" . $room_id . "').removeClass('hidden');" : "";
     ?>
+
+    function selectedRoom(data){
+        $.each(jQuery.parseJSON(data),function(index,val){
+            $('.room_tab#' + val + ' a').tab('show');
+            $('.room_tab#' + val).removeClass('hidden');
+        });
+    }
+
+    selectedRoom(roomsSelected);
 
     function addEventAgain(){
         jobDefectDescription
@@ -1333,11 +1761,12 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
 
     var deleteModalBtn = $('.deleteModalBtn');
     var yesDeleteBtn = $('.yesDeleteBtn');
+    var yesDeletePhotoBtn = $('.yesDeletePhotoBtn');
     var deleteDefectId = '';
-    deleteModalBtn.click(function(e){
+    defect_list.on('click','.deleteModalBtn',function(e){
         deleteDefectId = this.id;
     });
-    yesDeleteBtn.click(function(e){
+    yesDeleteBtn.on('click',function(e){
         waitingDialog.show('Please wait...');
         $.ajax({
             url: '<?php echo base_url("jobDefectsDelete") ?>',
@@ -1351,9 +1780,108 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             }
         });
     });
+    var _id = '';
+    var _this = '';
+    var _upload_photo = '';
+    defect_list.on('click','.deleteImage',function(e){
+        e.preventDefault();
+        _id = this.id;
+        _this = $(this);
+        _upload_photo = $(this).parent().parent().parent().parent().parent().parent().find('.uploadModalBtn');
+    });
+    yesDeletePhotoBtn.on('click',function(){
+        waitingDialog.show('Please wait...');
+        $.ajax({
+            url: bu + 'jobDefectsDeleteImage/' + _id,
+            method: "POST",
+            data: {
+                id: _id
+            },
+            success: function(e) {
+                waitingDialog.hide();
+                _this.css({'display':'none'});
+                _this.siblings('a,.glyphicon').css({'display':'none'});
+                _this.parents('.thumbnail').html('<div class="thumbnailNonImage">JPG</div>');
+                _upload_photo.css({'display':'inline'});
+            }
+        });
+    });
+    defect_list.on('click','.uploadModalBtn',function(e){
+        var _id = this.id;
+        var _this = $(this);
+        var upload_btn = $('.upload-photo');
+        var defectPhoto = $('.defectPhoto');
+        var _panel = $('#defect_view_' + _id);
+        var thumbnail = _panel.find('.thumbnail');
+        var img = $('img');
+        $('#uploadImage').find('.modal-title').html('Upload Image');
+        defectPhoto
+            .fileinput({
+                uploadAsync: false,
+                uploadUrl: bu + "jobDefectsUploadImage/" + _id,
+                allowedFileExtensions: ['jpg', 'png', 'gif'],
+                showRemove: false,
+                showUpload: true,
+                showPreview: false,
+                overwriteInitial: true,
+                uploadClass: "btn btn-info hide-btn",
+                maxFileCount: 1
+            })
+            .on('filebatchuploadcomplete', function(event, files, extra) {
+            })
+            .on('fileuploaderror', function(event, data, previewId, index) {
+                $('.alert-danger').removeClass('hidden');
+                defectPhoto.fileinput('clear');
+                hasUploadFile = 0;
+            })
+            .on('fileloaded', function(event, file, previewId, index, reader) {
+                hasUploadFile = 1;
+                upload_btn.removeAttr('disabled');
+            })
+            .on('filebatchpreupload', function(event, data, id, index){
+            })
+            .on('filecleared', function(event) {
+                hasUploadFile = 0;
+                upload_btn.attr('disabled', 'disabled');
+            })
+            .on('filebatchuploadsuccess', function(event, data) {
+                var _json = jQuery.parseJSON(data.response.dir);
+                var d = new Date();
+                var link = bu + 'defects/' + data.response.id + '/' + _json[0] + '?' + d.getTime();
+                var ele = '<img src="' + link + '">';
+                ele += '<div class="panel-footer" style="text-align: center;padding: 5px!important;">';
+                ele += '<span class="glyphicon glyphicon-eye-open showBtn" data-toggle="modal" data-target="#showDefect" style="font-size: 20px;margin-right: 5px;"></span>';
+                ele += '<a class="downloadLink" href="' + link + '" excel_reader="footer_logo_lbp.gif">';
+                ele += '<span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true" style="font-size: 20px;"></span>';
+                ele += '</a>';
+                ele += '<a class="deleteImage" href="#" id="' + data.response.id + '" data-toggle="modal" data-target="#deletePhoto" aria-hidden="true">';
+                ele += '<span class="glyphicon glyphicon-trash" aria-hidden="true" style="font-size: 18px;"></span>';
+                ele += '</a>';
+                ele += '<a class="uploadImageBtn" href="#" id="' + data.response.id + '" tabindex="5" style="display: inline;">';
+                ele += '<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true" style="font-size: 18px;"></span>';
+                ele += '</a>';
+                ele += '</div>';
+                thumbnail.html('');
+                thumbnail.html(ele);
+                img.elevateZoom({
+                    zoomWindowWidth: 400,
+                    zoomWindowHeight: 200
+                });
+                $('.modal').modal('hide');
+                _this.css({'display':'none'});
+                $('.defectPhoto').fileinput('clear');
+            });
+        upload_btn.click(function(e){
+            $('#uploadImage .fileinput-upload.fileinput-upload-button').trigger('click');
+        });
+    });
+    $('#uploadImage.modal').on('hide.bs.modal', function (e) {
+        // do something...
+        $('.defectPhoto').fileinput('clear');
+    });
 
     var s = $('.showBtn');
-    s.click(function (e) {
+    defect_list.on('click','.showBtn',function (e) {
         var info = $(this).parent('').parent('').find('img');
         var imgSrc = info.attr('src');
         var imgDownload = $(this).next('.downloadLink');
@@ -1361,12 +1889,17 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         var sa = $('#showDefect');
         var mBody = sa.find('.modal-body');
         mBody.html('<img src="' + imgSrc + '" data-zoom-image="' + imgSrc + '" width="100%" />');
-
         downloadLinkModal.attr('href', imgDownload.attr('href'));
         downloadLinkModal.attr('excel_reader', imgDownload.attr('excel_reader'));
+        mBody
+            .find('img')
+            .elevateZoom({
+                zoomType: "lens",
+                borderSize: 1,
+                lensSize: 300
+            });
     });
-
-    $('.descriptionReadMoreBtn').click(function(){
+    defect_list.on('click','.descriptionReadMoreBtn',function(){
         var $this = $(this);
         $this.parent().find('#descriptionReadMore').collapse('toggle');
         $this.toggleClass('descriptionReadMoreBtn');

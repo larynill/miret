@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Expires" content="Tue, 01 Jan 1995 12:12:12 GMT">
 
     <title><?php echo $page_title;?> | Synergy Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">

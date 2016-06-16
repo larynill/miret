@@ -191,14 +191,14 @@ class Job_Controller extends Merit{
                     $this->main_model->update('tbl_job_registration',$_post,$id,'id',false);
                 }
                 else{
+                    $_id = $this->main_model->insert('tbl_job_registration',$_post,false);
+
                     $p = $_POST;
                     $l = new Controller_Logger();
                     $l->tracking_change_logger($p, '', $_id, 1);
 
                     $n = new Job_Helper();
-                    $n->setJobNotification($id,'created');
-
-                    $_id = $this->main_model->insert('tbl_job_registration',$_post,false);
+                    $n->setJobNotification($_id,'created');
                 }
             }
 

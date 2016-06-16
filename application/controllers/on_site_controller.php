@@ -252,6 +252,9 @@ class On_Site_Controller extends Merit{
         $inspection_type = $this->merit_model->getInfo($site . '.tbl_inspection_type');
         $this->data['inspection_type'] = $inspection_type;
 
+        $session_rooms = $this->uri->segment(2) ? $this->session->userdata('job_' . $this->uri->segment(2)) : [];
+        $this->data['session_rooms'] = @$session_rooms['rooms_ids'];
+
         $whatVal = '';
         $whatFld = '';
         if($this->uri->segment(2)){
@@ -335,9 +338,11 @@ class On_Site_Controller extends Merit{
 
     //region Upload Area
     public function jobDefects(){
+        ini_set('max_execution_time', 0);
         $site = $this->db->site;
         $r = array();
         $return = array();
+
         if (!empty($_FILES)) {
             $menu_id = isset($_POST['menu_id']) ? $_POST['menu_id'] : NULL;
             $room_id = isset($_POST['room_id']) ? $_POST['room_id'] : NULL;
@@ -358,7 +363,7 @@ class On_Site_Controller extends Merit{
             }
             $defect_id = $this->merit_model->insert($site.'.tbl_defects',$post);
 
-            $path = realpath(APPPATH.'../defects');
+            $path = realpath(APPPATH.'../defects/');
             $dir = $path . '/' . $defect_id . '/';
             if (!is_dir($dir)) {
                 mkdir($dir, 0777, TRUE);
@@ -369,14 +374,43 @@ class On_Site_Controller extends Merit{
                 foreach($_FILES['jobDefects']['name'] as $k=>$v){
                     $file = $dir . basename($v);
                     if (move_uploaded_file($_FILES['jobDefects']['tmp_name'][$k], $file)) {
-                        $success_upload[] = basename($v);
+
                     }
                     else{
                         $r['error'] = 1;
                     }
+                    $this->load->library('my_class_upload');
+                    $handle = $this->my_class_upload;
+                    $handle->upload($file);
+                    if($handle->uploaded){
+                        list($width, $height) = getimagesize($file);
+                        $_r = $width / $height;
+                        $w = 800;
+                        $h = 600;
+                        if (($w / $h) > $_r) {
+                            $new_width = $h * $_r;
+                            $new_height = $h;
+                        } else {
+                            $new_height = $w / $_r;
+                            $new_width = $w;
+                        }
+
+                        $handle->allowed = array('image/*');
+                        $handle->file_new_name_body = 'defect_img_' . $defect_id . '_' . $k;
+                        $handle->file_overwrite = true;
+                        $handle->image_resize = true;
+                        $handle->image_x = $new_width;
+                        $handle->image_y = $new_height;
+
+                        $handle->process($dir);
+                        if($handle->processed){
+                            $handle->clean();
+                            $ext = substr(strrchr($_FILES['jobDefects']['name'][$k],'.'), 1);
+                            $success_upload[] = 'defect_img_' . $defect_id . '_' . $k . '.' . ($ext);
+                        }
+                    }
                 }
             }
-
             if(count($success_upload) > 0){
                 $post = array(
                     'dir' => json_encode($success_upload)
@@ -389,12 +423,10 @@ class On_Site_Controller extends Merit{
         }
         if($r['success'] == 1){
             echo json_encode($return);
-            //redirect('jobRegistration?id=' . $return['job_id']);
         }
         else{
             redirect('jobRegistration?id=' . $return['job_id']);
         }
-        //echo json_encode($r);
     }
 
     public function jobDefectsDelete(){
@@ -402,16 +434,33 @@ class On_Site_Controller extends Merit{
         $this->load->helper('directory');
         if(isset($_POST['id'])){
             $defect_id = $_POST['id'];
-            $this->merit_model->delete($site.'.tbl_defects',$defect_id);
-            $path = realpath(APPPATH.'../defects');
-            $directory = $path . '/' . $defect_id . '/';
-            if(file_exists($directory)){
-                $f = directory_map($directory);
-                foreach ($f as $file){
-                    unlink($file);
+
+            $this->merit_model->setShift();
+            $defects = (Object)$this->merit_model->getInfo($site . '.tbl_defects',$defect_id);
+            if(@$defects->id){
+                $dir = 'defects/' . $defects->id .'/';
+                if(count(json_decode($defects->dir)) > 0){
+                    foreach(json_decode($defects->dir) as $file){
+                        unlink($dir . $file);
+                    }
                 }
+                rmdir($dir);
+                $this->merit_model->delete($site.'.tbl_defects',$defect_id);
             }
-            rmdir($directory);
+        }
+    }
+
+    public function jobDefectsUpdate(){
+        $id = $this->uri->segment(2);
+        if(!$id){
+            exit;
+        }
+        $site = $this->db->site;
+        if(isset($_POST['submit'])){
+            unset($_POST['submit']);
+            $this->merit_model->update($site . '.tbl_defects',$_POST,$id);
+
+            echo 'success';
         }
     }
 
@@ -458,7 +507,114 @@ class On_Site_Controller extends Merit{
         $this->data['defects'] = $defects;
         $this->load->view('on_site/load_defects_list_view',$this->data);
     }
+
+    public function jobDefectsDeleteImage(){
+        $id = $this->uri->segment(2);
+        $site = $this->db->site;
+
+        $this->merit_model->setShift();
+        $defects = (Object)$this->merit_model->getInfo($site . '.tbl_defects',$id);
+        if(@$defects->id){
+            $dir = 'defects/' . $defects->id .'/';
+            if(count(json_decode($defects->dir)) > 0){
+                foreach(json_decode($defects->dir) as $file){
+                    unlink($dir . $file);
+                }
+            }
+            rmdir($dir);
+            $this->merit_model->update($site . '.tbl_defects',['dir' => '[]'],$id);
+        }
+
+    }
+
+    public function jobDefectsUploadImage(){
+        $defect_id = $this->uri->segment(2);
+        $site = $this->db->site;
+        $r = array();
+        $return = array();
+        if (!empty($_FILES)) {
+                $path = realpath(APPPATH.'../defects');
+                $dir = $path . '/' . $defect_id . '/';
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, TRUE);
+                }
+
+                $success_upload = array();
+                if (isset($_FILES['dir'])) {
+                    foreach($_FILES['dir']['name'] as $k=>$v){
+                        $file = $dir . basename($v);
+                        if (move_uploaded_file($_FILES['dir']['tmp_name'][$k], $file)) {
+                            //$success_upload[] = basename($v);
+                        }
+                        else{
+                            $r['error'] = 1;
+                        }
+                        $this->load->library('my_class_upload');
+                        $handle = $this->my_class_upload;
+                        $handle->upload($file);
+                        if($handle->uploaded){
+                            list($width, $height) = getimagesize($file);
+                            $_r = $width / $height;
+                            $w = 800;
+                            $h = 600;
+                            if (($w / $h) > $_r) {
+                                $new_width = $h * $_r;
+                                $new_height = $h;
+                            } else {
+                                $new_height = $w / $_r;
+                                $new_width = $w;
+                            }
+
+                            $handle->allowed = array('image/*');
+                            $handle->file_new_name_body = 'defect_img_' . $defect_id . '_' . $k;
+                            $handle->file_overwrite = true;
+                            $handle->image_resize = true;
+                            $handle->image_x = $new_width;
+                            $handle->image_y = $new_height;
+
+                            $handle->process($dir);
+                            if($handle->processed){
+                                $handle->clean();
+                                $ext = substr(strrchr($_FILES['dir']['name'][$k],'.'), 1);
+                                $success_upload[] = 'defect_img_' . $defect_id . '_' . $k . '.' . ($ext);
+                            }
+                        }
+                    }
+                }
+
+                if(count($success_upload) > 0){
+                    $post = array(
+                        'dir' => json_encode($success_upload)
+                    );
+
+                    $this->merit_model->update($site . '.tbl_defects',$post,$defect_id,'id',false);
+
+                    $r['success'] = 1;
+                }
+            }
+        if($r['success'] == 1){
+            $this->merit_model->setShift();
+            $defect = (Object)$this->merit_model->getInfo($site . '.tbl_defects',$defect_id);
+            echo json_encode($defect);
+        }
+        else{
+            redirect('jobRegistration?id=' . $return['job_id']);
+        }
+    }
     //endregion
+
+    public function selectedRooms(){
+        $id = $this->uri->segment(2);
+        if(!$id){
+            exit;
+        }
+        if(isset($_POST['rooms'])){
+            $data['job_' . $id] = array(
+                'rooms_ids' => $_POST['rooms']
+            );
+            $this->session->set_userdata($data);
+        }
+    }
 
     //region Upload Area
     public function jobUploadsView(){
@@ -1684,4 +1840,53 @@ class On_Site_Controller extends Merit{
 
     //endregion
 
+    public function resizeImage(){
+        $dir = realpath(APPPATH.'../defects/');
+        $file = $dir .'/57/20151122_154121.jpg';
+
+        $this->load->library('my_class_upload');
+        $handle = $this->my_class_upload;
+        $handle->upload($file);
+        if($handle->uploaded){
+            $handle->allowed = array('image/*');
+            $handle->file_new_name_body = 'new_name';
+            $handle->file_overwrite = true;
+            $handle->image_resize = true;
+            $handle->image_x = 900;
+            $handle->process($dir);
+            if($handle->processed){
+                $handle->clean();
+
+                $ext = substr(strrchr($_FILES['profile_pic']['name'],'.'), 1);
+                echo 'working';
+            }
+        }
+    }
+
+    private function resize_image($file, $w, $h, $crop=FALSE) {
+        list($width, $height) = getimagesize($file);
+        $r = $width / $height;
+        if ($crop) {
+            if ($width > $height) {
+                $width = ceil($width-($width*abs($r-$w/$h)));
+            } else {
+                $height = ceil($height-($height*abs($r-$w/$h)));
+            }
+            $newwidth = $w;
+            $newheight = $h;
+        } else {
+            if ($w/$h > $r) {
+                $newwidth = $h*$r;
+                $newheight = $h;
+            } else {
+                $newheight = $w/$r;
+                $newwidth = $w;
+            }
+        }
+        $src = imagecreatefromjpeg($file);
+        $dst = imagecreatetruecolor($newwidth, $newheight);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
+        return $dst;
+    }
 }
