@@ -333,8 +333,10 @@ function array_depth(array $array) {
 toggle between hiding and showing the dropdown content */
 function myFunction(a) {
     var id = $(a).attr("id");
-    document.getElementById("myDropdown" + id).classList.toggle("show");
-    event.stopPropagation();
+    if( $(window).width() < 768 ) {
+        document.getElementById("myDropdown" + id).classList.toggle("show");
+        event.stopPropagation();
+    }
 }
 
 </script>

@@ -345,9 +345,9 @@
                         if(count($assignment)>0){
                             foreach($assignment as $ak=>$av){
                                 ?>
-                                <li style="padding: 5px;text-align:center;background:<?php echo $av->color;?>;" class="list-group-item quote-class">
+                                <li style="padding: 5px;text-align:center;background:<?php echo $av->color;?>;" class="list-group-item quote-class job-list" id="<?php echo $av->TrackID;?>">
                                     <span style="color: #ffffff;" id="<?php echo $av->id;?>" class="quote-hover">
-                                        <?php echo $av->project_name;?>
+                                        <?php echo $av->project_name.' ('. $av->job_ref.')';?>
                                     </span>
                                     <span class="data-area" id="form_<?php echo $av->id;?>"></span>
                                 </li>
@@ -399,4 +399,18 @@
 	.panel{
         font-size: 12px;
     }
+    .job-list{
+        cursor: pointer;
+    }
 </style>
+<script>
+    $(function(){
+       $('.job-list').on('click',function(e){
+           var _id = this.id;
+           $.post( bu + 'jobRegistration',{tab:'inspection'},function(data){
+               location.replace(bu + 'jobRegistration?id=' + _id)
+           });
+
+       });
+    });
+</script>

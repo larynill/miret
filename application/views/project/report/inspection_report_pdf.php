@@ -224,27 +224,27 @@ ob_start();
         <table class="df-table client-details">
             <tr>
                 <td>Client</td>
-                <td><?php echo $inspection_report->insured_name;?></td>
+                <td><?php echo @$inspection_report->insured_name;?></td>
             </tr>
             <tr>
                 <td>Client Reference Number</td>
-                <td><?php echo $inspection_report->client_ref;?></td>
+                <td><?php echo @$inspection_report->client_ref;?></td>
             </tr>
             <tr>
                 <td>Site Address</td>
-                <td><?php echo $inspection_report->address?></td>
+                <td><?php echo @$inspection_report->address?></td>
             </tr>
             <tr>
                 <td>Inspection Date</td>
-                <td><?php echo $inspection_report->inspection_time != '0000-00-00 00:00:00' ? date('d M Y',strtotime($inspection_report->inspection_time)) : ''?></td>
+                <td><?php echo @$inspection_report->inspection_time != '0000-00-00 00:00:00' ? date('d M Y',strtotime($inspection_report->inspection_time)) : ''?></td>
             </tr>
             <tr>
                 <td>Building Inspector</td>
-                <td><?php echo $inspection_report->inspector;?></td>
+                <td><?php echo @$inspection_report->inspector;?></td>
             </tr>
             <tr>
                 <td>Report</td>
-                <td><?php echo $inspection_report->report;?></td>
+                <td><?php echo @$inspection_report->report;?></td>
             </tr>
         </table>
         <table class="df-table">
@@ -252,7 +252,7 @@ ob_start();
                 <td style="text-decoration: underline;font-weight: bold;">ORIENTATION</td>
                 <td style="text-align: left!important;">
                     For the purpose of this report the main entrance to the house is
-                    on the <span class="dp-text"><?php echo $inspection_report->elevation;?></span> elevation.
+                    on the <span class="dp-text"><?php echo @$inspection_report->elevation;?></span> elevation.
                 </td>
             </tr>
         </table>
@@ -262,7 +262,7 @@ ob_start();
         <div class="title" style="page-break-before: always;">INTRODUCTION</div>
         <div>
             <?php
-            $client_name = explode(' ',$inspection_report->insured_name);
+            $client_name = explode(' ',@$inspection_report->insured_name);
             ?>
             <p>Dear <?php echo $client_name[0];?>,</p><br/>
             <p>Thank you for the opportunity to inspect and report on the property at <?php echo $inspection_report->address?>. We appreciate the confidence
@@ -270,7 +270,7 @@ ob_start();
             <p>If you have any questions about this inspection please do not hesitate to give me a call on <?php echo $inspection_report->inspector_contact;?>.</p><br/>
             <p>Thank you again for the confidence you have placed in Synergy Project Property Inspections.</p><br/>
             <p>Sincerely,</p><br/>
-            <p><?php echo $inspection_report->inspector;?></p><br/>
+            <p><?php echo @$inspection_report->inspector;?></p><br/>
             <p>Synergy Project Property Inspections</p><br/>
             <p><img src="<?php echo realpath(APPPATH .'../img/logo-other.gif')?>" width="150"></p><br/><br/>
             <p style="text-align: justify">
@@ -572,7 +572,7 @@ ob_start();
             <tr>
                 <td colspan="2">Signature: &nbsp;<span style="margin-left: 150px;">(for and on behalf of Synergy Project Property Inspections)</span></td>
             </tr>
-        </table><br/>
+        </table>
         <p style="text-align: justify">
             An inspection carried out in accordance with NZS 4306:2005 is not a statement that a property complies with the
             requirement of any Act, regulation or bylaw, nor is the report a warranty against any problems developing after the
@@ -604,6 +604,17 @@ ob_start();
                 }
                 ?>
                 </table>
+                <?php
+            }
+        }
+        ?>
+        <div class="title" style="page-break-before: always">GLOSSARY	OF	TERMS</div>
+        <?php
+        if(count($glossary) > 0){
+            foreach($glossary as $key=>$val){
+                ?>
+                <div class="sub-title"><?php echo $val->title;?></div>
+                <p style="text-align: justify;padding: 20px 0"><?php echo $val->description;?></p>
                 <?php
             }
         }

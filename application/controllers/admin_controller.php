@@ -96,6 +96,7 @@ class Admin_Controller extends Merit{
 				//$av->equipment = $this->main_model->getinfo('tbl_client_equipment',$av->ClientID,'ClientID');
 				$av->inspector = $this->main_model->getinfo('tbl_user',4,'AccountType');
 				$av->jobs = 0;
+				$av->job_ref = str_pad($av->TrackID,5,'0',STR_PAD_LEFT);
 				if(count($av->inspector)>0){
 					foreach($av->inspector as $ik=>$iv){
 						$av->jobs = count($this->main_model->getinfo('tbl_user_assignment', $iv->ID , 'UserID'));

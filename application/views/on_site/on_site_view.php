@@ -36,6 +36,9 @@
         text-align: center;
         line-height: 90px;
     }
+    label{
+        white-space: nowrap!important;
+    }
     .error{
         border: 1px solid #F00;
     }
@@ -45,8 +48,11 @@
     .defect-panel{
         font-size: 12px;
     }
-    .thumbnail img{
+    .col-md-5 div.thumbnail img{
         height: 100px;
+    }
+    .col-sm-4 .thumbnail .caption{
+        padding: 0!important;
     }
     #descriptionReadMore.collapse.in{
         display: inline;
@@ -73,12 +79,17 @@
     .modal{
         z-index: 99999999!important;
     }
+    .radio-inline{
+        width: 40px;
+    }
 </style>
 <?php
-echo form_open('');
+echo form_open('','class="onsite-form"');
+$date_receive = @$job_detail->date_entered != '0000-00-00 00:00:00' ? date('d/m/Y h:i' ,strtotime(@$job_detail->date_entered)) : (@$job_detail->date_entered != '0000-00-00 00:00:00' ? date('d/m/Y h:i' ,strtotime(@$job_detail->date_entered)) : '');
+$date_inspection = @$job_detail->inspection_date != '0000-00-00 00:00:00' ? date('d/m/Y h:i' ,strtotime(@$job_detail->inspection_time)) : (@$job_detail->inspection_time != '0000-00-00 00:00:00' ? date('d/m/Y h:i' ,strtotime(@$job_detail->date_entered)) : '');
 ?>
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-primary form-horizontal" style="display:none;" >
+    <div class="panel panel-primary form-horizontal" style="display: none">
         <div class="panel-heading" role="tab" data-toggle="collapse" data-parent="#accordion" data-target="#job_details" aria-expanded="true">
             <h4 class="panel-title">Job Details</h4>
         </div>
@@ -94,14 +105,14 @@ echo form_open('');
                                 <div class="row">
                                     <label class="control-label col-sm-3">Job Name:</label>
                                     <div class="col-md-5">
-                                        <?php echo form_dropdown('job_details[job_id]',$job_name,@$job_detail->job_id,'class="form-control input-sm required job_name"')?>
+                                        <?php echo form_dropdown('job_details[job_id]',$job_name,@$job_detail->job_id ? @$job_detail->job_id : @$job_detail->id,'class="form-control input-sm required job_name"')?>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label class="control-label">Date Received</label>
                                         <div class='input-group date' style="width: 100%;">
-                                            <input type='text' name="job_details[date_receive]" class="form-control input-sm job-details required" data-type="date_entered" placeholder="dd/mm/yyyy hh:mm" readonly/>
+                                            <input type='text' name="job_details[date_receive]" class="form-control input-sm job-details required" data-type="date_entered" placeholder="dd/mm/yyyy hh:mm" value="<?php echo $date_receive?>" readonly/>
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -109,13 +120,13 @@ echo form_open('');
                                     </div>
                                     <div class="col-md-6">
                                         <label class="control-label">Reference #</label>
-                                        <input type="text" class="form-control input-sm job-details required" name="job_details[ref]" data-type="client_ref" value="<?php echo @$job_detail->ref ?>" />
+                                        <input type="text" class="form-control input-sm job-details required" name="job_details[ref]" data-type="client_ref" value="<?php echo @$job_detail->ref ?  @$job_detail->ref : @$job_detail->client_ref?>" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label class="control-label">Instruction Received</label>
-                                        <?php echo form_dropdown('job_details[instruction_received]',$instruction_received,'','class="job-details form-control input-sm"');?>
+                                        <?php echo form_dropdown('job_details[instruction_received]',$instruction_received,@$job_detail->instruction_received,'class="job-details form-control input-sm"');?>
                                     </div>
                                 </div>
                             </div>
@@ -128,23 +139,23 @@ echo form_open('');
                                 <div class="row">
                                     <div class="col-md-7">
                                         <label class="control-label">Name</label>
-                                        <input type="text" class="form-control input-sm job-details" data-type="owner" name="job_details[occupier_name]" value="<?php echo @$job_detail->occupier_name ?>" />
+                                        <input type="text" class="form-control input-sm job-details" data-type="owner" name="job_details[occupier_name]" value="<?php echo @$job_detail->occupier_name ? @$job_detail->occupier_name : @$job_detail->owner ?>" />
                                     </div>
                                     <div class="col-md-5">
                                         <label class="control-label">Phone</label>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input type="text" class="form-control input-sm job-details" data-type="owner_phone" name="job_details[occupier_phone_number]" value="<?php echo @$job_detail->occupier_phone_number ?>" />
+                                                <input type="text" class="form-control input-sm job-details" data-type="owner_phone" name="job_details[occupier_phone_number]" value="<?php echo @$job_detail->occupier_phone_number ? @$job_detail->occupier_phone_number : @$job_detail->owner_phone?>" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
                                         <label class="control-label">Mobile</label>
-                                        <input type="text" class="form-control input-sm job-details" data-type="owner_mobile" name="job_details[occupier_mobile]" value="<?php echo @$job_detail->occupier_mobile ?>" />
+                                        <input type="text" class="form-control input-sm job-details" data-type="owner_mobile" name="job_details[occupier_mobile]" value="<?php echo @$job_detail->occupier_mobile ? @$job_detail->occupier_mobile : @$job_detail->owner_mobile ?>" />
                                     </div>
                                     <div class="col-md-7">
                                         <label class="control-label">Email</label>
-                                        <input type="email" class="form-control input-sm job-details" data-type="owner_email" name="job_details[occupier_email]" value="<?php echo @$job_detail->occupier_email ?>" />
+                                        <input type="email" class="form-control input-sm job-details" data-type="owner_email" name="job_details[occupier_email]" value="<?php echo @$job_detail->occupier_email ? @$job_detail->occupier_email : @$job_detail->owner_email?>" />
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +170,7 @@ echo form_open('');
                                         <label class="control-label">Assigned to</label>
                                         <?php
                                         echo form_dropdown(
-                                            'job_details[assigned_to]', $inspector, @$job_detail->assigned_to,
+                                            'job_details[assigned_to]', $inspector, (@$job_detail->assigned_to ? @$job_detail->assigned_to : @$job_detail->inspector_id),
                                             'class="form-control input-sm required job-details" data-type="inspector_id"'
                                         );
                                         ?>
@@ -167,7 +178,7 @@ echo form_open('');
                                     <div class="col-md-5">
                                         <label class="control-label">Date of Inspection</label>
                                         <div class='input-group date' style="width: 100%;">
-                                            <input type='text' name="job_details[inspection_date]" class="form-control input-sm job-details required" data-type="inspection_time" placeholder="dd/mm/yyyy hh:mm" readonly/>
+                                            <input type='text' name="job_details[inspection_date]" class="form-control input-sm job-details required" data-type="inspection_time" placeholder="dd/mm/yyyy hh:mm" value="<?php echo $date_inspection;?>" readonly/>
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -191,9 +202,10 @@ echo form_open('');
                                                 <select class="form-control input-sm type_inspection job-details required" data-type="job_type_id" name="job_details[type_inspection]">
                                                     <option></option>
                                                     <?php
+                                                    $_inspection_type = @$job_detail->type_inspection ? @$job_detail->type_inspection : @$job_detail->job_type_id;
                                                     if(count($inspection_type) > 0){
                                                         foreach ($inspection_type as $v) {
-                                                            echo '<option value="' . $v->id . '"' . (@$job_detail->type_inspection == $v->id ? ' selected' : '') . '>' . $v->inspection_type . '</option>';
+                                                            echo '<option value="' . $v->id . '"' . ($_inspection_type == $v->id ? ' selected' : '') . '>' . $v->inspection_type . '</option>';
                                                         }
                                                     }
                                                     ?>
@@ -220,7 +232,7 @@ echo form_open('');
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="control-label">Property Owner</label>
-                                        <input type="text" class="form-control input-sm job-details required" id="property_owner" data-type="owner" name="job_details[property_owner]" value="<?php echo @$job_detail->property_owner ?>" />
+                                        <input type="text" class="form-control input-sm job-details required" id="property_owner" data-type="owner" name="job_details[property_owner]" value="<?php echo @$job_detail->property_owner ?  @$job_detail->property_owner : @$job_detail->owner?>" />
                                     </div>
                                     <div class="col-md-5">
                                         <label class="control-label">Lot Number</label>
@@ -240,44 +252,45 @@ echo form_open('');
                                         <input type="number" class="form-control input-sm property job-details" id="street_number" name="job_details[property_street_number]" placeholder="Street #" value="<?php echo @$job_detail->property_street_number ?>" />
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control input-sm property job-details required" id="street_name" data-type="address" name="job_details[property_street_name]" placeholder="Street Name" value="<?php echo @$job_detail->property_street_name ?>" />
+                                        <input type="text" class="form-control input-sm property job-details required" id="street_name" data-type="address" name="job_details[property_street_name]" placeholder="Street Name" value="<?php echo @$job_detail->property_street_name ? @$job_detail->property_street_name : @$job_detail->address ?>" />
                                     </div>
                                 </div>
                                 <label class="control-label">&nbsp;</label>
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <input type="text" class="form-control input-sm property job-details required" id="suburb" data-type="suburb" name="job_details[property_suburb]" placeholder="Suburb" value="<?php echo @$job_detail->property_suburb ?>" />
+                                        <input type="text" class="form-control input-sm property job-details required" id="suburb" data-type="suburb" name="job_details[property_suburb]" placeholder="Suburb" value="<?php echo @$job_detail->property_suburb ? @$job_detail->property_suburb : @$job_detail->suburb ?>" />
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control input-sm property job-details required" id="city" data-type="city" name="job_details[property_city]" placeholder="Town/City" value="<?php echo @$job_detail->property_city ?>" />
+                                        <input type="text" class="form-control input-sm property job-details required" id="city" data-type="city" name="job_details[property_city]" placeholder="Town/City" value="<?php echo @$job_detail->property_city ? @$job_detail->property_city : @$job_detail->city ?>" />
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="number" class="form-control input-sm property job-details required" id="postal" data-type="zip_code" name="job_details[property_postal]" placeholder="Postal" value="<?php echo @$job_detail->property_postal ?>" />
+                                        <input type="text" class="form-control input-sm property job-details required" id="postal" data-type="zip_code" name="job_details[property_postal]" placeholder="Postal" value="<?php echo @$job_detail->property_postal ? @$job_detail->property_postal : @$job_detail->zip_code ?>" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label class="control-label">Phone</label>
-                                        <input type="text" class="form-control job-details input-sm" data-type="owner_phone" name="job_details[property_phone_number]" value="<?php echo @$job_detail->property_phone_number ?>" />
+                                        <input type="text" class="form-control job-details input-sm" data-type="owner_phone" name="job_details[property_phone_number]" value="<?php echo @$job_detail->property_phone_number ? @$job_detail->property_phone_number : @$job_detail->owner_phone?>" />
                                     </div>
                                     <div class="col-md-5">
                                         <label class="control-label">Mobile</label>
-                                        <input type="text" class="form-control job-details input-sm" data-type="owner_mobile" name="job_details[property_mobile]" value="<?php echo @$job_detail->property_mobile ?>" />
+                                        <input type="text" class="form-control job-details input-sm" data-type="owner_mobile" name="job_details[property_mobile]" value="<?php echo @$job_detail->property_mobile ? @$job_detail->property_mobile : @$job_detail->owner_mobile ?>" />
                                     </div>
                                     <div class="col-md-7">
                                         <label class="control-label">Email</label>
-                                        <input type="email" class="form-control job-details input-sm" data-type="owner_email" name="job_details[property_email]" value="<?php echo @$job_detail->property_email ?>" />
+                                        <input type="email" class="form-control job-details input-sm" data-type="owner_email" name="job_details[property_email]" value="<?php echo @$job_detail->property_email ? @$job_detail->property_email : @$job_detail->owner_email ?>" />
                                     </div>
                                     <div class="col-md-9">
                                         <label class="control-label">Property Status</label>
                                         <div class="row">
                                             <div class="col-md-5">
-                                                <select class="form-control job-details input-sm property_status required" data-type="property_status_id" name="job_details[property_status]">
+                                                <select class="form-control job-details input-sm property_status" data-type="property_status_id" name="job_details[property_status]">
                                                     <option></option>
                                                     <?php
+                                                    $_status = @$job_detail->property_status ? @$job_detail->property_status : @$job_detail->property_status_id;
                                                     if(count($property_status) > 0){
                                                         foreach ($property_status as $v) {
-                                                            echo '<option value="' . $v->id . '"' . (@$job_detail->property_status == $v->id ? ' selected' : '') . '>' . $v->property_status . '</option>';
+                                                            echo '<option value="' . $v->id . '"' . ($_status == $v->id ? ' selected' : '') . '>' . $v->property_status . '</option>';
                                                         }
                                                     }
                                                     ?>
@@ -399,7 +412,7 @@ if(count($menu) > 0){
                                 hasMultiple($m, $v, $menu_info_empty, $default_value, $menu_info, '', $option, $field_name,0,$_field);
 
                                 if($v->next_break){
-                                    echo '</div><div class="row">';
+                                    echo '</div><div class="row" style="border-top:1px solid #000000;padding:10px 0;">';
                                 }
                             }
                             echo "</div>";
@@ -413,7 +426,7 @@ if(count($menu) > 0){
                         $room = $option[$m->id][2][1];
                         echo "<div class='col-xs-2'>";
                         echo form_dropdown(
-                            'room_id[]', $room, null,
+                            'selected_room_id[]', $room, '',
                             'class="room_name form-control input-sm selectpicker" multiple="multiple" title="Select Room"'
                         );
                         echo '</div><br><div style="margin-bottom: 5px!important;">&nbsp;</div>';
@@ -469,6 +482,7 @@ if(count($menu) > 0){
                                     }
                                     echo "</div>";
                                 }
+                                interiorPhotos($xtr,$room_photos,$key);
                                 defectArea($m, $defects, $key, array(),'',false);
 
                                 echo '</div>';
@@ -566,7 +580,7 @@ if(count($menu) > 0){
         ?>
         <div class="form-group pull-right">
             <input type="hidden" name="time_start" value="<?php echo date('Y-m-d H:i:s') ?>"/>
-            <input type="submit" name="submit" value="Save" class="btn btn-primary btn-sm saveBtn"/>
+            <input type="submit" name="submit_inspection_visit" value="Submit" class="btn btn-primary btn-sm saveBtn"/>
             <input type="reset" class="btn btn-danger btn-sm" value="Cancel"/>
         </div>
     <?php
@@ -575,15 +589,15 @@ if(count($menu) > 0){
 </div>
 <?php
 echo form_close();
-
 $field_group = array();
-function generateInputs($field_value, $per_option, $default_value, $menu_info, $menu, $menu_id, $data_type_id, $option_id, $option, $fName, $field_label, $field_dynamic = '', $label_header = '', $field_style = '' ,$loop = NULL){
+function generateInputs($field_value, $per_option, $default_value, $menu_info, $menu, $menu_id, $data_type_id, $option_id, $option, $fName, $field_label, $field_dynamic = '', $label_header = '', $field_style = '' ,$loop = NULL,$has_label_space = true,$label_col = 0){
     $field_name = 'data[' . $menu_id . ']' . $menu . '[' . $fName . ']';
     $str = '';
+    $form_column = $label_col ? 'col-sm-' . (12 - $label_col) : '';
     $genStr = '';
     $genStr .= '<div class="form-' . ($data_type_id == 3 ? 'inline' : 'group') . '">';
     $genStr .= $label_header ? '<label style="margin-top: 10px!important;">' . $label_header . '</label><hr style="margin: 10px!important;" />' : '';
-    $genStr .= $field_label ? ('<label class="control-label">' . $field_label . ': &nbsp;' . '</label>') : '';
+    $genStr .= $field_label ? ('<label class="control-label ' . ($label_col ? 'col-sm-' . $label_col : '') . '">' . $field_label . ':' . ($has_label_space ? ' &nbsp;' : '') . '</label>') : '';
 
     if($option_id){
         if(array_key_exists($menu_id, $option)){
@@ -664,16 +678,16 @@ function generateInputs($field_value, $per_option, $default_value, $menu_info, $
     else{
         if(!$field_dynamic){
             if($data_type_id == 1){
-                $str .= '<input type="text" class="form-control input-sm" name="' . $field_name . '" value="' . $default_value . '">';
+                $str .= '<input type="text" class="form-control input-sm" name="' . $field_name . '" value="' . $default_value . '" '. ($field_style != '' ? ('style="' . $field_style . '"') : '') .'>';
             }
             else if($data_type_id == 2){
-                $str .= '<input type="text" class="form-control input-sm" name="' . $field_name . '" value="' . $default_value . '">';
+                $str .= '<input type="text" class="form-control input-sm" name="' . $field_name . '" value="' . $default_value . '" '. ($field_style != '' ? ('style="' . $field_style . '"') : '') .'>';
             }
             else if($data_type_id == 3){
                 $str .=
-                    '<div class="checkbox">
-                        <input type="radio" name="' . $field_name . '" value="1" ' . ($default_value == 1 ? 'checked' : '') . '> Yes
-                        <input type="radio" name="' . $field_name . '" value="0" ' . ($default_value == 0 ? 'checked' : '') . '> No
+                    '<div class="radio" '. ($field_style != '' ? ('style="' . $field_style . '"') : '') .'>
+                        <label class="radio-inline"><input type="radio" name="' . $field_name . '" value="1" ' . ($default_value == 1 ? 'checked' : '') . '> <strong style="position:absolute;margin:5px 0 0 5px;">Yes</strong></label>
+                        <label class="radio-inline"><input type="radio" name="' . $field_name . '" value="0" ' . ($default_value == 0 ? 'checked' : '') . '> <strong style="position:absolute;margin:5px 0 0 5px;">No</strong></label>
                     </div>';
             }
             else if($data_type_id == 5){
@@ -684,7 +698,7 @@ function generateInputs($field_value, $per_option, $default_value, $menu_info, $
             }
         }
     }
-    $genStr .= $str ? '<div class="form-group">' . $str . ' </div>' : '';
+    $genStr .= $str ? '<div class="'. ($form_column ? $form_column : 'form-group') . '" '.($form_column ? 'style="margin-bottom:5px;"' : '') . '>' . $str . ' </div>' : '';
     if($field_dynamic && !$per_option){
         $genStr .= generateFieldDynamic($field_value, 0, $per_option, $field_dynamic, $menu_id, $menu, $fName, $menu_info, $default_value, '', '', $loop);
     }
@@ -698,7 +712,7 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
 
     $field_dynamic = (Array)json_decode($field_dynamic);
     if(count($field_dynamic) > 0){
-        $rowCount = 6;//floor(12/count($field_dynamic));
+        $rowCount = floor(12/count($field_dynamic));
         $str .= '<div class="form-group row fieldDynamicArea" style="margin-bottom: 5px;">';
         foreach($field_dynamic as $k=>$v){
             $fn =
@@ -742,6 +756,9 @@ function generateFieldDynamic($field_value, $is_test, $per_option, $field_dynami
                             ' . $placeholder . '
                         </div>';
                 }
+                else if($v == "label"){
+                    $str .= '<label class="col-md-' . $rowCount . '" style="margin: 5px -25px;">' . $k . '</label>';
+                }
                 else{
                     $str .=
                         '<div class="col-md-' . $rowCount . '">
@@ -775,11 +792,11 @@ function hasMultiple($m = array(), $v, $menu_info_empty = '', $default_value = '
         $str = '';
         $jsonValue = $default_value ? json_decode($default_value) : array();
         $inpt_default_value = $v->field_group || $v->is_multiple ?
-            (array_key_exists($i, $jsonValue) ? $jsonValue[$i] : '') :
+            (@array_key_exists($i, $jsonValue) ? $jsonValue[$i] : '') :
             $default_value;
         $field_name = $v->field_name . (!$v->field_dynamic && ($v->field_group || $v->is_multiple) ? '][' : '');
-        $str .= "<div class='col-md-" . ( $menu && $v->is_resize ? 2 : ( $menu ? 3 : 3) ). "'>";
-        $genStr = generateInputs($v, $v->per_option, $inpt_default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, ($i == 0 ? $v->field_label : ''), $v->field_dynamic, $v->label_header, $v->field_style, $i);
+        $str .= "<div class='col-md-" . ($v->column_size ? $v->column_size : ( $menu && $v->is_resize ? 2 : 3 )). "'>";
+        $genStr = generateInputs($v, $v->per_option, $inpt_default_value, $menu_info, $menu, $m->id, $v->data_type_id, $v->option_id, $option, $field_name, ($i == 0 ? $v->field_label : ''), $v->field_dynamic, $v->label_header, $v->field_style, $i,$v->has_label_space,$v->label_column);
         $str .= $genStr;
         if($v->has_room_dropdown){
             $str .= "</div><div class='col-md-2'>" . ($i == 0 ? "<label class='control-label'>&nbsp;</label>" : '');
@@ -1041,6 +1058,53 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
     <?php
     //endregion
 }
+
+function interiorPhotos($room_name = '',$photos = array(),$room_id){
+    ?>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <span style="font-size:13px;"><?php echo $room_name;?> Room Photo</span>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-sm btn-success upload-room-image" id="<?php echo $room_id;?>" aria-hidden="true" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-plus"></i> Upload Photo</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="photo-content">
+                    <?php
+                    if(count($photos) > 0){
+                        foreach($photos as $photo){
+                            if($photo->room_id ==  $room_id){
+                                $dir = realpath(APPPATH.'../uploads/');
+                                $path = $dir . '/job/' . $photo->job_id . '/room_photo/' . $photo->file_name;
+
+                                if(file_exists($path)){
+                                    ?>
+                                    <div class="col-sm-4" style="margin-bottom: 10px;">
+                                        <div class="thumbnail">
+                                            <div class="caption">
+                                                <span class="remove-room-photo" id="<?php echo $photo->id;?>" role="button"><i class="glyphicon glyphicon-remove"></i></span>
+                                            </div>
+                                            <img src="<?php echo base_url('uploads/job/'. $photo->job_id . '/room_photo/' . $photo->file_name);?>" alt="...">
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+}
+$_has_selected_room = count(json_decode($interior_selected)) > 0 ? json_decode($interior_selected) : array();
+$rooms_ = count($_has_selected_room) > 0 && count($session_rooms) > 0 ?  array_merge($_has_selected_room,$session_rooms) :
+    (count($_has_selected_room) > 0 ? $_has_selected_room : (count($session_rooms) > 0 ? $session_rooms : array()));
 ?>
 
 <div class="modal fade" id="showDefect">
@@ -1073,6 +1137,29 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             <div class="modal-footer" style="text-align: center;">
                 <button type="button" class="btn btn-danger yesDeleteBtn" data-dismiss="modal">Yes</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uploadRoomImage">
+    <div class="modal-dialog modal-df">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Room Photo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="file" name="dir[]" class="file roomPhoto" multiple/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="upload-room-photo btn btn-primary" disabled>
+                    <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span> Upload
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Exit</button>
             </div>
         </div>
     </div>
@@ -1159,8 +1246,9 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         </div>
     </div>
 </div>
+
 <script>
-(function (e){
+$(function (e){
     //region Declare variable
     var body = $('body');
     var date = body.find('.date');
@@ -1176,6 +1264,10 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             zoomWindowWidth: 400,
             zoomWindowHeight: 200
         });
+    });
+    $('img').elevateZoom({
+        zoomWindowWidth: 400,
+        zoomWindowHeight: 200
     });
     var property_status = $('.property_status');
     var property_status_other = $('.property_status_other');
@@ -1193,31 +1285,17 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         }
     });
 
-    var saveBtn = body.find('.saveBtn');
-    saveBtn.click(function(e){
-        var hasEmpty = false;
-
-        $('.required').each(function(e){
-            $(this).removeClass('error');
-            if($(this).val() == ""){
-                hasEmpty = true;
-                $(this).addClass('error');
-                console.log($(this).attr('name'));
-            }
-        });
-
-        if(hasEmpty){
-            console.log('has error');
-            e.preventDefault();
-        }
-    });
-
     var room_name = body.find('.room_name');
     var room_tab = body.find('.room_tab');
     var room_pane = body.find('.tab-pane');
     var tab_content = body.find('.tab-content');
-    var roomsSelected = '<?php echo count(json_decode($interior_selected)) > 0 ? $interior_selected : (count($session_rooms) > 0 ? json_encode($session_rooms) : '[]'); ?>';
+    var roomsSelected = '<?php echo count($rooms_) > 0 ? json_encode($rooms_) : '[]'; ?>';
     var _tab = $('#deleteTab');
+    var _form = $('.onsite-form');
+    var _form_data = [];
+    var _df_menu = $('#General');
+    var _df_tab = '';
+
     room_name
         .selectpicker({
             width: '100%',
@@ -1245,17 +1323,25 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                     }
                 }
             });
-            $.post(bu + 'selectedRooms/' + _thisid,{rooms: thisVal},function(res){});
+            $.post(bu + 'selectedRooms/' + _thisid,{rooms: thisVal},function(res){
+                console.log(res);
+            });
             room_pane.each(function(e){
                 $(this).tab('show');
             });
+            var _this = $(this);
+            if(thisVal.length > 0){
+                _this.addClass('has-change');
+            }
+            else{
+                _this.removeClass('has-change');
+            }
         });
     var _has_defect_list = function(){
-        var _this_val = [];
+        var _this_val = jQuery.parseJSON(roomsSelected);
         var _id = '';
         room_tab.each(function(e){
             var _room = tab_content.find('#room_' + this.id);
-            var _tab_name = $('.nav-tabs').find('.room_tab#' + this.id);
             if(_room.find('.defect-content').length){
                 _this_val.push(this.id);
                 $(this).removeClass('hidden');
@@ -1268,12 +1354,37 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         });
         if(_id){
             $('.room_tab#' + _id + ' a').tab('show');
+            _df_tab = $('.room_tab#' + _id);
         }
-
-        room_name.selectpicker('val', _this_val);
+        if(_this_val.length > 0){
+            room_name.selectpicker('val', _this_val);
+            room_name.addClass('has-change');
+        }
+        else{
+            room_name.removeClass('has-change');
+        }
     };
     room_name.selectpicker('val', jQuery.parseJSON(roomsSelected));
     _has_defect_list();
+
+    var saveBtn = body.find('.saveBtn');
+    saveBtn.click(function(e){
+        var hasEmpty = false;
+
+        $('.required').each(function(e){
+            $(this).removeClass('error');
+            if($(this).val() == ""){
+                hasEmpty = true;
+                $(this).addClass('error');
+                console.log($(this).attr('name'));
+            }
+        });
+
+        if(hasEmpty){
+            console.log('has error');
+            e.preventDefault();
+        }
+    });
 
     var checkBoxOption = $('.checkBoxOption');
     var howMany = $('.howMany');
@@ -1402,33 +1513,67 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
         });
     //endregion
 
+    //region Defects, Menu and room tab
     var jobDefects = body.find('.jobDefects');
     var jobDefectTitle, jobDefectDescription, jobDefectsMenuId, jobDefectsRoomId, jobDefectsFieldId, jobUploadBtn;
     var jobDefectDropdown;
     var hasUploadFile = 0;
+    var _form_input = $('select:not([name^="selected_room_id"]),input,textarea');
 
-    $('.menu-panel').on('shown.bs.collapse', function () {
-        jobDefectTitle = $(this).find('.jobDefectTitle');
-        jobDefectDescription = $(this).find('.jobDefectDescription');
-        jobDefectsMenuId = $(this).find('.jobDefectsMenuId');
-        jobDefectsFieldId = $(this).find('.jobDefectsFieldId');
-        jobDefectsRoomId = $(this).find('.jobDefectsRoomId');
-        jobDefectDropdown = $(this).find('.jobDefectDropdown');
-        jobUploadBtn = $(this).find('.jobUploadBtn');
-        setTabIndex();
-        addEventAgain();
-    });
-    room_tab.on('shown.bs.tab', function () {
-        var tab_panel_active = $('.tab-pane.active');
-        jobDefectTitle = tab_panel_active.find('.jobDefectTitle');
-        jobDefectDescription = tab_panel_active.find('.jobDefectDescription');
-        jobDefectsMenuId = tab_panel_active.find('.jobDefectsMenuId');
-        jobDefectsFieldId = tab_panel_active.find('.jobDefectsFieldId');
-        jobDefectsRoomId = tab_panel_active.find('.jobDefectsRoomId');
-        jobDefectDropdown = tab_panel_active.find('.jobDefectDropdown');
-        jobUploadBtn = tab_panel_active.find('.jobUploadBtn');
-        addEventAgain();
-    });
+    $('.menu-panel')
+        .on('shown.bs.collapse', function () {
+            jobDefectTitle = $(this).find('.jobDefectTitle');
+            jobDefectDescription = $(this).find('.jobDefectDescription');
+            jobDefectsMenuId = $(this).find('.jobDefectsMenuId');
+            jobDefectsFieldId = $(this).find('.jobDefectsFieldId');
+            jobDefectsRoomId = $(this).find('.jobDefectsRoomId');
+            jobDefectDropdown = $(this).find('.jobDefectDropdown');
+            jobUploadBtn = $(this).find('.jobUploadBtn');
+            setTabIndex();
+            addEventAgain();
+
+            $.post(bu + 'selectedRooms/' + _thisid,{tab: $(this).attr('data-menu-id')},function(res){});
+            //_form_input.removeClass('has-change');
+            findActiveMenu();
+            findJobDetailsMenu();
+            if($(this).attr('data-menu-id') != 2){
+                var deselect = $('.menu-panel .tab-pane').find('select,input,textarea');
+                deselect.removeClass('has-change');
+            }
+            _form_data = $('.onsite-form').find('.has-change').serializeArray();
+        })
+        .on('hide.bs.collapse', function(){
+            var deselect = $(this).find('select,input,textarea');
+            deselect.removeClass('has-change');
+        });
+    room_tab
+        .on('shown.bs.tab', function () {
+            var tab_panel_active = $('.tab-pane.active');
+            jobDefectTitle = tab_panel_active.find('.jobDefectTitle');
+            jobDefectDescription = tab_panel_active.find('.jobDefectDescription');
+            jobDefectsMenuId = tab_panel_active.find('.jobDefectsMenuId');
+            jobDefectsFieldId = tab_panel_active.find('.jobDefectsFieldId');
+            jobDefectsRoomId = tab_panel_active.find('.jobDefectsRoomId');
+            jobDefectDropdown = tab_panel_active.find('.jobDefectDropdown');
+            jobUploadBtn = tab_panel_active.find('.jobUploadBtn');
+            addEventAgain();
+        })
+        .on('hidden.bs.tab',function(){
+            findActiveRoom()
+        });
+
+    function findActiveRoom(){
+        var select = $('.menu-panel .tab-pane').find('select,input,textarea');
+        select.addClass('has-change');
+    }
+    function findActiveMenu(){
+        var select = $('.menu-panel.in:not(#Interior)').find('select,input,textarea');
+        select.addClass('has-change');
+    }
+    function findJobDetailsMenu(){
+        var select = $('#job_details').find('select,input,textarea');
+        select.addClass('has-change');
+    }
 
     var defect_btn = $('.panel-group').find('.defect-btn');
     function setTabIndex(edit,_class){
@@ -1730,19 +1875,27 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
     });
     <?php
     $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : '';
+    $selected_tab = $this->session->userdata('job_' . $this->uri->segment(2) .'_tab');
+    $menu_id = $selected_tab ? $selected_tab : $menu_id;
     echo $menu_id != '' ? "$('.menu-panel[data-menu-id=\"" . $menu_id . "\"]').collapse('show');\n" : "";
     echo $room_id ? "$('.room_tab#" . $room_id . " a').tab('show');$('.room_tab#" . $room_id . "').removeClass('hidden');" : "";
     ?>
 
     function selectedRoom(data){
+        var _data = jQuery.parseJSON(roomsSelected);
         $.each(jQuery.parseJSON(data),function(index,val){
             $('.room_tab#' + val + ' a').tab('show');
             $('.room_tab#' + val).removeClass('hidden');
+            _data.push(val);
         });
+        //room_name.selectpicker('val', jQuery.parseJSON(roomsSelected));
     }
 
     selectedRoom(roomsSelected);
 
+    //endregion
+
+    //region Modals
     function addEventAgain(){
         jobDefectDescription
             .add(jobDefectTitle)
@@ -1910,7 +2063,129 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             $this.text('[Read Less]');
         }
     });
+    $('#uploadRoomImage.modal').on('hide.bs.modal', function (e) {
+        // do something...
+        $('.roomPhoto').fileinput('clear');
+    });
+    $('.upload-room-image').on('click',function(e){
+        e.preventDefault();
+        var _roomPhoto = $('.roomPhoto');
+        var id = this.id;
+        var upload_btn = $('.upload-room-photo');
+        $('#uploadRoomImage').modal('show');
+        _roomPhoto.fileinput({
+            uploadAsync: true,
+            uploadUrl: bu + "roomPhotos",
+            removeClass: "btn btn-danger",
+            uploadClass: "btn btn-info hide-btn",
+            showPreview: false,
+            showRemove: false,
+            maxFileCount: 10,
+            allowedFileTypes: ['image'],
+            uploadExtraData: function(e){
+                var _data = {
+                    menu_id: 2,
+                    room_id: id,
+                    job_id: job_name.val()
+                };
 
+                return _data;
+            }
+        })
+            .on('filebatchuploadcomplete', function(event, files, extra) {
+            })
+            .on('fileuploaderror', function(event, data, previewId, index) {
+                var _this = this;
+                var size = 0;
+                var alert_warning = $('.alert-danger');
+                var msg = '';
+                if(this.files.length > 1){
+                    msg = '<strong>Error!</strong> Please select only one image.'
+                }
+                else{
+                    $.each(this.files,function(k,v){
+                        size += _this.files[k].size;
+                    });
+                    if(size > 2000){
+                        msg = '<strong>Error!</strong> Please enter a file with a valid file size no larger than 10Mb.'
+                    }
+                    else{
+                        msg = '<strong>Error!</strong> Uploading file to server.'
+                    }
+                }
+
+                alert_warning.html(msg);
+                alert_warning.css({'text-align':'left'});
+                alert_warning.removeClass('hidden');
+                jobDefects.fileinput('clear');
+                hasUploadFile = 0;
+            })
+            .on('fileloaded', function(event, file, previewId, index, reader) {
+                hasUploadFile = 1;
+                upload_btn.removeAttr('disabled');
+            })
+            .on('filebatchpreupload',function(event, data, previewId, index, jqXHR){
+            })
+            .on('fileuploaded', function(event, data, previewId, index) {
+                upload_btn.attr('disabled', 'disabled');
+                var photo_content = $('#room_' + id + '.tab-pane.active').find('.photo-content'),
+                    ele = '';
+                $.each(data.response,function(key,obj){
+                    ele += '<div class="col-sm-4" style="margin-bottom: 10px;">';
+                    ele += '<div class="thumbnail">';
+                    ele += '<div class="caption">';
+                    ele += '<span class="remove-room-photo" id="' + obj.id + '"><i class="glyphicon glyphicon-remove"></i></span>';
+                    ele += '</div>';
+                    ele += '<img src="'+ obj.file_path +'" alt="...">';
+                    ele += '</div>';
+                    ele += '</div>';
+                });
+                photo_content.html(ele);
+                $('img').elevateZoom({
+                    zoomWindowWidth: 400,
+                    zoomWindowHeight: 200
+                });
+                $('#uploadRoomImage').modal('hide');
+            })
+            .on('filecleared', function(event) {
+                hasUploadFile = 0;
+                upload_btn.attr('disabled', 'disabled');
+            })
+            .on('filebatchuploadsuccess', function(event, data) {
+                upload_btn.attr('disabled', 'disabled');
+                var photo_content = $('#room_' + id + '.tab-pane.active').find('.photo-content'),
+                    ele = '';
+                $.each(data.response,function(key,obj){
+                    ele += '<div class="col-sm-4" style="margin-bottom: 10px;">';
+                    ele += '<div class="thumbnail">';
+                    ele += '<div class="caption">';
+                    ele += '<span class="remove-room-photo" id="' + obj.id + '"><i class="glyphicon glyphicon-remove"></i></span>';
+                    ele += '</div>';
+                    ele += '<img src="'+ obj.file_path +'" alt="...">';
+                    ele += '</div>';
+                    ele += '</div>';
+                });
+                photo_content.html(ele);
+                $('img').elevateZoom({
+                    zoomWindowWidth: 400,
+                    zoomWindowHeight: 200
+                });
+                $('#uploadRoomImage').modal('hide');
+            });
+        upload_btn.click(function(e){
+
+            $('#uploadRoomImage').find('.fileinput-upload.fileinput-upload-button').trigger('click');
+        });
+    });
+    body.on('click','.remove-room-photo',function(){
+        var _remove_this = $(this).parent().parent().parent();
+        $.post(bu + 'roomPhotosDelete/' + this.id,{id:this.id},function(data){
+            _remove_this.remove();
+        });
+    });
+    //endregion
+
+    //region Property Image
     var propertyImage = $('.propertyImage');
     propertyImage
         .fileinput({
@@ -1947,7 +2222,9 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
                 location.reload();
             }
         });
+    //endregion
 
+    //region Job Name
     job_name.change(function(e){
         var btn_defect = $('.defect-btn');
         btn_defect.attr('disabled','disabled');
@@ -2005,5 +2282,113 @@ function defectArea($m, $defects, $room_id = 0, $dropdown = array(),$field_id = 
             }
         });
     };
-})($);
+    //endregion
+
+    //region Autosave data
+
+    function countSmokeAlarms(){
+        var _total_smoke_alarm = 0,
+            _total_non_operational = 0,
+            _smoke_alarm_location = '',
+            _general_smoke_alarm = $('[name="data[1][general_smoke_alarms_total]"]'),
+            _general_smoke_alarm_non = $('[name*="[general_smoke_alarms_nonoperational]"]'),
+            _general_smoke_alarm_location = $('[name*="[general_smoke_alarm_locations]"]');
+
+        $('[name*="[interior_smoke_alarms]"]').each(function(e){
+            if($(this).val()){
+                _total_smoke_alarm += parseInt($(this).val());
+            }
+        });
+        $('[name*="[interior_smoke_alarms_nonoperational]"]').each(function(e){
+            if($(this).val()){
+                _total_non_operational += parseInt($(this).val());
+            }
+        });
+        $('[name*="interior_smoke_alarms"]').each(function(e){
+            var _name = $(this).attr('name');
+            var input_name = $(this).attr('name');
+            _name = _name.replace('data[2][','');
+            var _room_id = _name.match(/\d+/);
+            var _room_name = $('ul.rooms-nav li#' + parseInt(_room_id) + ' a').html();
+            if(parseFloat($(this).val()) && input_name.indexOf('[interior_smoke_alarms]') !== -1){
+
+                _smoke_alarm_location +=  (_smoke_alarm_location ? ', ' : '') + _room_name + " (" + $(this).val() + ')';
+            }
+        });
+        _general_smoke_alarm.val(_total_smoke_alarm);
+        _general_smoke_alarm_non.val(_total_non_operational);
+        _general_smoke_alarm_location.val(_smoke_alarm_location);
+
+    }
+
+    $('.onsite-form input:not(input[type=submit]),.onsite-form select,.onsite-form textarea')
+        .on('focusout',function(e){
+            var _this = $(this);
+            var _has_changes = false;
+            var _data = $('.onsite-form').find('.has-change').serializeArray();
+            $.each(_form_data,function(_key,_val){
+                $.each(_data,function(_k,_v){
+                    if(_val.name == _v.name){
+                        if(_val.value !== _v.value){
+                            _has_changes = true;
+                            return _has_changes;
+                        }
+                    }
+                });
+            });
+
+            countSmokeAlarms();
+            var _general_smoke_alarm = $('[name="data[1][general_smoke_alarms_total]"]'),
+                _general_smoke_alarm_non = $('[name*="[general_smoke_alarms_nonoperational]"]'),
+                _general_smoke_alarm_location = $('[name*="[general_smoke_alarm_locations]"]');
+            _data.push(
+                {'name':'submit_inspection_visit','value':'1'},
+                {'name':'data[1][general_smoke_alarms_nonoperational]','value':_general_smoke_alarm_non.val()},
+                {'name':'data[1][general_smoke_alarms_total]','value':_general_smoke_alarm.val()},
+                {'name':'data[1][general_smoke_alarm_locations]','value':_general_smoke_alarm_location.val()},
+                {'name':'js','value':'1'},
+                {'name':'time_start','value':$('input[name=time_start]').val()}
+            );
+
+            if(_has_changes){
+                console.log(_data);
+                setTimeout(function(e){
+                    $.post(_form.attr('action'),_data,function(res){
+                        console.log(res);
+                        var select = $('#job_details').find('select,input,textarea');
+                        select.removeClass('has-change');
+                        _form_data = $('.onsite-form').find('.has-change').serializeArray();
+                    });
+                },1000);
+            }
+    });
+
+    //endregion
+    //region Smoke Alarm
+    var _smoke_alarm_total = $('input[name="data[1][general_smoke_alarms_total]"]');
+    var _smoke_alarm_operational = $('input[name="data[1][general_smoke_alarms_nonoperational]"]');
+    _smoke_alarm_total.tooltip(
+        {
+            placement: 'right',
+            html: true,
+            template: '<div class="tooltip" role="tooltip" style="width: 200px;border: none!important">' +
+                            '<div class="tooltip-arrow"></div>' +
+                            '<div class="tooltip-inner"></div>' +
+                        '</div>',
+            title: '<strong style="color: #78d6ff;">' + _smoke_alarm_total.val() + '</strong> smoke alarms in total'
+        }
+    );
+    _smoke_alarm_operational.tooltip(
+        {
+            placement: 'right',
+            html: true,
+            template: '<div class="tooltip" role="tooltip" style="width: 200px;border: none!important">' +
+                            '<div class="tooltip-arrow"></div>' +
+                            '<div class="tooltip-inner"></div>' +
+                        '</div>',
+            title: '<strong style="color: #78d6ff;">' + _smoke_alarm_operational.val() + '</strong> smoke alarms found are non-operational'
+        }
+    );
+    //endregion
+});
 </script>

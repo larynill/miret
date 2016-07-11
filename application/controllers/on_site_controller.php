@@ -39,8 +39,10 @@ class On_Site_Controller extends Merit{
                     $field_dynamic = json_decode($v->field_dynamic);
                     if(count($field_dynamic) > 0){
                         foreach($field_dynamic as $key=>$val){
-                            $fn = $v->field_name . $key;
-                            $fName[$v->menu_id][] = $fn;
+                            if($val != 'label'){
+                                $fn = $v->field_name . $key;
+                                $fName[$v->menu_id][] = $fn;
+                            }
                         }
                     }
                 }
@@ -48,137 +50,149 @@ class On_Site_Controller extends Merit{
         }
         $this->data['fields'] = $fields;
         $id = $this->uri->segment(2) ? $this->uri->segment(2) : '';
-        if(isset($_POST['submit'])){
-            unset($_POST['submit']);
+        $_id = '';
+        if(isset($_POST['submit_inspection_visit'])){
+            unset($_POST['submit_inspection_visit']);
+            $job_detail_post = isset($_POST['job_details']) ? $_POST['job_details'] : array();
+            if(count($job_detail_post) > 0){
+                $post = array(
+                    'date_receive' => date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $job_detail_post['date_receive']))),
+                    'job_name' => isset($job_detail_post['job_name']) ? $job_detail_post['job_name'] : '',
+                    'job_id' => isset($job_detail_post['job_id']) ? $job_detail_post['job_id'] : '',
+                    'ref' => $job_detail_post['ref'],
+                    'instruction_received' => isset($job_detail_post['instruction_received']) ? $job_detail_post['instruction_received'] : '',
 
-            $job_detail_post = $_POST['job_details'];
-            $post = array(
-                'date_receive' => date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $job_detail_post['date_receive']))),
-                'job_name' => isset($job_detail_post['job_name']) ? $job_detail_post['job_name'] : '',
-                'job_id' => isset($job_detail_post['job_id']) ? $job_detail_post['job_id'] : '',
-                'ref' => $job_detail_post['ref'],
-                'instruction_received' => isset($job_detail_post['instruction_received']) ? $job_detail_post['instruction_received'] : '',
+                    'property_owner' => $job_detail_post['property_owner'],
+                    'lot_number' => $job_detail_post['lot_number'],
+                    'dp_number' => $job_detail_post['dp_number'],
+                    'property_unit' => $job_detail_post['property_unit'],
+                    'property_street_number' => $job_detail_post['property_street_number'],
+                    'property_street_name' => $job_detail_post['property_street_name'],
+                    'property_suburb' => $job_detail_post['property_suburb'],
+                    'property_city' => $job_detail_post['property_city'],
+                    'property_postal' => $job_detail_post['property_postal'],
+                    'property_phone_area' => isset($job_detail_post['property_phone_area']) ? $job_detail_post['property_phone_area'] : '',
+                    'property_phone_number' => $job_detail_post['property_phone_number'],
+                    'property_mobile' => $job_detail_post['property_mobile'],
+                    'property_email' => $job_detail_post['property_email'],
+                    'property_status' => isset($job_detail_post['property_status']) ? $job_detail_post['property_status'] : '',
+                    'property_status_other' => isset($job_detail_post['property_status_other']) ? $job_detail_post['property_status_other'] : '',
+                    'pets' => $job_detail_post['pets'],
+                    'electricity' => $job_detail_post['electricity'],
+                    'water' => $job_detail_post['water'],
+                    'details_property' => nl2br($job_detail_post['details_property']),
+                    'property_orientation' => $job_detail_post['property_orientation'],
 
-                'property_owner' => $job_detail_post['property_owner'],
-                'lot_number' => $job_detail_post['lot_number'],
-                'dp_number' => $job_detail_post['dp_number'],
-                'property_unit' => $job_detail_post['property_unit'],
-                'property_street_number' => $job_detail_post['property_street_number'],
-                'property_street_name' => $job_detail_post['property_street_name'],
-                'property_suburb' => $job_detail_post['property_suburb'],
-                'property_city' => $job_detail_post['property_city'],
-                'property_postal' => $job_detail_post['property_postal'],
-                'property_phone_area' => isset($job_detail_post['property_phone_area']) ? $job_detail_post['property_phone_area'] : '',
-                'property_phone_number' => $job_detail_post['property_phone_number'],
-                'property_mobile' => $job_detail_post['property_mobile'],
-                'property_email' => $job_detail_post['property_email'],
-                'property_status' => isset($job_detail_post['property_status']) ? $job_detail_post['property_status'] : '',
-                'property_status_other' => isset($job_detail_post['property_status_other']) ? $job_detail_post['property_status_other'] : '',
-                'pets' => $job_detail_post['pets'],
-                'electricity' => $job_detail_post['electricity'],
-                'water' => $job_detail_post['water'],
-                'details_property' => nl2br($job_detail_post['details_property']),
-                'property_orientation' => $job_detail_post['property_orientation'],
+                    'occupier_name' => $job_detail_post['occupier_name'],
+                    'occupier_phone_area' => isset($job_detail_post['occupier_phone_area']) ? $job_detail_post['occupier_phone_area'] : '',
+                    'occupier_phone_number' => $job_detail_post['occupier_phone_number'],
+                    'occupier_mobile' => $job_detail_post['occupier_mobile'],
+                    'occupier_email' => $job_detail_post['occupier_email'],
 
-                'occupier_name' => $job_detail_post['occupier_name'],
-                'occupier_phone_area' => isset($job_detail_post['occupier_phone_area']) ? $job_detail_post['occupier_phone_area'] : '',
-                'occupier_phone_number' => $job_detail_post['occupier_phone_number'],
-                'occupier_mobile' => $job_detail_post['occupier_mobile'],
-                'occupier_email' => $job_detail_post['occupier_email'],
+                    'assigned_to' => $job_detail_post['assigned_to'],
+                    'inspection_date' => date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $job_detail_post['inspection_date']))),
+                    'provide_copies_to' => $job_detail_post['provide_copies_to'],
+                    'inspection_range' => $_POST['inspection_range'],
+                    'type_inspection' => isset($job_detail_post['type_inspection']) ? $job_detail_post['type_inspection'] : '',
+                    'purpose_inspection' => nl2br($job_detail_post['purpose_inspection'])
+                );
 
-                'assigned_to' => $job_detail_post['assigned_to'],
-                'inspection_date' => date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $job_detail_post['inspection_date']))),
-                'provide_copies_to' => $job_detail_post['provide_copies_to'],
-                'inspection_range' => $_POST['inspection_range'],
-                'type_inspection' => isset($job_detail_post['type_inspection']) ? $job_detail_post['type_inspection'] : '',
-                'purpose_inspection' => nl2br($job_detail_post['purpose_inspection'])
-            );
-            $id = $this->merit_model->insert($site . '.tbl_job_detail',$post,false);
-
-            foreach($_POST['data'] as $key=>$data){
-                $tbl = $m[$key];
-                $noneExistingFields = $fName[$key];
-                foreach($data as $k=>$d){
-                    if(!is_array($d)){
-                        $data[$k] = $d == 'null' ? NULL : $d;
-                    }
-
-                    if(!in_array($key, array(2)) && in_array($k, $noneExistingFields)){
-                        $thisKey = array_search($k, $noneExistingFields);
-                        unset($noneExistingFields[$thisKey]);
-                    }
-                }
-
-                if(in_array($key, array(2))){
-                    if(isset($_POST['room_id'])){
-                        foreach($_POST['room_id'] as $room_id){
-                            if(array_key_exists($room_id, $data)){
-                                $noneExistingFields = $fName[$key];
-
-                                $it_exist = $this->merit_model->getInfo($tbl,array($id,$room_id),array('job_id','interior_room_id'));
-                                foreach($data[$room_id] as $k=>$d){
-                                    if(is_array($d)){
-                                        $data[$room_id][$k] = json_encode(array_filter($d));
-                                    }
-                                    else{
-                                        $data[$room_id][$k] = $d == 'null' ? NULL : $d;
-                                    }
-                                    if(in_array($k, $noneExistingFields)){
-                                        $thisKey = array_search($k, $noneExistingFields);
-                                        unset($noneExistingFields[$thisKey]);
-                                    }
-                                }
-
-                                $post = $data[$room_id];
-                                if(count($noneExistingFields) > 0){
-                                    foreach($noneExistingFields as $fld){
-                                        $post[$fld] = '';
-                                    }
-                                }
-                                $post['job_id'] = $id;
-                                $post['interior_room_id'] = $room_id;
-
-                                if(count($it_exist) > 0){
-                                    $this->merit_model->update($tbl,$post,array($id,$room_id),array('job_id','interior_room_id'),false);
-                                }
-                                else{
-                                    $this->merit_model->insert($tbl,$post,false);
-                                }
-                            }
-                        }
-                        $this->merit_model->delete($tbl,array($id,$_POST['room_id']),array('job_id','interior_room_id NOT '));
-                    }
-                    else{
-                        $this->merit_model->delete($tbl,$id,'job_id');
-                    }
+                $job_detail_exist = $this->merit_model->getInfo($site . '.tbl_job_detail',$id,'job_id');
+                if(count($job_detail_exist) > 0){
+                    $this->merit_model->update($site . '.tbl_job_detail',$post,$id,'job_id',false);
                 }
                 else{
-                    $it_exist = $this->merit_model->getInfo($tbl,$id,'job_id');
+                    $_id = $this->merit_model->insert($site . '.tbl_job_detail',$post,false);
+                }
+            }
+            $_data = isset($_POST['data']) ? $_POST['data'] : array();
+            if(count($_data) > 0){
+                foreach($_POST['data'] as $key=>$data){
+                    $tbl = $m[$key];
+                    $noneExistingFields = $fName[$key];
+                    foreach($data as $k=>$d){
+                        if(!is_array($d)){
+                            $data[$k] = $d == 'null' ? NULL : $d;
+                        }
 
-                    $post = $data;
-                    if(count($noneExistingFields) > 0){
-                        foreach($noneExistingFields as $fld){
-                            $post[$fld] = null;
+                        if(!in_array($key, array(2)) && in_array($k, $noneExistingFields)){
+                            $thisKey = array_search($k, $noneExistingFields);
+                            unset($noneExistingFields[$thisKey]);
                         }
                     }
-                    if(count($post) > 0){
-                        foreach($post as $postKey=>$postValue){
-                            if(is_array($postValue)){
-                                $post[$postKey] = json_encode(array_filter($postValue));
+
+                    if(in_array($key, array(2))){
+                        if(isset($_POST['selected_room_id'])){
+                            foreach($_POST['selected_room_id'] as $room_id){
+                                if(array_key_exists($room_id, $data)){
+                                    $noneExistingFields = $fName[$key];
+
+                                    $it_exist = $this->merit_model->getInfo($tbl,array($id,$room_id),array('job_id','interior_room_id'));
+                                    foreach($data[$room_id] as $k=>$d){
+                                        if(is_array($d)){
+                                            $data[$room_id][$k] = json_encode(array_filter($d));
+                                        }
+                                        else{
+                                            $data[$room_id][$k] = $d == 'null' ? NULL : $d;
+                                        }
+                                        if(in_array($k, $noneExistingFields)){
+                                            $thisKey = array_search($k, $noneExistingFields);
+                                            unset($noneExistingFields[$thisKey]);
+                                        }
+                                    }
+
+                                    $post = $data[$room_id];
+                                    if(count($noneExistingFields) > 0){
+                                        foreach($noneExistingFields as $fld){
+                                            $post[$fld] = '';
+                                        }
+                                    }
+                                    $post['job_id'] = $id;
+                                    $post['interior_room_id'] = $room_id;
+
+                                    if(count($it_exist) > 0){
+                                        $this->merit_model->update($tbl,$post,array($id,$room_id),array('job_id','interior_room_id'),false);
+                                    }
+                                    else{
+                                        $this->merit_model->insert($tbl,$post,false);
+                                    }
+                                }
                             }
+                            $this->merit_model->delete($tbl,array($id,$_POST['selected_room_id']),array('job_id','interior_room_id NOT '));
                         }
-                    }
-
-                    $post['job_id'] = $id;
-
-                    if(count($it_exist) > 0){
-                        $this->merit_model->update($tbl,$post,$id,'job_id',false);
+                        else{
+                            $this->merit_model->delete($tbl,$id,'job_id');
+                        }
                     }
                     else{
-                        $this->merit_model->insert($tbl,$post,false);
+                        $it_exist = $this->merit_model->getInfo($tbl,$id,'job_id');
+
+                        $post = $data;
+                        if(count($noneExistingFields) > 0){
+                            foreach($noneExistingFields as $fld){
+                                $post[$fld] = null;
+                            }
+                        }
+                        if(count($post) > 0){
+                            foreach($post as $postKey=>$postValue){
+                                if(is_array($postValue)){
+                                    $post[$postKey] = json_encode(array_filter($postValue));
+                                }
+                            }
+                        }
+
+                        $post['job_id'] = $id;
+
+                        if(count($it_exist) > 0){
+                            $this->merit_model->update($tbl,$post,$id,'job_id',false);
+                        }
+                        else{
+                            $this->merit_model->insert($tbl,$post,false);
+                        }
                     }
                 }
             }
+
 
             $post = array(
                 'job_id' => $id,
@@ -186,11 +200,17 @@ class On_Site_Controller extends Merit{
                 'time_end' => date('Y-m-d H:i:s')
             );
             $this->merit_model->insert($site . '.tbl_job_timer',$post,false);
-
-            $n = new Job_Helper();
-            $n->setJobNotification($job_detail_post['job_id'],'On site visit details added',false);
-
-            redirect('onSiteVisit');
+            if($_id){
+                $n = new Job_Helper();
+                $n->setJobNotification($job_detail_post['job_id'],'On site visit details added',false);
+            }
+            if(isset($_POST['js'])){
+                echo 'success';
+                exit;
+            }
+            else{
+                redirect('jobRegistration?id=' . $id);
+            }
         }
 
         $fieldName = ArrayWalk($this->merit_model->getFields($site .'.tbl_option'), $site . '.tbl_option.');
@@ -236,7 +256,8 @@ class On_Site_Controller extends Merit{
         $this->data['interior_selected'] = json_encode($interior_selected);
         //endregion
 
-        $job_detail = $this->merit_model->getInfo($site . '.tbl_job_detail',$id);
+        $this->merit_model->setShift();
+        $job_detail = (Object)$this->merit_model->getInfo('tbl_job_registration',$id);
         $this->data['job_detail'] = $job_detail;
 
         $this->merit_model->setSelectFields(array('id', 'instruction_received'));
@@ -254,6 +275,9 @@ class On_Site_Controller extends Merit{
 
         $session_rooms = $this->uri->segment(2) ? $this->session->userdata('job_' . $this->uri->segment(2)) : [];
         $this->data['session_rooms'] = @$session_rooms['rooms_ids'];
+
+        $room_photos = $this->merit_model->getInfo($site . '.tbl_room_photo',$this->uri->segment(2),'job_id');
+        $this->data['room_photos'] = $room_photos;
 
         $whatVal = '';
         $whatFld = '';
@@ -426,6 +450,116 @@ class On_Site_Controller extends Merit{
         }
         else{
             redirect('jobRegistration?id=' . $return['job_id']);
+        }
+    }
+
+    public function roomPhotos(){
+        ini_set('max_execution_time', 0);
+        $site = $this->db->site;
+        $r = array();
+        $return = array();
+
+        if (!empty($_FILES)) {
+            $menu_id = isset($_POST['menu_id']) ? $_POST['menu_id'] : NULL;
+            $room_id = isset($_POST['room_id']) ? $_POST['room_id'] : NULL;
+            $job_id = isset($_POST['job_id']) ? $_POST['job_id'] : NULL;
+            $post = array(
+                'date' => date('Y-m-d H:i:s'),
+                'menu_id' => $menu_id,
+                'job_id' => $job_id,
+                'room_id' => $room_id
+            );
+            $return = $post;
+            $_id = $this->merit_model->insert($site.'.tbl_room_photo',$post);
+
+            $path = realpath(APPPATH.'../uploads/');
+            $dir = $path . '/job/' . $job_id . '/room_photo/';
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, TRUE);
+            }
+
+            if (isset($_FILES['dir'])) {
+                foreach($_FILES['dir']['name'] as $k=>$v){
+                    $file = $dir . basename($v);
+                    if (move_uploaded_file($_FILES['dir']['tmp_name'][$k], $file)) {
+
+                    }
+                    else{
+                        $r['error'] = 1;
+                    }
+                    $this->load->library('my_class_upload');
+                    $handle = $this->my_class_upload;
+                    $handle->upload($file);
+                    if($handle->uploaded){
+                        list($width, $height) = getimagesize($file);
+                        $_r = $width / $height;
+                        $w = 800;
+                        $h = 600;
+                        if (($w / $h) > $_r) {
+                            $new_width = $h * $_r;
+                            $new_height = $h;
+                        } else {
+                            $new_height = $w / $_r;
+                            $new_width = $w;
+                        }
+
+                        $handle->allowed = array('image/*');
+                        $handle->file_new_name_body = 'room_img_' . $_id . '_' . $k;
+                        $handle->file_overwrite = true;
+                        $handle->image_resize = true;
+                        $handle->image_x = $new_width;
+                        $handle->image_y = $new_height;
+
+                        $handle->process($dir);
+                        if($handle->processed){
+                            $handle->clean();
+                            $ext = substr(strrchr($_FILES['dir']['name'][$k],'.'), 1);
+                            $file_name = 'room_img_' . $_id . '_' . $k . '.' . ($ext);
+
+                            $post = array(
+                                'file_name' => $file_name
+                            );
+
+                            $this->merit_model->update($site . '.tbl_room_photo',$post,$_id,'id',false);
+
+                            $r['success'] = 1;
+                        }
+                    }
+                }
+            }
+        }
+        if($r['success'] == 1){
+            $photos = $this->merit_model->getinfo($site . '.tbl_room_photo',[$return['job_id'],$return['room_id']],['job_id','room_id']);
+            if(count($photos) > 0){
+                foreach($photos as $photo){
+                    $path = realpath(APPPATH.'../uploads/');
+                    $dir = $path . '/job/' . $photo->job_id . '/room_photo/' .  $photo->file_name;
+                    $photo->file_path = '';
+                    if(file_exists($dir)){
+                        $photo->file_path = base_url('uploads/job/' . $photo->job_id . '/room_photo/' .  $photo->file_name);
+                    }
+                }
+            }
+            echo json_encode($photos);
+        }
+        else{
+            redirect('jobRegistration?id=' . $return['job_id']);
+        }
+    }
+
+    public function roomPhotosDelete(){
+        $site = $this->db->site;
+        $this->load->helper('directory');
+        if(isset($_POST['id'])){
+            $photo_id = $_POST['id'];
+
+            $this->merit_model->setShift();
+            $photos = (Object)$this->merit_model->getInfo($site . '.tbl_room_photo',$photo_id);
+            if(@$photos->id){
+                $dir = 'uploads/job/' . $photos->job_id .'/room_photo/';
+                unlink($dir . $photos->file_name);
+                $this->merit_model->delete($site.'.tbl_room_photo',$photo_id);
+            }
         }
     }
 
@@ -612,6 +746,11 @@ class On_Site_Controller extends Merit{
             $data['job_' . $id] = array(
                 'rooms_ids' => $_POST['rooms']
             );
+            $this->session->set_userdata($data);
+            DisplayArray($this->session->all_userdata());
+        }
+        if(isset($_POST['tab'])){
+            $data['job_' . $id .'_tab'] =  $_POST['tab'];
             $this->session->set_userdata($data);
         }
     }

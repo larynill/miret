@@ -740,6 +740,7 @@ class Job_Controller extends Merit{
         $this->data['inspection_report'] = (Object)$this->main_model->getInfo('tbl_site_inspection_report',$job_id,'job_id');
         @$this->data['inspection_report']->conclusion = json_decode(@$this->data['inspection_report']->conclusion);
         @$this->data['inspection_report']->notes = json_decode(@$this->data['inspection_report']->notes);
+        $this->data['glossary'] = $this->merit_model->getInfo('tbl_glossary_of_terms');
 
         if(isset($_POST['generate'])){
             unset($_POST['generate']);
