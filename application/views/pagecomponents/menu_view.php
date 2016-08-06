@@ -15,7 +15,7 @@ if(count($_userData) > 0){
                         'track/client/current' => 'Client Tracker'
                         //'request/view' => 'View Quote Requests'
                     ),*/
-                    'myDiary' => 'Diary',
+                    'myDiary' => 'Home',
                     'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
                         'jobsAllocation' => 'Allocation',
@@ -50,7 +50,7 @@ if(count($_userData) > 0){
             case 8:
                 $navTitles = array(
                     'trackingLog' => 'Tracking Log',
-                    'myDiary' => 'Diary',
+                    'myDiary' => 'Home',
                     'Jobs' => array(
                         'jobsAllocation' => 'Allocation',
                         'jobRegistration' => 'Registration'
@@ -83,7 +83,7 @@ if(count($_userData) > 0){
                 break;
 			case 7:
 				$navTitles = array(
-                    'myDiary' => 'Diary',
+                    'myDiary' => 'Home',
                     'Accounting' => array(
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',
@@ -98,7 +98,7 @@ if(count($_userData) > 0){
 				break;
             case 6:
                 $navTitles = array(
-                    'diary' => 'Diary',
+                    'diary' => 'Home',
                     'Jobs' => array(
                         'jobsAllocation' => 'Jobs Allocation',
 
@@ -139,7 +139,7 @@ if(count($_userData) > 0){
                 break;
             case 5:
                 $navTitles = array(
-                    'myDiary' => 'Diary',
+                    'myDiary' => 'Home',
                     'Accounting' => array(
                         'jobsDone' => 'Jobs Done',
                         'invoices' => 'Invoices For Month',
@@ -154,13 +154,13 @@ if(count($_userData) > 0){
                 break;
             case 4:
                 $navTitles = array(
-                    'dashboard' => 'Home',
+                    'dashboard' => 'Dashboard',
                     'trackingLog' => 'Tracking Log',
                     /*'Inspections' => array(
                         'onSiteVisit' => 'On-site Visit',
                         //'inspectionReport' => 'Inspection Report'
                     ),*/
-                    'myDiary' => 'Diary',
+                    'myDiary' => 'Home',
 					'Personal Stuff' => array(
 						'staffProfile' => 'My Profile',
 						'staff_leave' => 'Leave',
@@ -170,7 +170,7 @@ if(count($_userData) > 0){
                 break;
 			case 3:
 				$navTitles = array(
-					'diary' => 'Diary',
+					'diary' => 'Home',
                     'trackingLog' => 'Tracking Log',
                     'Jobs' => array(
                         'jobsAllocation' => 'Allocation',
@@ -201,7 +201,7 @@ if(count($_userData) > 0){
 				break;
             case 1:
                 $navTitles = array(
-                    'diary' => 'Diary',
+                    'diary' => 'Home',
                     'leads' => 'Leads',
                     'trackingLog' => 'Tracking Log',
                     'Jobs' => array(

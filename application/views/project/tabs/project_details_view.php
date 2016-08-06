@@ -1,8 +1,12 @@
 <?php
 reset($drop_down[10]);
 $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
+reset($drop_down[12]);
+$inspection_type_id = @$job->inspection_type_id ? @$job->inspection_type_id : key($drop_down[12]);
+$job_number = @$job->id ? str_pad(@$job->id,5,'0',STR_PAD_LEFT) : '';
 ?>
 <input type="hidden" name="job_type_id" class="job_type_id" value="<?php echo $job_type_id;?>">
+<input type="hidden" name="inspection_type_id" class="inspection_type_id" value="<?php echo $inspection_type_id;?>">
 <div class="container-fluid">
     <div class="row" style="font-size: 12px;">
         <div class="col-sm-4 well well-sm" >
@@ -27,7 +31,7 @@ $job_type_id = @$job->job_type_id ? @$job->job_type_id : key($drop_down[10]);
                 ?>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Job Number:</label>
-                    <input type="text" class="form-control input-sm" placeholder="Job Number" value="<?php echo @$job_num;?>" readonly>
+                    <input type="text" class="form-control input-sm" placeholder="Job Number" value="<?php echo $job_number;?>" readonly>
                 </div>
             <?php
             }

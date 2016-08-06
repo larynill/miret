@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "merit";
+$route['default_controller'] = "account/account_controller";
 $route['404_override'] = 'merit/pageConstruction';
 require_once( BASEPATH . 'database/DB'. EXT );
 $db = & DB();

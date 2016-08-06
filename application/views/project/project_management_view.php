@@ -164,10 +164,24 @@ echo form_close();
         });
 
         job_type_dp.change(function(){
-            var hidden_job_type_id = $('.tab-content').find('.job_type_id');
-            hidden_job_type_id.val($(this).val());
+            var tab_content = $('.tab-content');
+            var _job_id = '<?php echo $id;?>';
+            var hidden_job_type_id = tab_content.find('.job_type_id');
+            var hidden_inspection_type_id = tab_content.find('.inspection_type_id');
+            var _inspection_type_id = $('select[name=inspection_type_id]').val();
+            var _job_type_id = $('select[name=job_type_id]').val();
+            hidden_job_type_id.val(_job_type_id);
+            hidden_inspection_type_id.val(_inspection_type_id);
             if ( unlock_btn.length ) {
-                $(this).attr('disabled', 'disabled');
+                job_type_dp.attr('disabled', 'disabled');
+            }
+            if(parseInt(_job_id)){
+                $.post(bu + 'jobRegistration?id=' + _job_id, {
+                    update_type:1,
+                    inspection_type_id: _inspection_type_id,
+                    job_type_id: _job_type_id
+
+                })
             }
         });
 

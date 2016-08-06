@@ -19,16 +19,23 @@
     echo $has_edit_reg || $has_reg_only ? '</div>' : '';
     if($has_edit_reg || $has_reg_only){
         $_disabled =  $has_edit_reg ? 'disabled="disabled"' : '';
+        $_inspection_style = !@$job->job_type_id ? 'style="margin:20px 0 0;"' : 'style="margin:-5px 0 0;"';
+        $_job_style = !@$job->job_type_id ? 'style="margin:20px 0 0;"' : 'style="margin:5px 0 0;"';
         ?>
         <div class="col-sm-2">
             <div class="form-horizontal">
-                <?php echo form_dropdown('job_type_id',$drop_down[10],@$job->job_type_id,'class="form-control input-sm required job_type_dp" style="margin:20px 0 0;" '. $_disabled);?>
+                <?php echo form_dropdown('inspection_type_id',$drop_down[12],@$job->inspection_type_id,'class="form-control input-sm required job_type_dp"  '. $_inspection_style .' '. $_disabled);?>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-horizontal">
+                <?php echo form_dropdown('job_type_id',$drop_down[10],@$job->job_type_id,'class="form-control input-sm required job_type_dp" '. $_job_style .' '. $_disabled);?>
             </div>
         </div>
         <?php
         if($accountType != 4 && $has_edit_reg){
             ?>
-            <div class="col-sm-1" style="margin:20px 0 0;">
+            <div class="col-sm-1" style="margin:-15px 0 0;">
                 <input type="button" class="btn btn-sm btn-primary unlock-btn is-lock" style="font-size: 11px;" value="Unlock">
             </div>
             <?php

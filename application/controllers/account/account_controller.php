@@ -1,7 +1,142 @@
 <?php
+include('shopping_cart.php');
 class Account_Controller extends CI_Controller{
 
     var $data;
+
+    function index(){
+        $page = isset($_GET['p']) ? $_GET['p'] : '';
+        $this->data['active'] = $page;
+        $this->data['links'] = array(
+            '' => 'Home',
+            'search' => 'Search',
+            'purchase' => 'Purchase',
+            'request' => 'Request',
+            'about' => 'About',
+            'contact' => 'Contact Us',
+            'login' => 'Login'
+        );
+        $this->data['icons'] = array(
+            '' => 'fa-home',
+            'about' => 'fa-fire',
+            'purchase' => 'fa-money',
+            'contact' => 'fa-phone',
+            'login' => 'fa-sign-in',
+            'search' => 'fa-search',
+            'request' => 'fa-check',
+        );
+
+        $this->my_model->setNormalized('Name','id');
+        $this->my_model->setSelectFields(array('id','Name'));
+        $this->data['country'] = $this->my_model->getInfo('tbl_country');
+
+        //region Request
+
+        if(isset($_POST['request'])){
+            unset($_POST['request']);
+            $_POST['user_id'] = $this->session->userdata('user_id');
+            $_POST['contact_time'] = isset($_POST['contact_time']) ? date('Y-m-d H:i:s',strtotime($_POST['contact_time'])) : '';
+            $id = $this->my_model->insert('tbl_leads',$_POST);
+
+            if($id){
+                $this->session->set_flashdata(
+                    array(
+                        'confirmation' => '<div class="alert alert-success" role="alert"><strong>Success!</strong> Request sent.</div>'
+                    )
+                );
+            }
+            else{
+                $this->session->set_flashdata(
+                    array(
+                        'confirmation' => '<div class="alert alert-danger" role="alert"><strong>Error!</strong> Unable to send request.</div>'
+                    )
+                );
+            }
+            redirect('?p=request');
+        }
+        //endregion
+        if($page){
+            switch($page){
+                case 'about':
+                    $this->data['page'] = 'frontend/about';
+                    break;
+                case 'contact':
+                    $this->data['page'] = 'frontend/contact_us';
+                    break;
+                case 'purchase':
+                    $this->data['cart'] = [];
+                    $cart = new Shopping_Cart();
+                    if(isset($_POST['purchase'])){
+                        $item_name = isset($_POST['name']) ? $_POST['name'] : '-';
+                        $item_name = str_replace(',','.',$item_name);
+                        $cart->data = [
+                            'id'      => $_GET['id'],
+                            'qty'     => 1,
+                            'price'   => 9.95,
+                            'name'    => $item_name
+                        ];
+
+                        $cart->add();
+                        exit;
+                    }
+                    if(isset($_POST['remove'])){
+                        $cart->data = [
+                            'rowid'      => $_POST['rowid'],
+                            'qty'     => 0
+                        ];
+
+                        $cart->remove();
+                    }
+
+                    $this->data['cart'] = $cart->show();
+                    $this->data['page'] = 'frontend/purchase';
+                    break;
+                case 'login':
+                    $this->data['page'] = 'frontend/login';
+                    break;
+                case 'request':
+                    $this->data['page'] = 'frontend/request';
+                    break;
+                case 'search':
+                    $this->data['page'] = 'frontend/search';
+                    break;
+                default:
+                    redirect('pageConstruction');
+                    break;
+            }
+        }
+        else{
+            $this->data['page'] = 'frontend/home';
+        }
+        //region Search Page
+        if(isset($_GET['search']) && $_GET['search'] == 1){
+            $job_fld = $this->my_model->getFields('tbl_job_registration');
+            $this->my_model->setSelectFields(array('id','address','suburb','city','date_entered'));
+            $jobs = $this->my_model->getinfo('tbl_job_registration');
+            $_fld = [];
+            $_include_fld = array('id','address','suburb','city','date_entered');
+            if(count($job_fld) > 0){
+                foreach($job_fld as $fld){
+                    if(in_array($fld,$_include_fld)){
+                        $_fld[$fld] = $fld;
+                    }
+                }
+            }
+
+            if(count($jobs) > 0){
+                foreach($jobs as $key=>$val){
+                    foreach($val as $k=>$v){
+                        $val->$_fld[$k] = $val->$_fld[$k] && $val->$_fld[$k] != '-' ? $val->$_fld[$k] : '';
+                    }
+                    $val->date_report = date('d/m/Y',strtotime($val->date_entered));
+                    $val->purchase_url = base_url().'?p=purchase&id='. $val->id;
+                }
+            }
+            echo json_encode($jobs);
+        } else if($this->data['page']){
+            $this->load->view('frontend/main_view',$this->data);
+        }
+    }
 
     function login(){
         $this->data['_registrationSuccess'] = false;
@@ -86,7 +221,7 @@ class Account_Controller extends CI_Controller{
 						</div>'
 					)
 				);
-				redirect('login');
+				redirect('?p=login');
             }
         }
     }

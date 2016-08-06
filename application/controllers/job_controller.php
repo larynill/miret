@@ -475,6 +475,15 @@ class Job_Controller extends Merit{
             }
         }
         //endregion
+        //region Update Job Type and Inspection Type
+        if(isset($_POST['update_type'])){
+            unset($_POST['update_type']);
+            $id = isset($_GET['id']) ? $_GET['id'] : '';
+            if($id){
+                $this->merit_model->update('tbl_job_registration',$_POST,$id);
+            }
+        }
+        //endregion
 
         //endregion
         
@@ -482,7 +491,7 @@ class Job_Controller extends Merit{
         $dropdown = $this->main_model->getinfo('tbl_job_type_specs');
         if(count($dropdown) > 0){
             foreach($dropdown as $k=>$v){
-                if($v->job_type_id != 10){
+                if($v->job_type_id != 10 && $v->job_type_id != 12){
                     $array[$v->job_type_id][''] = '-';
                 }
                 $array[$v->job_type_id][$v->id] = $v->job_type_specs;

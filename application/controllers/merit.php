@@ -51,7 +51,7 @@ class Merit extends CI_Controller{
             redirect('trackingLog');
         }
         else{
-            redirect('login');
+            redirect('?p=login');
         }
     }
 

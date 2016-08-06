@@ -118,7 +118,7 @@ class CI_Controller extends my_models
  * @property CI_Security $security                Security Class, xss, csrf, etc...
  * @property CI_Driver_Library $driver            CodeIgniter Driver Library Class
  * @property CI_Cache $cache                      CodeIgniter Caching Class
- * @property MY_Url_Helper $my_url_helper         Custom HELPER
+ * @property Utils_Helper $utils_helper         Custom HELPER
  */
 class CI_Model
 {
